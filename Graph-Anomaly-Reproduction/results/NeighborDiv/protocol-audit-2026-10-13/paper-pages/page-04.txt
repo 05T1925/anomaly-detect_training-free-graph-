@@ -1,0 +1,82 @@
+3 Method
+We instantiate our proposed Neighbor-to-Neighbor Diversity Paradigm into the NeighborDiv framework through three steps illustrated in Figure 1. Our method consists of three steps: (1) projecting
+raw node features into a low-dimensional space for stable similarity estimation; (2) computing a local
+diversity statistic from pairwise similarities among neighbors; and (3) calibrating this statistic against
+a graph-level reference to obtain anomaly scores.
+0.91
+0.87
+0.35
+0.62
+0.18
+... Neighbor-Pair
+Construction
+Neighbor Pair ��, �� 
+Neighbor-Pair
+Constrution
+Pairwise
+Cosine
+Similarity
+Typical neighborhood
+Normal
+V
+�� = Var �� 
+sim ��, �� 
+Low variance
+Anomaly
+High variance
+Anomaly
+Low variance: overly uniform neighborhood
+High variance: mixed or disordered neigborhood
+Input Attributed Graph
+Target Node (��)
+��
+Global Typical
+Diversity
+�1
+�2
+�3
+��
+…
+� = median({��∣�� ≥ 2} 
+Anomaly Score
+�� = |�� − �|
+�(��) = zscore(�� 
+Normalizing
+Higher score → more anomalous
+↓
+↓
+↓
+Optional Thresholding
+Used for estimating anomaly
+account, not for AUC
+�(��) > �� + λ��
+Figure 1: High-level overview of NeighborDiv, our training-free zero-shot generalist graph anomaly
+detection framework, which quantifies anomalies via the absolute deviation of a node’s neighbor-toneighbor feature similarity variance from the graph’s median neighborhood diversity level.
+3.1 Low-dimensional Feature Projection
+Raw node attributes in attributed graphs may be high-dimensional, noisy, and inconsistently scaled,
+which destabilizes pairwise similarity estimation in the original space. We therefore project them into
+a low-dimensional space before measuring neighborhood diversity.
+Let G = (V, E, X) be an attributed graph with node set V = {v1, . . . , vn}, edge set E, adjacency
+matrix A ∈ {0, 1}
+n×n, and attribute matrix X ∈ Rn×d
+. We perform truncated singular value
+decomposition (SVD):
+X = UΣV
+⊤, X(r) = U[:,1:r]Σ1:r, (1)
+retaining the top r components (r=8 in all experiments), and apply ℓ1 row-wise normalization to
+obtain X˜ with rows x˜i. This suppresses noisy/redundant dimensions and makes pairwise similarity
+invariant to node-wise scale differences.
+3.2 Neighbor Diversity
+For an arbitrary node vi, let its one-hop neighbor set be
+N (vi) = {vj | Aij = 1}, (2)
+and let its degree be
+di = |N (vi)|. (3)
+Pairwise similarity. Pairwise similarity between neighbors is computed via cosine similarity, which
+is scale-invariant and focuses on feature directions. For two nodes vp and vq,
+sim(vp, vq) =
+x˜
+⊤
+p x˜q
+∥x˜p∥2∥x˜q∥2
+. (4)
+4

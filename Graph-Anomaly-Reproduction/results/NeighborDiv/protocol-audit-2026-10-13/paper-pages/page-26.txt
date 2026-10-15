@@ -1,0 +1,52 @@
+Table 17: Sensitivity analysis of low-degree node handling. Zero fallback is the default setting used
+in the main experiments. Median fallback assigns nodes with di < 2 the median standardized score
+of valid nodes. Valid-only evaluates only nodes with di ≥ 2.
+Metric Setting Cora YelpChi Reddit T-Finance Tolokers Disney Questions Avg
+AUC
+Median fallback 0.6315 0.5467 0.5122 0.9109 0.5656 0.6667 0.6067 0.6343
+Zero fallback 0.6166 0.6152 0.5122 0.9114 0.5624 0.7246 0.5832 0.6465
+Valid-only 0.6142 0.5164 0.5122 0.9122 0.5676 0.7477 0.6273 0.6425
+AP
+Median fallback 0.0704 0.0648 0.0356 0.6066 0.2477 0.1504 0.0427 0.1740
+Zero fallback 0.0684 0.0750 0.0356 0.6067 0.2459 0.1617 0.0400 0.1762
+Valid-only 0.0737 0.0270 0.0356 0.6084 0.2505 0.1851 0.0490 0.1756
+homophily ratio h ∈ {0.1, 0.3, 0.5, 0.7, 0.9} with an expected average degree of 15. Node features
+are generated as xi = µci + ϵi, where µci ∈ R
+50 is the community center sampled from N (0, 9I)
+and ϵi ∼ N (0, I). Features are preprocessed identically to the main experiments (truncated SVD to
+r=8 dimensions followed by ℓ1 row normalization).
+Anomaly injection. We inject 50 anomalous nodes per type by rewiring their edges:
+• Type-H (over-homogeneous): all neighbors are replaced with nodes from the same community as the target node, creating an artificially concentrated neighborhood that deviates
+below the graph’s typical diversity level.
+• Type-D (over-diverse): neighbors are replaced with nodes sampled uniformly across all k
+communities, creating a maximally dispersed neighborhood that deviates above the typical
+diversity level.
+• Mixed: both Type-H and Type-D anomalies are injected simultaneously (50 each, 100 total,
+5% anomaly rate).
+The edge homophily ratio h controls the background structure of normal nodes: at h=0.9, normal
+neighborhoods are already highly concentrated within their community, while at h=0.1, normal
+neighborhoods span multiple communities. The detectability of each anomaly type depends on its
+contrast against the background neighborhood organization. Type-H anomalies are most salient when
+normal neighborhoods are not already highly homogeneous. Type-D anomalies are expected to be
+salient when normal neighborhoods have a coherent community structure, but this contrast can break
+down in the extreme homophily regime, where the variance induced by mixed-community neighbors
+may overlap with the normal diversity range.
+Results. Table 18 reports AUC averaged over 3 random seeds. Three key observations emerge:
+(1) Our method achieves strong and robust detection of Type-H anomalies across all homophily levels
+(AUC ≥ 0.80), substantially outperforming both baselines, which remain near random (AMEN-Ego:
+0.52–0.56; NRS: 0.54–0.75). (2) For Type-D anomalies, our method leads for h ≤ 0.7 (AUC ≥ 0.78).
+At the extreme setting h = 0.9, Type-D detection degrades for our method. In this regime, normal
+neighborhoods already consist almost entirely of same-community nodes, so their pairwise similarities
+concentrate near a high value with small variance. A Type-D anomaly whose neighbors span multiple
+communities induces a bimodal similarity distribution, but the induced variance can overlap with the
+normal diversity range, reducing the separation in the calibrated deviation |Di − Dmed|. First-order
+residual scores such as NRS are less affected in this regime because they aggregate neighbor features
+before comparison with the ego, making them complementary to the second-order neighbor diversity
+signal. (3) In the Mixed setting, our method maintains strong performance for h ≤ 0.7 (AUC
+≥ 0.86), as Type-H and Type-D signals jointly contribute to the overall anomaly ranking. Overall, the
+results confirm that our two-sided scoring mechanism is effective across a wide homophily spectrum,
+covering the range of most real-world attributed graphs.
+G Diagnostic Analysis on T-Finance
+Our method achieves the largest margin over baselines on T-Finance under the UMDT protocol (AUC
+0.9114 vs. the next-best 0.7828 of GADAM, Table 3; AP 0.6067 vs. 0.4842, Table 6). To better
+26

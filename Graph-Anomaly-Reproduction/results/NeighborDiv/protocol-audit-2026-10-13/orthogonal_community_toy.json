@@ -1,0 +1,35 @@
+{
+  "assumption": "Large-degree limit; unit orthogonal community centers and no within-community noise. Illustrates variance/entropy distinction, not the paper SBM numerical reproduction.",
+  "rows": [
+    {
+      "h": 0.1,
+      "background_same_group_pair_probability": 0.21250000000000002,
+      "background_pair_cosine_variance": 0.16734375,
+      "uniform_typeD_pair_cosine_variance": 0.16000000000000003
+    },
+    {
+      "h": 0.3,
+      "background_same_group_pair_probability": 0.21249999999999997,
+      "background_pair_cosine_variance": 0.16734374999999999,
+      "uniform_typeD_pair_cosine_variance": 0.16000000000000003
+    },
+    {
+      "h": 0.5,
+      "background_same_group_pair_probability": 0.3125,
+      "background_pair_cosine_variance": 0.21484375,
+      "uniform_typeD_pair_cosine_variance": 0.16000000000000003
+    },
+    {
+      "h": 0.7,
+      "background_same_group_pair_probability": 0.5125,
+      "background_pair_cosine_variance": 0.24984375,
+      "uniform_typeD_pair_cosine_variance": 0.16000000000000003
+    },
+    {
+      "h": 0.9,
+      "background_same_group_pair_probability": 0.8125,
+      "background_pair_cosine_variance": 0.15234375,
+      "uniform_typeD_pair_cosine_variance": 0.16000000000000003
+    }
+  ]
+}

@@ -1,0 +1,638 @@
+{
+  "inputs": [
+    {
+      "dataset": "Cora",
+      "policy": "preserve",
+      "nodes": 2708,
+      "features": 1433,
+      "anomalies": 150,
+      "isolated": 0,
+      "degree_one": 475,
+      "valid": 2233,
+      "adjacency_nnz": 11604,
+      "feature_min": 0.0,
+      "feature_max": 1.0,
+      "feature_nonfinite": 0,
+      "load_seconds": 0.06177383700003247
+    },
+    {
+      "dataset": "YelpChi",
+      "policy": "preserve",
+      "nodes": 23831,
+      "features": 32,
+      "anomalies": 1217,
+      "isolated": 0,
+      "degree_one": 8152,
+      "valid": 15679,
+      "adjacency_nnz": 98630,
+      "feature_min": 0.0,
+      "feature_max": 1.0,
+      "feature_nonfinite": 0,
+      "load_seconds": 0.544716214999994
+    },
+    {
+      "dataset": "Reddit",
+      "policy": "preserve",
+      "nodes": 10984,
+      "features": 64,
+      "anomalies": 366,
+      "isolated": 0,
+      "degree_one": 2652,
+      "valid": 8332,
+      "adjacency_nnz": 157032,
+      "feature_min": 0.0,
+      "feature_max": 0.03063470683991909,
+      "feature_nonfinite": 0,
+      "load_seconds": 0.28457390699998086
+    },
+    {
+      "dataset": "T-Finance",
+      "policy": "preserve",
+      "nodes": 39357,
+      "features": 10,
+      "anomalies": 1804,
+      "isolated": 0,
+      "degree_one": 82,
+      "valid": 39275,
+      "adjacency_nnz": 42445086,
+      "feature_min": 0.0,
+      "feature_max": 508174.0,
+      "feature_nonfinite": 0,
+      "load_seconds": 29.59006460400002
+    },
+    {
+      "dataset": "Tolokers",
+      "policy": "incoming",
+      "nodes": 11758,
+      "features": 10,
+      "anomalies": 2566,
+      "isolated": 930,
+      "degree_one": 975,
+      "valid": 9853,
+      "adjacency_nnz": 519000,
+      "feature_min": 0.0,
+      "feature_max": 1.0,
+      "feature_nonfinite": 0,
+      "load_seconds": 0.22024990800002797
+    },
+    {
+      "dataset": "Disney",
+      "policy": "undirected",
+      "nodes": 124,
+      "features": 28,
+      "anomalies": 6,
+      "isolated": 0,
+      "degree_one": 11,
+      "valid": 113,
+      "adjacency_nnz": 670,
+      "feature_min": -1.0,
+      "feature_max": 41051.0,
+      "feature_nonfinite": 0,
+      "load_seconds": 0.03489410800000314
+    },
+    {
+      "dataset": "Questions",
+      "policy": "incoming",
+      "nodes": 48921,
+      "features": 301,
+      "anomalies": 1460,
+      "isolated": 17603,
+      "degree_one": 17751,
+      "valid": 13567,
+      "adjacency_nnz": 153540,
+      "feature_min": -1.6608750820159912,
+      "feature_max": 3.3610634803771973,
+      "feature_nonfinite": 0,
+      "load_seconds": 3.741585640999972
+    }
+  ],
+  "runs": [
+    {
+      "dataset": "Cora",
+      "policy": "preserve",
+      "solver": "randomized",
+      "seed": 0,
+      "projection_seconds": 0.01915834400000449,
+      "full_moment_seconds": 0.03200349400003688,
+      "zero_projected_rows": 0,
+      "AUROC": 0.6846077664842325,
+      "AP": 0.09779039581106895,
+      "max_error_vs_streamed_variance": 1.3877787807814457e-16,
+      "max_error_vs_streamed_scores": 7.993605777301127e-15
+    },
+    {
+      "dataset": "Cora",
+      "policy": "preserve",
+      "solver": "randomized",
+      "seed": 1,
+      "projection_seconds": 0.013941748999968695,
+      "full_moment_seconds": 0.030854678000025615,
+      "zero_projected_rows": 0,
+      "AUROC": 0.6850351837372948,
+      "AP": 0.09826899081060944,
+      "max_variance_change_vs_randomized0": 0.022123904273790698
+    },
+    {
+      "dataset": "Cora",
+      "policy": "preserve",
+      "solver": "arpack",
+      "seed": 0,
+      "projection_seconds": 0.01786281799996914,
+      "full_moment_seconds": 0.03221117000003915,
+      "zero_projected_rows": 0,
+      "AUROC": 0.6856971592389888,
+      "AP": 0.09828747945512564,
+      "max_variance_change_vs_randomized0": 0.021246377916444403
+    },
+    {
+      "dataset": "Cora",
+      "policy": "preserve",
+      "solver": "randomized32",
+      "seed": 0,
+      "projection_seconds": 0.028552074999993238,
+      "full_moment_seconds": 0.02865253400000256,
+      "zero_projected_rows": 0,
+      "AUROC": 0.6846077664842325,
+      "AP": 0.09779039581106895,
+      "max_variance_change_vs_randomized0": 3.2656058832070123e-07
+    },
+    {
+      "dataset": "YelpChi",
+      "policy": "preserve",
+      "solver": "randomized",
+      "seed": 0,
+      "projection_seconds": 0.1530643359999999,
+      "full_moment_seconds": 0.2685350200000016,
+      "zero_projected_rows": 0,
+      "AUROC": 0.5814784022433874,
+      "AP": 0.06907070699469428,
+      "max_error_vs_streamed_variance": 6.938893903907228e-17,
+      "max_error_vs_streamed_scores": 7.638334409421077e-14
+    },
+    {
+      "dataset": "YelpChi",
+      "policy": "preserve",
+      "solver": "randomized",
+      "seed": 1,
+      "projection_seconds": 0.12638880200000813,
+      "full_moment_seconds": 0.2254190190000145,
+      "zero_projected_rows": 0,
+      "AUROC": 0.5814797103240776,
+      "AP": 0.06907079181719973,
+      "max_variance_change_vs_randomized0": 1.783558697849262e-06
+    },
+    {
+      "dataset": "YelpChi",
+      "policy": "preserve",
+      "solver": "arpack",
+      "seed": 0,
+      "projection_seconds": 0.07445665999995299,
+      "full_moment_seconds": 0.22693141600001354,
+      "zero_projected_rows": 0,
+      "AUROC": 0.5814786202568358,
+      "AP": 0.06907072434005608,
+      "max_variance_change_vs_randomized0": 1.0123732605130976e-06
+    },
+    {
+      "dataset": "YelpChi",
+      "policy": "preserve",
+      "solver": "randomized32",
+      "seed": 0,
+      "projection_seconds": 0.10567199799999116,
+      "full_moment_seconds": 0.23110252999998693,
+      "zero_projected_rows": 0,
+      "AUROC": 0.5814785112501116,
+      "AP": 0.06907071278828292,
+      "max_variance_change_vs_randomized0": 8.013296201722295e-08
+    },
+    {
+      "dataset": "Reddit",
+      "policy": "preserve",
+      "solver": "randomized",
+      "seed": 0,
+      "projection_seconds": 0.09069745699997611,
+      "full_moment_seconds": 0.15695519700000204,
+      "zero_projected_rows": 0,
+      "AUROC": 0.5014015019345436,
+      "AP": 0.03560281845262397,
+      "max_error_vs_streamed_variance": 2.40896170199123e-18,
+      "max_error_vs_streamed_scores": 5.844214001626824e-13
+    },
+    {
+      "dataset": "Reddit",
+      "policy": "preserve",
+      "solver": "randomized",
+      "seed": 1,
+      "projection_seconds": 0.08653814600000942,
+      "full_moment_seconds": 0.1581167100000016,
+      "zero_projected_rows": 0,
+      "AUROC": 0.5008338505496903,
+      "AP": 0.03558570145814554,
+      "max_variance_change_vs_randomized0": 3.0636127967113044e-07
+    },
+    {
+      "dataset": "Reddit",
+      "policy": "preserve",
+      "solver": "arpack",
+      "seed": 0,
+      "projection_seconds": 0.06267024699997137,
+      "full_moment_seconds": 0.1584615920000374,
+      "zero_projected_rows": 0,
+      "AUROC": 0.5013345983261748,
+      "AP": 0.03558996943569706,
+      "max_variance_change_vs_randomized0": 1.562537987290692e-07
+    },
+    {
+      "dataset": "Reddit",
+      "policy": "preserve",
+      "solver": "randomized32",
+      "seed": 0,
+      "projection_seconds": 0.08344078200002514,
+      "full_moment_seconds": 0.1452603039999758,
+      "zero_projected_rows": 0,
+      "AUROC": 0.5014025312208261,
+      "AP": 0.03560315444541265,
+      "max_variance_change_vs_randomized0": 9.496282158522572e-10
+    },
+    {
+      "dataset": "T-Finance",
+      "policy": "preserve",
+      "solver": "randomized",
+      "seed": 0,
+      "projection_seconds": 0.1446190750000369,
+      "full_moment_seconds": 2.8206755470000076,
+      "zero_projected_rows": 0,
+      "AUROC": 0.9202275122999848,
+      "AP": 0.5319827701130431,
+      "max_error_vs_streamed_variance": 2.7755575615628914e-16,
+      "max_error_vs_streamed_scores": 2.3092638912203256e-14
+    },
+    {
+      "dataset": "T-Finance",
+      "policy": "preserve",
+      "solver": "randomized",
+      "seed": 1,
+      "projection_seconds": 0.07677612999998473,
+      "full_moment_seconds": 3.2106989430000112,
+      "zero_projected_rows": 0,
+      "AUROC": 0.9202275122999848,
+      "AP": 0.5319823860016589,
+      "max_variance_change_vs_randomized0": 2.220446049250313e-16
+    },
+    {
+      "dataset": "T-Finance",
+      "policy": "preserve",
+      "solver": "arpack",
+      "seed": 0,
+      "projection_seconds": 0.02903667300000734,
+      "full_moment_seconds": 3.7204794780000157,
+      "zero_projected_rows": 0,
+      "AUROC": 0.9202275122999848,
+      "AP": 0.5319825832779466,
+      "max_variance_change_vs_randomized0": 5.210415432443938e-14
+    },
+    {
+      "dataset": "T-Finance",
+      "policy": "preserve",
+      "solver": "randomized32",
+      "seed": 0,
+      "projection_seconds": 0.09546414300001516,
+      "full_moment_seconds": 2.7737141449999854,
+      "zero_projected_rows": 0,
+      "AUROC": 0.9202275122999848,
+      "AP": 0.5319823102707208,
+      "max_variance_change_vs_randomized0": 2.1433692903860546e-08
+    },
+    {
+      "dataset": "T-Finance",
+      "policy": "preserve",
+      "solver": "dense",
+      "seed": 0,
+      "projection_seconds": 0.01974214699998811,
+      "full_moment_seconds": 2.795301085999995,
+      "zero_projected_rows": 0,
+      "AUROC": 0.9202275122999848,
+      "AP": 0.5319824695287413,
+      "max_variance_change_vs_randomized0": 7.563394355258879e-15
+    },
+    {
+      "dataset": "Tolokers",
+      "policy": "incoming",
+      "solver": "randomized",
+      "seed": 0,
+      "projection_seconds": 0.012379063999958362,
+      "full_moment_seconds": 0.17410263900001155,
+      "zero_projected_rows": 0,
+      "AUROC": 0.5186809101343335,
+      "AP": 0.21169120875144412,
+      "max_error_vs_streamed_variance": 1.5265566588595902e-16,
+      "max_error_vs_streamed_scores": 1.1546319456101628e-14
+    },
+    {
+      "dataset": "Tolokers",
+      "policy": "incoming",
+      "solver": "randomized",
+      "seed": 1,
+      "projection_seconds": 0.014406517999987045,
+      "full_moment_seconds": 0.19385132200000044,
+      "zero_projected_rows": 0,
+      "AUROC": 0.5186809101343335,
+      "AP": 0.21169120875144412,
+      "max_variance_change_vs_randomized0": 1.5404344466674047e-15
+    },
+    {
+      "dataset": "Tolokers",
+      "policy": "incoming",
+      "solver": "arpack",
+      "seed": 0,
+      "projection_seconds": 0.006056633000014244,
+      "full_moment_seconds": 0.1995059079999919,
+      "zero_projected_rows": 0,
+      "AUROC": 0.5186809101343335,
+      "AP": 0.21169120875144412,
+      "max_variance_change_vs_randomized0": 5.093148125467906e-15
+    },
+    {
+      "dataset": "Tolokers",
+      "policy": "incoming",
+      "solver": "randomized32",
+      "seed": 0,
+      "projection_seconds": 0.013722280000024512,
+      "full_moment_seconds": 0.19600070799998548,
+      "zero_projected_rows": 0,
+      "AUROC": 0.5186809101343335,
+      "AP": 0.21169122900309142,
+      "max_variance_change_vs_randomized0": 4.007030712238624e-07
+    },
+    {
+      "dataset": "Tolokers",
+      "policy": "incoming",
+      "solver": "dense",
+      "seed": 0,
+      "projection_seconds": 0.0034303090000094016,
+      "full_moment_seconds": 0.19811868400000776,
+      "zero_projected_rows": 0,
+      "AUROC": 0.5186809101343335,
+      "AP": 0.21169120875144412,
+      "max_variance_change_vs_randomized0": 1.3600232051658168e-14
+    },
+    {
+      "dataset": "Disney",
+      "policy": "undirected",
+      "solver": "randomized",
+      "seed": 0,
+      "projection_seconds": 0.0018882820000385436,
+      "full_moment_seconds": 0.001613764000012452,
+      "zero_projected_rows": 0,
+      "AUROC": 0.7245762711864407,
+      "AP": 0.16170315655404693,
+      "max_error_vs_streamed_variance": 1.1102230246251565e-16,
+      "max_error_vs_streamed_scores": 3.1086244689504383e-15
+    },
+    {
+      "dataset": "Disney",
+      "policy": "undirected",
+      "solver": "randomized",
+      "seed": 1,
+      "projection_seconds": 0.0016284559999917292,
+      "full_moment_seconds": 0.0018649969999842142,
+      "zero_projected_rows": 0,
+      "AUROC": 0.7245762711864407,
+      "AP": 0.16170315655404693,
+      "max_variance_change_vs_randomized0": 1.249000902703301e-16
+    },
+    {
+      "dataset": "Disney",
+      "policy": "undirected",
+      "solver": "arpack",
+      "seed": 0,
+      "projection_seconds": 0.00161891100003686,
+      "full_moment_seconds": 0.0018456299999911607,
+      "zero_projected_rows": 0,
+      "AUROC": 0.7245762711864407,
+      "AP": 0.16170315655404693,
+      "max_variance_change_vs_randomized0": 1.2212453270876722e-15
+    },
+    {
+      "dataset": "Disney",
+      "policy": "undirected",
+      "solver": "randomized32",
+      "seed": 0,
+      "projection_seconds": 0.0016466609999952198,
+      "full_moment_seconds": 0.0019014730000321833,
+      "zero_projected_rows": 0,
+      "AUROC": 0.7245762711864407,
+      "AP": 0.16170315655404693,
+      "max_variance_change_vs_randomized0": 2.1354865001321777e-08
+    },
+    {
+      "dataset": "Disney",
+      "policy": "undirected",
+      "solver": "dense",
+      "seed": 0,
+      "projection_seconds": 0.0013059030000022176,
+      "full_moment_seconds": 0.0025372000000061234,
+      "zero_projected_rows": 0,
+      "AUROC": 0.7245762711864407,
+      "AP": 0.16170315655404693,
+      "max_variance_change_vs_randomized0": 6.106226635438361e-16
+    },
+    {
+      "dataset": "Questions",
+      "policy": "incoming",
+      "solver": "randomized",
+      "seed": 0,
+      "projection_seconds": 1.247856367000054,
+      "full_moment_seconds": 0.17500164399996265,
+      "zero_projected_rows": 13,
+      "AUROC": 0.49097128918826793,
+      "AP": 0.03317710044932848,
+      "max_error_vs_streamed_variance": 5.828670879282072e-16,
+      "max_error_vs_streamed_scores": 2.353672812205332e-14
+    },
+    {
+      "dataset": "Questions",
+      "policy": "incoming",
+      "solver": "randomized",
+      "seed": 1,
+      "projection_seconds": 1.2097789580000153,
+      "full_moment_seconds": 0.15847377199997936,
+      "zero_projected_rows": 13,
+      "AUROC": 0.49098039543931243,
+      "AP": 0.03317651401183437,
+      "max_variance_change_vs_randomized0": 0.0002682017399657233
+    },
+    {
+      "dataset": "Questions",
+      "policy": "incoming",
+      "solver": "arpack",
+      "seed": 0,
+      "projection_seconds": 1.0624248930000135,
+      "full_moment_seconds": 0.168836242999987,
+      "zero_projected_rows": 13,
+      "AUROC": 0.49049649416550517,
+      "AP": 0.03313386654443271,
+      "max_variance_change_vs_randomized0": 0.00021593140438166958
+    },
+    {
+      "dataset": "Questions",
+      "policy": "incoming",
+      "solver": "randomized32",
+      "seed": 0,
+      "projection_seconds": 1.2160297579999906,
+      "full_moment_seconds": 0.17313993999999866,
+      "zero_projected_rows": 13,
+      "AUROC": 0.49097127475680835,
+      "AP": 0.03317711419022344,
+      "max_variance_change_vs_randomized0": 1.0285012962685247e-06
+    }
+  ],
+  "identity_checks": [
+    {
+      "d": 2,
+      "case": "random",
+      "mean_error": 0.0,
+      "variance_error": 0.0
+    },
+    {
+      "d": 2,
+      "case": "constant",
+      "mean_error": 0.0,
+      "variance_error": 0.0
+    },
+    {
+      "d": 2,
+      "case": "almost-constant",
+      "mean_error": 0.0,
+      "variance_error": 0.0
+    },
+    {
+      "d": 2,
+      "case": "zero-row",
+      "mean_error": 0.0,
+      "variance_error": 0.0
+    },
+    {
+      "d": 3,
+      "case": "random",
+      "mean_error": 8.326672684688674e-17,
+      "variance_error": 0.0
+    },
+    {
+      "d": 3,
+      "case": "constant",
+      "mean_error": 0.0,
+      "variance_error": 1.2595032825678587e-32
+    },
+    {
+      "d": 3,
+      "case": "almost-constant",
+      "mean_error": 0.0,
+      "variance_error": 4.108650548026103e-33
+    },
+    {
+      "d": 3,
+      "case": "zero-row",
+      "mean_error": 1.3877787807814457e-17,
+      "variance_error": 4.163336342344337e-17
+    },
+    {
+      "d": 7,
+      "case": "random",
+      "mean_error": 2.7755575615628914e-17,
+      "variance_error": 0.0
+    },
+    {
+      "d": 7,
+      "case": "constant",
+      "mean_error": 2.220446049250313e-16,
+      "variance_error": 3.1642483510142927e-32
+    },
+    {
+      "d": 7,
+      "case": "almost-constant",
+      "mean_error": 0.0,
+      "variance_error": 2.42476728876702e-33
+    },
+    {
+      "d": 7,
+      "case": "zero-row",
+      "mean_error": 2.7755575615628914e-17,
+      "variance_error": 1.3877787807814457e-17
+    },
+    {
+      "d": 32,
+      "case": "random",
+      "mean_error": 0.0,
+      "variance_error": 5.551115123125783e-17
+    },
+    {
+      "d": 32,
+      "case": "constant",
+      "mean_error": 4.440892098500626e-16,
+      "variance_error": 8.297120332138096e-32
+    },
+    {
+      "d": 32,
+      "case": "almost-constant",
+      "mean_error": 4.440892098500626e-16,
+      "variance_error": 1.913903956773309e-32
+    },
+    {
+      "d": 32,
+      "case": "zero-row",
+      "mean_error": 1.0408340855860843e-17,
+      "variance_error": 1.3877787807814457e-17
+    },
+    {
+      "d": 131,
+      "case": "random",
+      "mean_error": 4.336808689942018e-18,
+      "variance_error": 0.0
+    },
+    {
+      "d": 131,
+      "case": "constant",
+      "mean_error": 2.886579864025407e-15,
+      "variance_error": 4.2570155021165e-30
+    },
+    {
+      "d": 131,
+      "case": "almost-constant",
+      "mean_error": 2.220446049250313e-16,
+      "variance_error": 1.430236675819425e-32
+    },
+    {
+      "d": 131,
+      "case": "zero-row",
+      "mean_error": 1.3010426069826053e-18,
+      "variance_error": 1.3877787807814457e-17
+    }
+  ],
+  "tfinance_stream_benchmarks": [
+    {
+      "node": 1969,
+      "degree": 2,
+      "pairs": 1,
+      "stream_seconds": 0.00197205000000622,
+      "mean_error": 0.0,
+      "variance_error": 0.0
+    },
+    {
+      "node": 3854,
+      "degree": 7723,
+      "pairs": 29818503,
+      "stream_seconds": 3.175825955999983,
+      "mean_error": 3.3306690738754696e-16,
+      "variance_error": 1.3877787807814457e-17
+    },
+    {
+      "node": 26880,
+      "degree": 265,
+      "pairs": 34980,
+      "stream_seconds": 0.004341089000035936,
+      "mean_error": 1.1102230246251565e-15,
+      "variance_error": 4.163336342344337e-17
+    }
+  ]
+}

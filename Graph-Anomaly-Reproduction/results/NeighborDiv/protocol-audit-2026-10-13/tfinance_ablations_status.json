@@ -1,0 +1,10 @@
+[
+  {
+    "suite": "statistic",
+    "exit_code": 0
+  },
+  {
+    "suite": "low-degree",
+    "exit_code": 0
+  }
+]

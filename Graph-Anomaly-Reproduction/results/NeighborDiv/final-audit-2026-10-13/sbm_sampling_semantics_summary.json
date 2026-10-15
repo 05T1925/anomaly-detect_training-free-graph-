@@ -1,0 +1,182 @@
+[
+  {
+    "anomaly_type": "Type-D",
+    "h": 0.1,
+    "policy": "uniform-nodes",
+    "AUROC_mean": 0.5133504273504274,
+    "AUROC_std": 0.02445248424356784,
+    "paper_AUROC": 0.785,
+    "mean_communities_covered": 4.753333333333334
+  },
+  {
+    "anomaly_type": "Type-D",
+    "h": 0.1,
+    "policy": "balanced-community-quotas",
+    "AUROC_mean": 0.7032717948717949,
+    "AUROC_std": 0.08092577682279067,
+    "paper_AUROC": 0.785,
+    "mean_communities_covered": 4.986666666666667
+  },
+  {
+    "anomaly_type": "Type-D",
+    "h": 0.3,
+    "policy": "uniform-nodes",
+    "AUROC_mean": 0.4554837606837607,
+    "AUROC_std": 0.035635282408403655,
+    "paper_AUROC": 0.778,
+    "mean_communities_covered": 4.82
+  },
+  {
+    "anomaly_type": "Type-D",
+    "h": 0.3,
+    "policy": "balanced-community-quotas",
+    "AUROC_mean": 0.7464273504273504,
+    "AUROC_std": 0.026725513417451927,
+    "paper_AUROC": 0.778,
+    "mean_communities_covered": 5.0
+  },
+  {
+    "anomaly_type": "Type-D",
+    "h": 0.5,
+    "policy": "uniform-nodes",
+    "AUROC_mean": 0.6499589743589743,
+    "AUROC_std": 0.04725718685450618,
+    "paper_AUROC": 0.88,
+    "mean_communities_covered": 4.786666666666666
+  },
+  {
+    "anomaly_type": "Type-D",
+    "h": 0.5,
+    "policy": "balanced-community-quotas",
+    "AUROC_mean": 0.9421572649572649,
+    "AUROC_std": 0.02140668247291743,
+    "paper_AUROC": 0.88,
+    "mean_communities_covered": 5.0
+  },
+  {
+    "anomaly_type": "Type-D",
+    "h": 0.7,
+    "policy": "uniform-nodes",
+    "AUROC_mean": 0.6540444444444444,
+    "AUROC_std": 0.0422024652208104,
+    "paper_AUROC": 0.847,
+    "mean_communities_covered": 4.8133333333333335
+  },
+  {
+    "anomaly_type": "Type-D",
+    "h": 0.7,
+    "policy": "balanced-community-quotas",
+    "AUROC_mean": 0.8400410256410257,
+    "AUROC_std": 0.026681551401393153,
+    "paper_AUROC": 0.847,
+    "mean_communities_covered": 5.0
+  },
+  {
+    "anomaly_type": "Type-D",
+    "h": 0.9,
+    "policy": "uniform-nodes",
+    "AUROC_mean": 0.17589572649572652,
+    "AUROC_std": 0.01686116222953171,
+    "paper_AUROC": 0.362,
+    "mean_communities_covered": 4.6866666666666665
+  },
+  {
+    "anomaly_type": "Type-D",
+    "h": 0.9,
+    "policy": "balanced-community-quotas",
+    "AUROC_mean": 0.18553846153846154,
+    "AUROC_std": 0.02799918598735356,
+    "paper_AUROC": 0.362,
+    "mean_communities_covered": 5.0
+  },
+  {
+    "anomaly_type": "Mixed",
+    "h": 0.1,
+    "policy": "uniform-nodes",
+    "AUROC_mean": 0.7583824561403509,
+    "AUROC_std": 0.010547773159350496,
+    "paper_AUROC": 0.859,
+    "mean_communities_covered": 4.739999999999999
+  },
+  {
+    "anomaly_type": "Mixed",
+    "h": 0.1,
+    "policy": "balanced-community-quotas",
+    "AUROC_mean": 0.8270596491228069,
+    "AUROC_std": 0.05183213980865287,
+    "paper_AUROC": 0.859,
+    "mean_communities_covered": 4.986666666666667
+  },
+  {
+    "anomaly_type": "Mixed",
+    "h": 0.3,
+    "policy": "uniform-nodes",
+    "AUROC_mean": 0.700582456140351,
+    "AUROC_std": 0.011091202817200954,
+    "paper_AUROC": 0.864,
+    "mean_communities_covered": 4.8
+  },
+  {
+    "anomaly_type": "Mixed",
+    "h": 0.3,
+    "policy": "balanced-community-quotas",
+    "AUROC_mean": 0.8786947368421053,
+    "AUROC_std": 0.011321107685398,
+    "paper_AUROC": 0.864,
+    "mean_communities_covered": 5.0
+  },
+  {
+    "anomaly_type": "Mixed",
+    "h": 0.5,
+    "policy": "uniform-nodes",
+    "AUROC_mean": 0.8515438596491228,
+    "AUROC_std": 0.021835487195784178,
+    "paper_AUROC": 0.915,
+    "mean_communities_covered": 4.766666666666667
+  },
+  {
+    "anomaly_type": "Mixed",
+    "h": 0.5,
+    "policy": "balanced-community-quotas",
+    "AUROC_mean": 0.972378947368421,
+    "AUROC_std": 0.010527790247610956,
+    "paper_AUROC": 0.915,
+    "mean_communities_covered": 5.0
+  },
+  {
+    "anomaly_type": "Mixed",
+    "h": 0.7,
+    "policy": "uniform-nodes",
+    "AUROC_mean": 0.8154245614035087,
+    "AUROC_std": 0.008003435704228191,
+    "paper_AUROC": 0.876,
+    "mean_communities_covered": 4.773333333333333
+  },
+  {
+    "anomaly_type": "Mixed",
+    "h": 0.7,
+    "policy": "balanced-community-quotas",
+    "AUROC_mean": 0.9130736842105263,
+    "AUROC_std": 0.014543721456182183,
+    "paper_AUROC": 0.876,
+    "mean_communities_covered": 5.0
+  },
+  {
+    "anomaly_type": "Mixed",
+    "h": 0.9,
+    "policy": "uniform-nodes",
+    "AUROC_mean": 0.5326763157894737,
+    "AUROC_std": 0.005996073276473717,
+    "paper_AUROC": 0.522,
+    "mean_communities_covered": 4.713333333333334
+  },
+  {
+    "anomaly_type": "Mixed",
+    "h": 0.9,
+    "policy": "balanced-community-quotas",
+    "AUROC_mean": 0.5233859649122806,
+    "AUROC_std": 0.007222370005827545,
+    "paper_AUROC": 0.522,
+    "mean_communities_covered": 5.0
+  }
+]

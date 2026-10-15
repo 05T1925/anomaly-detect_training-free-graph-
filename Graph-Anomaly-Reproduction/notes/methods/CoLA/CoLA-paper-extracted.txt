@@ -1,0 +1,1785 @@
+IEEE TRANSACTIONS ON NEURAL NETWORKS AND LEARNING SYSTEMS 1
+Anomaly Detection on Attributed Networks via
+Contrastive Self-Supervised Learning
+Yixin Liu, Zhao Li, Shirui Pan, Member, IEEE, Chen Gong, Member, IEEE,
+Chuan Zhou, George Karypis, Fellow, IEEE
+Abstract—Anomaly detection on attributed networks attracts
+considerable research interests due to wide applications of
+attributed networks in modeling a wide range of complex
+systems. Recently, the deep learning-based anomaly detection
+methods have shown promising results over shallow approaches,
+especially on networks with high-dimensional attributes and
+complex structures. However, existing approaches, which employ
+graph autoencoder as their backbone, do not fully exploit
+the rich information of the network, resulting in suboptimal
+performance. Furthermore, these methods do not directly target
+anomaly detection in their learning objective and fail to scale
+to large networks due to the full graph training mechanism. To
+overcome these limitations, in this paper, we present a novel
+Contrastive self-supervised L earning framework for A nomaly
+detection on attributed networks (CoLA for abbreviation). Our
+framework fully exploits the local information from network
+data by sampling a novel type of contrastive instance pair,
+which can capture the relationship between each node and its
+neighboring substructure in an unsupervised way. Meanwhile, a
+well-designed graph neural network-based contrastive learning
+model is proposed to learn informative embedding from high-
+dimensional attributes and local structure and measure the
+agreement of each instance pairs with its outputted scores. The
+multi-round predicted scores by the contrastive learning model
+are further used to evaluate the abnormality of each node with
+statistical estimation. In this way, the learning model is trained by
+a speciﬁc anomaly detection-aware target. Furthermore, since the
+input of the graph neural network module is batches of instance
+pairs instead of the full network, our framework can adapt
+Manuscript received November 30, 2020; revised February 26, 2021;
+accepted March 19, 2021. This work was supported in part by the National
+Natural Science Foundation (NSF) of China under Grant 61973162 and
+Grant 61872360, in part by the Fundamental Research Funds for the Central
+Universities under Grant 30920032202, in part by the China Computer
+Federation (CCF)-Tencent Open Fund under Grant RAGR20200101, and in
+part by the Hong Kong Scholars Program under Grant XJ2019036. (Yixin Liu
+and Zhao Li contributed equally to this work.) (Corresponding author: Shirui
+Pan.)
+Yixin Liu and Shirui Pan are with the Department of Data Science and AI,
+Faculty of Information Technology, Monash University, Clayton, VIC 3800,
+Australia (e-mail: yixin.liu@monash.edu; shirui.pan@monash.edu).
+Zhao Li is with the Alibaba Group, Hangzhou 310000, China (e-mail:
+lizhao.lz@alibaba-inc.com).
+Chen Gong is with the PCA Laboratory, Key Laboratory of Intelligent
+Perception and Systems for High-Dimensional Information of Ministry of
+Education, School of Computer Science and Engineering, Nanjing University
+of Science and Technology, Nanjing 210094, China, and also with the
+Department of Computing, The Hong Kong Polytechnic University, Hong
+Kong (e-mail: chen.gong@njust.edu.cn).
+Chuan Zhou is with the Academy of Mathematics and Systems Sci-
+ence, Chinese Academy of Sciences, Beijing 100093, China (e-mail:
+zhouchuan@amss.ac.cn).
+George Karypis is with the Department of Computer Science and En-
+gineering, University of Minnesota, Minneapolis, MN 55455 USA (e-mail:
+karypis@umn.edu).
+Color versions of one or more ﬁgures in this article are available at
+https://doi.org/10.1109/TNNLS.2021.3068344.
+Digital Object Identiﬁer 10.1109/TNNLS.2021.3068344
+to large networks ﬂexibly. Experimental results show that our
+proposed framework outperforms the state-of-the-art baseline
+methods on all seven benchmark datasets.
+Index Terms—Unsupervised learning, Graph neural networks,
+Contrastive self-supervised learning, Anomaly detection, At-
+tributed networks.
+I. I NTRODUCTION
+A
+TTRIBUTED networks (a.k.a. attributed graphs), where
+nodes with attributes indicate real-world entities and
+links indicate the relationship between entities, are ubiquitous
+in various scenarios, including ﬁnance (trading networks) [1],
+social media (social networks) [2], [3], and e-commerce (item-
+user networks) [4], [5]. To utilize attributed network data to
+solve practical problems, a wide variety of graph analysis tasks
+have attracted signiﬁcant research interests in recent years,
+such as node classiﬁcation [6], [7], graph classiﬁcation [8],
+[9], and link prediction [10], [11]. Among these tasks, anomaly
+detection task on attributed networks is a vital research prob-
+lem. Aiming to detect the instances that signiﬁcantly deviate
+from the majority of instances [12] (in attributed networks,
+the data instances are nodes generally), anomaly detection has
+signiﬁcant implications in many security-related applications,
+e.g., fraud detection and social spam detection [13].
+However, detecting anomalies effectively on attributed net-
+works is not trivial due to the diversity of anomalies and the
+lack of supervision. Since attributed networks have both at-
+tribute information as well as structural information, they usu-
+ally contain different types of anomalies. Figure 1 provides an
+example to illustrate two basic types of anomalies: structural
+anomaly and contextual anomaly. The attribute information
+of the structural anomalies is often normal, while they have
+several abnormal links to other nodes. The contextual anoma-
+lies, differently, have natural neighboring structures but their
+attributes are corrupted (noisy or entirely different from all
+neighbors). Such diversity makes it difﬁcult to apply anomaly
+detection methods for attribute-only data (e.g., OC-SVM [14])
+or plain networks (e.g., LOF [15]) to attributed networks
+directly. Therefore, an efﬁcient anomaly detection approach
+should consider multiple patterns of anomalies. Moreover,
+resulting from the prohibitive cost for accessing ground-truth
+labels of anomalies, anomaly detection on attributed networks
+is predominately carried out in an unsupervised manner [13],
+[16]. That is to say, the algorithm has to conclude the normal
+pattern of data from the corrupted networks without supervi-
+sion. Hence, a key is to fully and reasonably exploit existing
+information from attributed network data.
+arXiv:2103.00113v2  [cs.LG]  6 May 2021
+
+IEEE TRANSACTIONS ON NEURAL NETWORKS AND LEARNING SYSTEMS 2
+Recently, various methods have been proposed to deal
+with the anomaly detection task for attributed networks. The
+shallow methods, including AMEN [16], Radar [17] and
+ANOMALOUS [18], leverage shallow learning mechanisms
+(e.g. ego-network analysis, residual analysis or CUR decom-
+position) to detect anomalies. Unfortunately, these models
+cannot fully address the computational challenge on attributed
+networks and fail to capture the complex interactions between
+different information modalities due to limitations of shallow
+mechanisms, especially when the feature is high-dimensional
+[13]. With the rocketing growth of deep learning for anomaly
+detection [12], [19], [20], [21], researchers also present deep
+neural networks-based methods to solve the anomaly detection
+problem on attributed networks. DOMINANT [13] is one of
+the representative methods. It constructs a graph autoencoder
+to reconstruct the attribute and structure information simul-
+taneously, and the abnormality is evaluated by reconstruction
+error. SpecAE [22] also leverages graph autoencoder to extract
+low-dimensional embedding, and carries out detection via
+density estimation.
+Although existing deep learning-based methods [13], [22]
+have achieved considerable performance for anomaly detec-
+tion on graphs, they still have several shortcomings, largely
+attributed to the autoencoder backbone in their architectures.
+First, autoencoders aim to learn the latent representation
+by reconstructing the original data instead of detecting the
+anomaly itself. Although the anomaly scores can be com-
+puted according to reconstruction errors [13], this kind of
+methods can only achieve suboptimal performance due to the
+fact that they do not target directly the anomaly detection
+objective. Second, autoencoder-based methods may not able
+to fully exploit the rich information of the attributed graph for
+effective graph representation learning. Speciﬁcally, autoen-
+coders simply rebuild the original data and they do not have
+any reﬁnement for data. However, recent works [23], [24],
+[25] have shown that more useful information can be mined
+in an unsupervised way if we design certain pretext tasks
+carefully based on augmented data. Third, graph autoencoder
+is the bottleneck to carry out anomaly detection on large-
+scale networks. Generally, the graph convolution operation
+in graph autoencoder needs to input and reconstruct the full
+networked data, which is unfeasible due to the explosive
+memory requirements when the network is large.
+As an alternative unsupervised learning technique, self-
+supervised contrastive learning is a promising solution to
+address the aforementioned limitations. By learning to contrast
+the elaborate instance pairs, the model can acquire informative
+knowledge without manual labels. Contrastive self-supervised
+learning has nice properties for anomaly detection task. First,
+contrastive learning mainly studies the matching of pairs of
+instances, which offers helpful information for anomaly de-
+tection. For the normal instance in graphs, there is a potential
+matching pattern between each node and its neighbors, e.g.,
+the homophily hypothesis. The anomalies, on the opposite,
+often present when there is an inconsistency/mismatch be-
+tween attributes and structure, which violates the original
+matching pattern of networks. Moreover, different types of
+anomalies have different manners of mismatching: in Figure
+UKMaleManagerVodafoneGermanyFemaleDesignerVWUSMaleEngineerGoogle
+USMaleEngineerGoogleStructuralAnomaly
+(a) Structural Anomaly
+USFemaleEngineerGoogleUSMaleEngineerGoogleUSMaleEngineerGoogle
+IndiaMaleDriverIBMContextualAnomaly
+ (b) Contextual Anomaly
+Fig. 1. Toy examples to illustrate different types of anomalies in attributed
+networks. A structural anomaly often has wrong links with other nodes but has
+normal attributes. For example, in Subﬁgure (a), an American engineer has a
+very low probability of being associated with a German designer as well as
+a British manager, so the links between them are abnormal. A contextual
+anomaly usually has a natural neighboring structure but its attributes are
+corrupted. For instance, in Subﬁgure (b), the attribute vector of the anomaly
+node is disturbed by noisy information, e.g., mismatched location, employer
+and occupation.
+1, the structural anomaly has individual abnormal links with
+uncorrelated nodes, which is partial inconsistency; the con-
+textual anomaly, differently, has mismatched attributes with
+all neighbors. Contrastive learning, naturally, is capable to
+learn the matching patterns and capture various mismatching
+patterns via its intrinsic discriminative mechanism. Second,
+contrastive learning models provide a speciﬁc predicted score
+to measure the agreement between the elements in each
+instance pair, and the scale is highly related to the abnormality
+of instance. Since anomaly detection methods usually output
+a list of scores or a ranking to represent the abnormality of
+each node, the predicted scores of contrastive learning model
+can be utilized for anomaly detection directly. In this way, we
+can train the model via an objective that is highly relevant to
+anomaly detection.
+In this paper, we propose a novelContrastive self-supervised
+Learning framework for Anomaly detection on attributed
+networks ( CoLA for abbreviation). By sampling the well-
+designed instance pairs from the full network and using them
+to train the contrastive learning model, the information of
+network is exploited better. Concretely, our framework focuses
+on modeling the relationship between each node and its partial
+neighboring substructure, which can expose the various type of
+anomalies within networks. Meanwhile, our CoLA framework
+is trained with a direct target to assist the anomaly detection
+task. We set the learning objective of our model to discriminate
+the agreement between the elements within the instance pairs,
+and the results can be further used to evaluate the abnormality
+of nodes. Besides, by splitting the network into separated
+lightweight instance pairs, our anomaly detection framework is
+compatible with large-scale networks. Speciﬁcally, our frame-
+work does not need to run graph convolution on full networks,
+so it successfully avoids the memory explosion problem. To
+summarize, the main contributions are as follows:
+ We propose a contrastive self-supervised learning frame-
+work, CoLA, for the anomaly detection problem on
+attributed networks. To the best of our knowledge, this is
+the ﬁrst contrastive self-supervised learning-based method
+for graph anomaly detection.
+
+IEEE TRANSACTIONS ON NEURAL NETWORKS AND LEARNING SYSTEMS 3
+ We present a novel type of contrastive instance pair,
+“target node v.s. local subgraph”, for attributed networks
+to adapt to the anomaly detection task, which efﬁciently
+captures the local information of a node and its neigh-
+boring substructure.
+ We design a contrastive learning model to learn the rep-
+resentative information from the node-subgraph instance
+pairs and provide discriminative scores for abnormality
+ranking. The proposed learning model is friendly to large-
+scale networked data.
+ We conduct extensive experiments on various datasets to
+demonstrate the effectiveness of CoLA and its superiority
+compared with a range of baseline methods.
+The rest of this paper is organized as follows. In Section
+II, we ﬁrst review the related works. Then, the preliminary
+deﬁnitions and notations are introduced in Section III. Section
+IV illustrates the overall pipeline and the components of our
+framework in detail. After that, we analyze the experimental
+results in Section V and then conclude our work in section
+VI.
+II. R ELATED WORK
+In this section, we introduce the most related work: network
+embedding and graph neural networks, anomaly detection on
+attributed networks, and contrastive learning.
+A. Network Embedding and Graph Neural Networks
+Network embedding aims to embed nodes into latent vector
+spaces, where the inherent properties of the graph are pre-
+served. For attributed network, the learned embedding should
+contain both structural and semantic information. For instance,
+SNE [26] employs neural networks to model the interrelations
+between structure and attribute. TriDNR [27] jointly learns
+node embedding via tri-party information sources including
+node’s structure, attributes and labels. NETTENTION [28]
+leverages adversarial training mechanism and self-attention
+module to learn informative node embeddings.
+Graph Neural Networks (GNNs) are a family of deep
+neural networks [29] for modeling the underlying relationships
+of non-Euclidean networks/graphs data [30]. The concept
+of GNN was ﬁrstly outlined in [31]. After that, a series
+of spectral-based GNNs is proposed [32], [33], [34], which
+employs ﬁlters from the perspective of graph signal processing
+[35]. GCN [6] performs a localized ﬁrst-order approximation
+of spectral graph convolutions to learn node representation
+efﬁciently. GAT [7] introduces the attention mechanism [36] to
+aggregate neighbors’ information with adaptive weights. Some
+recent works try to improve GNNs in different directions,
+such as simplifying the computational complexity [37], [38],
+training with adversarial scheme [39], applying to large-scale
+graphs [40], [41], [42], and introducing novel operators [8],
+[43]. Currently, GNNs have been applied to various research
+ﬁelds, such as time-series prediction [44], [45], hyperspectral
+image classiﬁcation [46] and knowledge graph [47], [48].
+In our proposed CoLA, GNN is a signiﬁcant component
+of the contrastive learning model. We select GCN as the
+backbone of our GNN module. Flexibly, the GNN module in
+our framework can be set to any type of the aforementioned
+GNNs.
+B. Anomaly Detection on Attributed Networks
+Anomaly detection on attributed networks attracts consid-
+erable research interest in recent years due to the wide ap-
+plication of attributed networks in modeling complex systems
+[12]. AMEN [16] detects anomalies by leveraging ego-network
+information of each node on attributed networks. Radar [17]
+characterizes the residuals of attribute information and its
+coherence with network information for anomaly detection.
+Further, ANOMALOUS [18] jointly considers CUR decompo-
+sition and residual analysis for anomaly detection on attributed
+networks. Zhu et al. [49] present a joint learning model
+to detect mixed anomaly by core initiating and expanding.
+Despite their success on low-dimensional attributed network
+data, these methods cannot work well when the networks have
+complex structures and high-dimensional attributes due to the
+limitation of their shallow mechanisms.
+With the rocketing growth of the deep learning technique
+[29], several deep approaches are presented to solve the
+anomaly detection problem for attributed networks. DOMI-
+NANT [13] constructs an autoencoder with GCN layers to
+reconstruct both the attribute matrix and adjacency matrix. It
+deﬁnes the anomaly score of node as the weighted sum of its
+reconstruction errors of attribute and structure. SpecAE [22]
+leverages a spectral graph autoencoder to extract the latent
+embedding of each node and uses Gaussian Mixture Model
+(GMM) to perform the detection. For dynamic networks,
+NetWalk [50] learns dynamically network representations with
+random walk sampling and autoencoder model, and detects
+anomalies with a clustering-based detector.
+The above deep methods achieve superior performance over
+the shallow methods by introducing deep neural networks, but
+also have several shortcomings caused by their reconstruction
+mechanism with autoencoders. Firstly, reconstruction is a
+naive unsupervised learning solution that fails to make full use
+of data. On contrary, CoLA better utilizes the attribute and
+structure information in a self-supervised manner. Secondly,
+their reconstructive optimization target is not associated with
+anomaly detection. In contrast to them, our learning objective
+is to discriminate the agreement between nodes and subgraphs,
+which can indicate the abnormality of nodes directly. Thirdly,
+these methods require full adjacency and attribute matrix as
+model’s input, which makes these algorithms unable to be
+run on large-sized network data due to the explosive memory
+requirements. In contrast, our framework learns with sampled
+instance pairs rather than the full network, which makes it
+ﬂexibly adapt to large-scale networks.
+C. Contrastive Self-Supervised Learning
+Contrastive self-supervised learning is a signiﬁcant brunch
+of self-supervised learning [51]. Through handcrafted con-
+trastive pretext tasks, these approaches learn representations
+by contrasting positive instance pairs against negative instance
+pairs [24]. Deep InfoMax [25] learns the embedding of im-
+ages by maximizing the mutual information (MI) between
+
+IEEE TRANSACTIONS ON NEURAL NETWORKS AND LEARNING SYSTEMS 4
+a local patch and its global context. As a follower, CPC
+[23] applies contrastive learning to speech recognition by
+maximizing the association between a segment of audio and
+its context audio. MoCo [52] constructs a momentum encoder
+with a momentum-updated encoder to generate contrastive
+embedding. SimCLR [24] leverages different combinations
+of augmentation methods to build pair-wise samples. More
+recently, BYOL [53] presents to contrast the representation of
+online network with target network, where the two networks
+are learned mutually. Simsiam [54] adopts Siamese networks
+to learn visual representation learning in a contrastive manner.
+Some recent works also exploit contrastive methods to
+graph learning. DGI [55] considers a node’s representation and
+graph-level summary vector obtained by a readout function
+as a contrastive instance pair, and generates negative samples
+with graph corruption. On the basis of DGI, Hassani et al.
+[56] suggest a multi-view contrastive learning framework by
+viewing the original graph structure and graph diffusion [43]
+as two different views. GCC [57] pre-trains GNN for universe
+graph data by sampling two subgraphs for each node as a
+positive instance pair and uses InfoNCE loss [23] to learn.
+GMI [58] considers maximizing the agreement between node’s
+embedding and raw features of its neighbors as well as which
+between embedding of two adjacent nodes.
+However, most of these works aim to learn data represen-
+tation instead of detecting anomalies. To adapt to anomaly
+detection, our proposed CoLA framework has essential dif-
+ferences in both motivation and implementation compared
+with the aforementioned approaches. From the perspective of
+motivation, these approaches only take the embedding module
+of contrastive models as an encoder, and the discriminator
+module becomes useless when testing. Our proposed CoLA,
+in contrast, leverages the whole contrastive model to compute
+the anomaly scores for each node. From the perspective of
+implementation, since the existing instance pair deﬁnition
+cannot effectively capture the abnormality of nodes, we design
+a novel type of contrastive instance pair for graph contrastive
+learning, which pays close attention to the local information
+of each node rather than the global property.
+III. P ROBLEM FORMULATION
+In this paper, we use bold lowercase letters (e.g. x), bold
+uppercase letters (e.g. X), and calligraphic fonts (e.g. V) to
+denote vectors, matrices and sets, respectively. Accordingly,
+the deﬁnition of attributed networks is given as follows:
+Deﬁnition 1. Attributed networks. An attributed network can
+be denoted as G =¹V E Xº, whereV =f𝑣 1     𝑣𝑛g is the
+set of nodes (jVj = 𝑛),E is the set of edges ( jEj = 𝑚), and
+X2 R𝑛 𝑓 is the attribute matrix. The 𝑖𝑡 ℎ row vector x𝑖2 R 𝑓
+of the attribute matrix denotes the attribute information of the
+𝑖𝑡 ℎ node. An binary adjacency matrix A2 R𝑛𝑛 is employed
+to denote the structure information of the attributed network,
+where A𝑖 𝑗 = 1 if there is a link between nodes 𝑣 𝑖 and 𝑣 𝑗,
+otherwise A𝑖 𝑗 = 0. Since the information of V andE is both
+contain by A, an attributed network can also be denoted as
+G =¹A Xº.
+TABLE I
+NOTATIONS AND EXPLANATIONS RELATED TO COLA FRAMEWORK . T HE
+FOUR BLOCKS OF THE TABLE (FROM TOP TO BOTTOM ) SHOW THE
+NOTATION OF VARIABLES ABOUT ATTRIBUTED NETWORKS , CONTRASTIVE
+LEARNING , GNN, AND COLA’S HYPER -PARAMETERS RESPECTIVELY .
+Notation Explanation
+G =¹V E Xº A weighted attributed network
+V The node set of G
+E The edge set of G
+X2 R𝑛 𝑓 The attribute matrix of G
+A2 R𝑛𝑛 The adjacency matrix of G
+x𝑖2 R 𝑓 The attribute vector of the 𝑖𝑡 ℎ node inG
+𝑛 The number of nodes in G
+𝑓 The dimension of attributes in G
+𝑘𝑖 The anomaly score of the 𝑖𝑡 ℎ node inG
+𝑃𝑖 =¹𝑣 𝑖G𝑖 𝑦𝑖º A contrastive instance pair with index 𝑖
+𝑣 𝑖 The target node of instance pair 𝑃𝑖
+G𝑖 The local subgraph of instance pair 𝑃𝑖
+𝑦𝑖2f 0 1g The label of instance pair 𝑃𝑖
+A𝑖2 R𝑐𝑐 The adjacency matrix of G𝑖
+H¹ℓº
+𝑖 2 R𝑐𝑑¹ℓº
+The hidden representation matrix of G𝑖
+outputted by the ℓ𝑡 ℎ layer of GNN module
+z¹ℓº
+𝑖 2 R𝑑¹ℓº
+The hidden representation vector of 𝑣 𝑖
+outputted by the ℓ𝑡 ℎ layer of GNN module
+E𝑖2 R𝑐𝑑 The embedding matrix of the nodes in G𝑖
+e𝑙𝑔
+𝑖 2 R𝑑 The embedding vector of G𝑖
+e𝑡 𝑛
+𝑖 2 R𝑑 The embedding vector of 𝑣 𝑖
+𝑠𝑖 The predicted score of 𝑃𝑖
+W¹ℓº2
+R𝑑¹ℓ1º𝑑¹ℓº The learnable parameter of the ℓ𝑡 ℎ layer
+of GNN module
+W¹𝑑º2 R𝑑𝑑 The learnable parameter of discriminator
+module
+𝑅 The sampling rounds to calculate anomaly
+scores
+𝑐 The number of nodes within the local
+subgraphs
+𝑑 The dimension of embedding
+With the aforementioned notations, the anomaly detection
+problem on attributed network can be formally stated as a
+ranking problem:
+Deﬁnition 2. Anomaly Detection on Attributed networks.
+Given an attributed network G = ¹V E Xº with nodes
+𝑣 1     𝑣𝑛, the goal is to learn an anomaly score function
+f to calculate the anomaly score 𝑘𝑖 = f¹𝑣 𝑖º of each node.
+The anomaly score 𝑘𝑖 can represent the degree of abnormality
+of node 𝑣 𝑖. By ranking all the nodes with their anomaly
+scores, the anomaly nodes can be detected according to their
+positions.
+In this paper, we consider the setting of unsupervised
+anomaly detection, which is generally adopted by the previous
+works [13], [17], [18]. In this setting, only the attributed
+networkG that contains anomaly nodes is given, and neither
+the category label nor the abnormality label of the nodes is
+given in the training phase.
+For the convenience of the reader, the notations used in the
+paper are summarized in Table I.
+
+IEEE TRANSACTIONS ON NEURAL NETWORKS AND LEARNING SYSTEMS 5
+IV. M ETHODOLOGY
+In this section, we describe the general framework of
+our proposed CoLA, as shown in Figure 2. CoLA on the
+highest level consists of three components, namely instance
+pair sampling , GNN-based contrastive learning model , and
+anomaly score computation . At ﬁrst, to generate the basic
+learning samples for contrastive self-supervised learning, we
+execute instance pair sampling to sample the well-designed
+“target node v.s. local subgraph” instance pairs with a local
+substructure-based sampling strategy. Our designed instance
+pairs can take full advantage of the original data by paying
+close attention to each node and its local neighbors. After that,
+the GNN-based contrastive learning model extracts the low-
+dimensional embeddings for target node and local subgraph
+with the GNN and readout module and then calculates a dis-
+criminative score for each instance pair with a discriminator.
+The predicted score that evaluates the agreement between the
+target node and subgraph can further indicate the abnormality
+of the corresponding target node. As such, the training of the
+model is guided by an objective that relates to the anomaly
+detection task. The ﬁnal step, anomaly score computation ,
+is to measure the abnormalities of all nodes with anomaly
+scores, so we can pick the anomalies out by ranking the
+scores. Speciﬁcally, the anomaly scores for each node are
+calculated by the predicted scores of positive/negative pairs
+which are acquired by multi-round sampling. The detection
+results can be regarded as an expectation of multiple times of
+observation for the compatibility between each node and its
+local substructure. In the rest of this section, we introduce the
+three main components of our framework in detail (Subsection
+IV-A to IV-C). Then we describe the overall pipeline and
+algorithm of CoLA in Subsection IV-D. In Subsection IV-E,
+the time complexity of our framework is analyzed.
+A. Contrastive Instance Pair Deﬁnition
+The success of contrastive learning frameworks largely
+relies on the deﬁnition of the contrastive instance pair. Unlike
+computer vision or natural language processing tasks where
+an instance can be deﬁned as an image or a sentence straight-
+forwardly, the instance deﬁnition in graphs is not so clear as
+well [57]. Some previous works have deﬁned different types
+of instance pair in graphs, such as “full graph v.s. node” [55],
+“large subgraph v.s. node” [56] and “subgraph v.s. subgraph”
+[57]. However, none of them is designed or optimized for the
+anomaly detection task. Since the abnormality of a node is
+usually related to the relationship between the node itself and
+its neighboring structure, we should design a novel type of
+contrastive instance pair to capture such local property.
+To model the local distribution pattern of nodes in a
+network, our deﬁnition of contrastive instance pair focuses on
+the relationship between a node and its enclosing substructure.
+Speciﬁcally, we design a “target node v.s. local subgraph”
+instance pair for anomaly detection on attributed networks.
+The ﬁrst element of the instance pair is a single node, which
+is named “target node” in our framework. The target node can
+be set as any node in the network. The second element of the
+instance pair is a local subgraph that sampled from an initial
+node. For positive instance pairs, the initial node is set as the
+target node, then the sampled subgraph is composed of the
+neighbor nodes of the target node. For negative instance pairs,
+the initial node is randomly selected from all nodes except
+the target node. As a result, there is mismatching between the
+target node and the local subgraph in negative pairs.
+The main motivation for such design is that the anomalies
+in attributed networks are usually reﬂected in the inconsis-
+tency between node and its local neighbors, while the global
+information is often independent of anomalies. As is shown in
+Figure 1, both types of anomaly nodes have a mismatch with
+their near neighbors. Our design purposefully focuses on pick-
+ing out such mismatch by learning the “node-local subgraph”
+matching pattern. Differently, the existing works (e.g. DGI
+[55]) mainly consider the global property of nodes, which is
+helpful for network embedding but has a minor contribution on
+detecting anomalies. The comparison experiments in Section
+V-C illustrates that our designed instance pair is critical to
+capture anomaly.
+As shown in Figure 3, a simple sketch map is used to
+demonstrate the sampling process of our proposed contrastive
+instance pairs. The sampling follows four steps: target node
+selection, subgraph sampling, anonymization, and combining
+into instance pair.
+(1) Target node selection. A single target node needs to be
+speciﬁed ﬁrst. In practice, we traverse each node in the
+graph as the target node in random order within an epoch.
+Therefore, the target node selection can be viewed as a
+stochastic sampling without replacement.
+(2) Subgraph sampling. A local subgraph is deﬁned as
+the adjacent substructure near an initial node. As we
+mentioned above, we sample the subgraph for positive pair
+and negative pair by setting the initial node as the target
+node and a randomly sampled node respectively. Inspired
+by [57], we adopt random walk with restart (RWR) [59]
+as local subgraph sampling strategy due to its usability
+and efﬁciency. Other graph sampling algorithms such as
+forest ﬁre [60] are also available in our framework.
+(3) Anonymization. The purpose of anonymization is to
+prevent the contrastive learning model from easily iden-
+tifying the existence of target nodes in local subgraphs.
+Concretely, we set the attribute vectors of the initial nodes
+into zero vectors. As such, the information of target nodes
+is hidden.
+(4) Combining into instance pair. The ﬁnal step is to com-
+bine the target node and relevant subgraphs into instance
+pairs. After combination, the positive pair and negative
+pair are saved to corresponding sample pools respectively.
+B. GNN-based Contrastive Learning Model
+The sampled instance pairs are used to train the GNN-based
+contrastive learning model. For instance pair 𝑃𝑖 with its label,
+the containing data can be denoted as:
+𝑃𝑖 =¹𝑣 𝑖G𝑖 𝑦𝑖º (1)
+where 𝑣 𝑖 is the target node whose attribute vector is x𝑣𝑖,G𝑖
+is the local subgraph which can be denoted as:
+
+IEEE TRANSACTIONS ON NEURAL NETWORKS AND LEARNING SYSTEMS 6
+0(     ,     )           
+FullGraph
+PositiveInstancePairSampling
+PositivePairPool
+6278493
+1112
+5
+1310
+1
+NegativePairPool
+Predicted Score of PositivePairs
+Predicted Score of NegativePairs
+1: 0.052: 0.123: 0.57
+11: 0.03
+…
+InstancePairSamplingGNN-basedContrastiveLearningModelAnomalyScoreComputation
+2786 495(     ,     )           6
+……
+278
+6
+GNN
+Local Subgraph
+Target Node
+Readout
+!"#$Discriminator%%
+0.9121
+NegativeInstancePairSamplingBCE Loss
+&" !"'(
+)"*"
++"
+,"
+6: 0.07…12: 0.1213: 0.11
+Example
+Fig. 2. The overall framework of CoLA. The framework is composed of three components: instance pair sampling, GNN-based contrastive learning model,
+and anomaly score computation. Here we assume node 𝑣3 is an anomaly since it has corrupted attributes, and the rest nodes are normal nodes. We take the
+abnormality estimation for node 𝑣6 as an example. First of all, multiple positive and negative instance pairs are sampled, where 𝑣6 is the target node. After
+that, the GNN-based contrastive learning model evaluates the predicted score for each instance pair. Finally, the anomaly score of 𝑣6 is estimated by the
+statistical estimation of predicted scores of positive/negative pairs.
+FullGraph
+6278493
+1112
+5
+1310
+1
+6
+62788495
+PositiveSubgraph Sampling
+Anonymization278495
+Target Node SelectionNegativeSubgraph Sampling
+Combining into instance pair
+SavingtoPositivePairPoolSavingtoNegativePairPool
+(     ,     )           2786 495(     ,     )           6
+Example
+Fig. 3. The sampling process of contrastive instance pairs. Here we select
+node 𝑣6 as the example of target node. The initial nodes for subgraph sampling
+are marked in green. The blue-white stripe means the embedding of the
+corresponding node is masked with zero vector.
+G𝑖 =¹A𝑖 X𝑖º (2)
+and 𝑦𝑖 is the label of 𝑃𝑖 which can be denoted as:
+𝑦𝑖 =
+(
+1 𝑃 𝑖 is a positive instance pair
+0 𝑃 𝑖 is a negative instance pair  (3)
+As is demonstrated in the middle part of Figure 2, our
+proposed GNN-based contrastive learning model is composed
+of three main components: GNN module, readout module, and
+discriminator module.
+1) GNN module: The target of the GNN module is to aggre-
+gate the information between nodes in the local subgraph and
+transfer the high-dimensional attributes into a low-dimensional
+embedding space. The local subgraph G𝑖 is fed into a GNN
+with multiple stacked layers, where a single layer can be
+written as:
+H¹ℓº
+𝑖 = 𝐺 𝑁 𝑁¹A𝑖 H¹ℓ1º
+𝑖 ; 𝑊¹𝑙1ºº (4)
+where H¹ℓ1º
+𝑖 an H¹ℓº
+𝑖 is the hidden representation matrices
+learned by the¹ℓ 1º-th layer and ℓ-th layer respectively, and
+𝑊¹ℓ1º is the learnable parameter set of the ¹ℓ 1º-th layer.
+With a 𝐿-layer GNN, the input representation H¹0º
+𝑖 is deﬁned
+as the attribute matrix X𝑖, and the output representation H¹𝐿º
+𝑖
+is the embeddings of subgraph nodes which is denoted as E𝑖.
+𝐺 𝑁 𝑁¹º can be set to any type of mainstream GNNs, such
+as GCN [6], GAT [7] or GIN [8]. In practice, we adopt GCN
+due to its high efﬁciency. Then Equation (4) can be speciﬁcally
+written as:
+H¹ℓº
+𝑖 = 𝜙
+
+eD
+ 1
+2
+𝑖 eA𝑖eD
+ 1
+2
+𝑖 H¹ℓ1º
+𝑖 W¹ℓ1º
+
+ (5)
+where eA𝑖 = A𝑖¸ I is the subgraph adjacency matrix with self-
+loop, eD𝑖 is the degree matrix of local subgraph, W¹ℓ1º 2
+R𝑑¹ℓ1º𝑑¹ℓº
+is the weight matrix of the ¹ℓ 1º-th layer, 𝜙¹º
+is the activation function such as ReLU.
+
+IEEE TRANSACTIONS ON NEURAL NETWORKS AND LEARNING SYSTEMS 7
+In order to contrast them in the same feature space, besides
+the nodes in local subgraph, the target node should also be
+mapped to the same embedding space. Since there is no
+structure information with a single node, we only employ the
+weight matrices of GCN and corresponding activation function
+to transform the attributes of the target node. Concretely, such
+transformation can be viewed as a DNN:
+z¹ℓº
+𝑖 = 𝜙
+
+z¹ℓ1º
+𝑖 W¹ℓ1º
+
+ (6)
+where z¹ℓ1º
+𝑖 and z¹ℓº
+𝑖 are the hidden representation row vectors
+for target node that learned by the ¹ℓ 1º-th layer and ℓ-th
+layer respectively, and W¹ℓ1º is the weight matrix shared with
+GCN. The input z¹0º
+𝑖 is deﬁned as the attribute row vector
+of target node x𝑣𝑖, and the output is marked as target node
+embedding e𝑡 𝑛
+𝑖 .
+2) Readout module: The target of our readout module is to
+transfer the embeddings of nodes in subgraph E𝑖 into a local
+subgraph embedding vector e𝑙𝑔
+𝑖 . For simpliﬁcation, we use
+the average pooling function as our readout function, which
+has been widely used in previous works [56]. Speciﬁcally, the
+readout function is written as follows:
+e𝑙𝑔
+𝑖 = 𝑅𝑒𝑎𝑑𝑜𝑢𝑡¹E𝑖º =
+𝑛𝑖∑︁
+𝑘=1
+¹E𝑖º 𝑘
+𝑛𝑖
+ (7)
+where¹E𝑖º 𝑘 is the 𝑘-th row of E𝑖, and 𝑛𝑖 is the number of
+nodes of the local subgraph G𝑖.
+3) Discriminator module: The discriminator module is the
+core component of our contrastive learning model. It contrasts
+the embeddings of the two elements in an instance pair and
+outputs the ﬁnal predicted score. Here, we apply a simple
+bilinear scoring function, which is also employed by [23]. The
+predicted score can be calculated by:
+𝑠𝑖 = 𝐷𝑖𝑠𝑐𝑟𝑖𝑚𝑖𝑛𝑎𝑡𝑜𝑟 ¹e𝑙𝑔
+𝑖  e𝑡 𝑛
+𝑖 º = 𝜎
+
+e𝑙𝑔
+𝑖 W¹𝑑º e𝑡 𝑛
+𝑖
+>
+ (8)
+where W¹𝑑º is the weight matrix of discriminator, and 𝜎¹º is
+the logistic sigmoid function.
+4) Objective function: By integrating the aforementioned
+three components, our proposed GNN-based contrastive learn-
+ing model can be considered as a binary classiﬁcation model
+to predict the labels of contrastive instance pairs:
+𝑠𝑖 = 𝐶 𝐿 𝑀¹𝑣 𝑖G𝑖º (9)
+where 𝐶 𝐿 𝑀¹º is the contrastive learning model.
+Here, our objective is to make the predicted 𝑠𝑖 and the
+ground-truth label 𝑦𝑖 as close as possible. Therefore, we
+adopt a standard binary cross-entropy (BCE) loss, which is
+a common choice for binary classiﬁcation problems, as our
+objective function. Its utility has been validated by other
+contrastive self-supervised learning works [25], [55], [56].
+Concretely, for a batch of 𝑃𝑖 = ¹𝑣 𝑖G𝑖 𝑦𝑖º with batch size
+𝑁, the objective function is given as follows:
+L =
+𝑁∑︁
+𝑖=1
+𝑦𝑖 log¹𝑠𝑖º¸¹1 𝑦𝑖º log¹1 𝑠𝑖º
+=
+𝑁∑︁
+𝑖=1
+𝑦𝑖 log¹𝐶 𝐿 𝑀¹𝑣 𝑖G𝑖ºº¸
+¹1 𝑦𝑖º log¹1 𝐶 𝐿 𝑀¹𝑣 𝑖G𝑖ºº 
+(10)
+It should be noted that different from the softplus version
+BCE in [25] and the label-balanced version BCE in [55], [56],
+a vanilla BCE is utilized here. The reason is that we execute a
+balanced sampling when we sample the positive and negative
+instance pairs. To adapt to more complex sampling strategies
+in further research, corresponding objective functions are also
+alternative in our framework.
+C. Anomaly Score Computation
+After the contrastive learning model is well trained, we
+acquire a classiﬁer to discriminate the agreement between
+substructures and nodes. An ideal GNN model with an appro-
+priate number of parameters would tend to learn the matching
+pattern of normal samples since they occupy the vast majority
+of the training data. For the anomalies, it is much harder to
+ﬁt their pattern due to its irregularity and diversity. Under
+ideal conditions, for a normal node, the predicted score of
+its positive pair 𝑠¹¸º should be close to 1, while the negative
+one 𝑠¹º should be close to 0. For an anomalous node, the
+predicted scores of its positive and negative pairs would be less
+discriminative (close to 05) because the model cannot well
+distinguish its matching pattern. Based on the above property,
+for each node 𝑣 𝑖, we can simply deﬁne the anomaly score as
+the difference value between its negative and positive score:
+𝑓¹𝑣 𝑖º = 𝑠¹º
+𝑖  𝑠¹¸º
+𝑖  (11)
+However, a sampled local subgraph can only be viewed as a
+partial observation of the target node’s neighboring structure,
+which cannot represent the whole neighbor distribution of the
+target node. Incomplete observation will lead to an incomplete
+perception of abnormality, which will affect the performance
+of anomaly detection. For example, some structural anomaly
+nodes have several abnormal links to uncorrelated nodes, while
+most of their neighbors are normal. Then, if we only estimate
+the abnormality with one-shot sampling, once the normal
+neighbors are sampled as the local subgraph, such abnormality
+will be ignored.
+To solve this problem, we propose to use the predicted
+scores of multi-round and positive-negative sampling to gen-
+erate anomaly scores. Speciﬁcally, for each node 𝑣 𝑖 in the
+attributed network, we sample 𝑅 positive instance pairs as well
+as 𝑅 negative instance pairs via the sampling strategy intro-
+duced in Subsection IV-A, and 𝑅 is the number of sampling
+round. These instance pairs are denoted as ¹𝑃¹¸º
+𝑖 1   𝑃¹¸º
+𝑖𝑅º
+and¹𝑃¹º
+𝑖 1   𝑃¹º
+𝑖𝑅º respectively. Then, these instance pairs
+are fed into the contrastive learning model 𝐶 𝐿 𝑀¹º to calcu-
+late the predicted scores¹𝑠¹¸º
+𝑖 1   𝑠¹¸º
+𝑖𝑅  𝑠¹º
+𝑖 1   𝑠¹º
+𝑖𝑅º, which
+is computed via Equation (9). Finally, the anomaly score of
+
+IEEE TRANSACTIONS ON NEURAL NETWORKS AND LEARNING SYSTEMS 8
+Algorithm 1 The Overall Procedure of CoLA
+Input: Attributed network:G =¹V E Xº, Number of train-
+ing epochs: 𝑇, Batch size: 𝐵, Number of sampling rounds:
+𝑅.
+Output: Anomaly score mapping function: 𝑓¹º.
+1: Randomly initialize the parameters of contrastive learning
+model¹W¹0º   W¹𝐿º  W¹𝑑ºº
+2: Training phase.
+3: for 𝑡2 1 2  𝑇 do
+4: B (Randomly splitV into batches of size 𝐵)
+5: for batch 𝑏 =¹𝑣0
+1  𝑣0
+𝐵º2B do
+6: Sample positive instance pairs ¹𝑃¹¸º
+1   𝑃¹¸º
+𝐵 º
+where¹𝑣0
+1  𝑣0
+𝐵º are the target node respectively.
+7: Sample negative instance pairs ¹𝑃¹º
+1   𝑃¹º
+𝐵 º
+where¹𝑣0
+1  𝑣0
+𝐵º are the target node respectively.
+8: Calculate the predicted scores
+¹𝑠¹¸º
+1   𝑠¹¸º
+𝐵  𝑠¹º
+1   𝑠 ¹º
+𝐵 º of instance pairs
+¹𝑃¹¸º
+1   𝑃¹¸º
+𝐵  𝑃¹º
+1   𝑃¹º
+𝐵 º via Equation (9).
+9: CalculateL via Equation (10).
+10: Back propagation and update the parameters of con-
+trastive learning model ¹W¹0º   W¹𝐿º  W¹𝑑ºº.
+11: end for
+12: end for
+13: Inference phase.
+14: for 𝑣 𝑖2V do
+15: Sample 𝑅 positive instance pairs ¹𝑃¹¸º
+𝑖 1   𝑃¹¸º
+𝑖𝑅º
+where 𝑣 𝑖 is the target node.
+16: Sample 𝑅 negative instance pairs ¹𝑃¹º
+𝑖 1   𝑃¹º
+𝑖𝑅º
+where 𝑣 𝑖 is the target node.
+17: Calculate the predicted scores
+¹𝑠¹¸º
+𝑖 1   𝑠¹¸º
+𝑖𝑅  𝑠¹º
+𝑖 1   𝑠¹º
+𝑖𝑅º of instance pairs
+¹𝑃¹¸º
+𝑖 1   𝑃¹¸º
+𝑖𝑅  𝑃¹º
+𝑖 1   𝑃¹º
+𝑖𝑅º via Equation (9)
+18: Calculate the anomaly score 𝑓¹𝑣 𝑖º via Equation (12).
+19: end for
+𝑣 𝑖 is obtained by computing the average value of multi-round
+differences between the scores of negative and positive pairs:
+𝑓¹𝑣 𝑖º =
+Í𝑅
+𝑟 =1¹𝑠¹º
+𝑖𝑟  𝑠¹¸º
+𝑖𝑟º
+𝑅  (12)
+where 𝑓¹º is the anomaly score mapping function which is
+the ultimate goal of our anomaly detection framework.
+From a statistical perspective, executing the 𝑅 rounds sam-
+pling is to estimate the difference of normality between a
+node’s neighboring substructure and remote substructure. In
+principle, the larger 𝑅 is, the more accurate the estimation is.
+In practice, we set 𝑅 as a hyper-parameter of our framework,
+and we discuss the selection of 𝑅 in Section V-D.
+Furthermore, computing the mean value is the simplest
+way to process multi-round results. Theoretically, there are
+more statistical properties that can be mined, such as variance,
+minimum/maximum value, and distribution property. However,
+in practice, we found that calculating the average value is the
+most effective solution compared with introducing the above
+factors. In spite of this situation, we still think that the further
+mining of statistical properties of the multi-round predicted
+scores is one of the potential directions in the future since
+different types of anomalies will show different characteristics
+of the score distribution.
+D. CoLA: An Anomaly Detection Framework
+In this subsection, we introduce the overall pipeline of our
+proposed CoLA framework. The pipeline is divided into two
+phases: training phase and inference phase. In the training
+phase, the contrastive learning model is trained with sampled
+instance pairs in an unsupervised fashion. After that, the
+anomaly score for each node is obtained in the inference phase.
+The overall procedure of our CoLA framework is depicted
+in Algorithm 1. In an epoch of the training phase, we ﬁrst
+split the set of nodes V into several mini-batches. Then,
+in each iteration, a positive pair and a negative pair are
+sampled for each node in the current mini-batch. After that,
+the corresponding predicted scores are calculated with the
+instance pairs, then the BCE loss is computed. To optimize the
+parameters of contrastive learning model, a backpropagation is
+executed with a gradient descent algorithm. After the training
+phase, a multi-round positive-negative sampling procedure
+is carried out to generate anomaly scores. As described in
+Subsection IV-C, for each node 𝑣 𝑖, 𝑅 positive pairs and 𝑅
+negative pairs are sampled, then they are fed into the well-
+trained model to calculate the predicted scores. Finally, the
+anomaly score is obtained via Equation (12).
+Discussion on anomaly detection for large-scale net-
+works. As we introduced above, the contrastive learning model
+is trained by a mini-batch of instance pairs independently in
+an iteration. Meanwhile, the computation of anomaly scores
+is also completely independent. That is to say, the space
+complexity of CoLA is uncorrelated with the number of nodes
+𝑛 at all. Such a nice property makes it possible to apply our
+proposed CoLA framework to large-scale networks. When the
+size of network is large (𝑛 is large), we do not need to feed the
+full network into the GCN model, which is unfeasible due to
+the explosive need for space complexity [41], [42]. Instead, in
+our framework, the full network is decomposed into instance
+pairs and all we need is to adjust the batch size and subgraph
+size to meet the memory constraint.
+E. Complexity Analysis
+We analyze the time complexity of the proposed framework
+by considering the three main components respectively. For
+instance pair sampling, the time complexity of each RWR
+subgraph sampling isO¹ 𝑐𝛿º (𝛿 is the mean degree of network).
+In the inference phase, we run 𝑅 rounds of sampling for
+each node, then the total time complexity becomes O¹ 𝑐𝑛𝛿𝑅º.
+For the GNN-based contrastive learning model, the time
+complexity is mainly generated by the GNN module, which
+isO¹ 𝑐2º for each pair and O¹ 𝑐2𝑛𝑅º for a total. For anomaly
+score computation, the time complexity is far less than the
+above two phases, so here we ignore this term. To sum up,
+the overall time complexity of CoLA is O¹ 𝑐𝑛𝑅¹𝑐¸ 𝛿ºº.
+
+IEEE TRANSACTIONS ON NEURAL NETWORKS AND LEARNING SYSTEMS 9
+TABLE II
+THE STATISTICS OF THE DATASETS . T HE UPPER TWO DATASETS ARE
+SOCIAL NETWORKS , AND THE REMAINDERS ARE CITATION NETWORKS .
+Dataset ♯ nodes ♯ edges ♯ attributes ♯ anomalies
+BlogCatalog 5,196 171,743 8,189 300
+Flickr 7,575 239,738 12,407 450
+ACM 16,484 71,980 8,337 600
+Cora 2,708 5,429 1,433 150
+Citeseer 3,327 4,732 3,703 150
+Pubmed 19,717 44,338 500 600
+ogbn-arxiv 169,343 1,166,243 128 6000
+V. E XPERIMENTS
+In this section, we conduct experiments to show the effec-
+tiveness of CoLA framework. We ﬁrst introduce the datasets
+used for experiments and experiments setup. Then, we demon-
+strate the experimental results including the comparison of
+performance, parameter study, and ablation study.
+A. Datasets
+We evaluate the proposed framework on seven widely
+used benchmark datasets for anomaly detection on attributed
+networks. The datasets include two social network datasets
+(BlogCatalog and Flickr) and ﬁve citation network datasets
+(Cora, Citeseer, Pubmed, ACM and ogbn-arxiv) [61], [2], [62].
+The statistics of these datasets are demonstrated in Table II,
+and the detailed descriptions are given as follows:
+ Social Networks . BlogCatalog and Flickr 1 [2] are two
+typical social network datasets acquired from the blog
+sharing website BlogCatalog and the image hosting and
+sharing website Flickr, respectively. In these datasets,
+nodes denote the users of websites, and links represent
+the following relationships between users. In social net-
+works, users usually generate personalized content such
+as posting blogs or sharing photos with tag descriptions,
+thus these text contents are regarded as node attributes.
+ Citation Networks. Cora, Citeseer, Pubmed 2 [61], ACM
+[62], and ogbn-arxiv 3 [63] are ﬁve available public
+datasets, which are composed of scientiﬁc publications. In
+these networks, nodes denote the published papers while
+edges represent the citation relationships between papers.
+For the ﬁrst four datasets, the attribute vector of each node
+is the bag-of-word representation whose dimension is
+determined by the dictionary size. For ogbn-arxiv dataset,
+each node has a 128-dimensional attribute vector obtained
+by averaging the embeddings of words in the paper’s title
+and abstract. Note that the ogbn-arxiv dataset is a large-
+scale graph dataset from Open Graph Benchmark (OGB)
+where over 169k nodes and 1.1m edges are contained.
+Since there are no ground-truth anomalies in the aforemen-
+tioned datasets, synthetic anomalies are needed to inject into
+the clean attributed networks for our evaluation. Following
+the previous researches [64], [65], [13], we inject a combined
+1http://socialcomputing.asu.edu/pages/datasets
+2http://linqs.cs.umd.edu/projects/projects/lbc
+3https://github.com/snap-stanford/ogb
+set of anomalies (i.e., structural anomalies and contextual
+anomalies) for each dataset:
+ Structural anomalies injection. The structural anomalies
+are acquired by perturbing the topological structure of
+networks [65]. Concretely, some small cliques composed
+of originally unrelated nodes are generated as anomalies.
+The intuition is that in a small clique, a small set of
+nodes are much more closely linked to each other than
+average, which can be regarded as a typical structural
+anomalous situation in real-world networks [66]. To make
+the cliques, we ﬁrst specify the clique size 𝑝 and the
+number of cliques 𝑞. When generating a clique, we
+randomly choose 𝑝 nodes from the set of nodes V
+and make them fully connected. As such, the selected
+𝑝 nodes are all marked as structural anomaly nodes. To
+generate 𝑞 cliques, we repeat the above process for 𝑞
+times. Finally, a total of 𝑝 𝑞 structural anomalies were
+injected. According to the size of datasets, we control the
+number of injected anomalies. We ﬁx 𝑝 = 15 and set 𝑞
+to 10 15 20 5 5 20 200 for BlogCatalog, Flickr, ACM,
+Cora, Citeseer, Pubmed and ogbn-arxiv, respectively.
+ Contextual anomalies injection . Here, we create the
+contextual anomalies by perturbing the attribute of nodes
+following the schema introduced by [64]. When generate
+a single contextual anomaly node, we ﬁrst randomly pick
+a node 𝑣 𝑖 as the target, and then sample another 𝑘 nodes
+V¹𝑐º =¹𝑣¹𝑐º
+1   𝑣¹𝑐º
+𝑘 º as a candidate set. After that, for
+each 𝑣¹𝑐º 2 V¹𝑐º, we calculate the Euclidean distance
+between its attribute vector x¹𝑐º and 𝑣 𝑖’s attribute vector
+x𝑖. Then, we pick the node 𝑣¹𝑐º
+𝑗 2V ¹𝑐º which has the
+largest Euclidean distance to 𝑣 𝑖, and change x𝑖 to x¹𝑐º
+𝑖 . To
+balance the equal numbers of the two types of anomalies,
+we set the number of context anomalies as 𝑝 𝑞, which
+means the above operation is repeated for 𝑝 𝑞 times to
+generate all the contextual anomalies. Here, we set 𝑘 = 50
+to ensure the disturbance amplitude is large enough.
+Following the aforementioned injection methods, we ﬁnally
+obtain the perturbed networks, and the total number of anoma-
+lies is given in the last column of Table II. All the category
+labels are removed in our experiments, and the anomalous
+labels are only visible in the inference phase.
+B. Experimental Settings
+In this subsection, we introduce the settings of our ex-
+periments, including baselines for comparison, metrics for
+evaluation, and parameter setting of our framework.
+1) Baselines: We compare our proposed framework CoLA
+with ﬁve popular methods for anomaly detection or graph
+contrastive learning:
+ AMEN4 [16]. AMEN is an ego-network analysis-based
+anomaly detection method. It identiﬁes anomalies by
+evaluating the attribute correlation of nodes per ego-
+network.
+ Radar5 [17]. Radar is a residual analysis-based method.
+It characterizes the residuals of attribute information
+4https://github.com/phanein/amen
+5http://people.virginia.edu/%7Ejl6qk/code/Radar.zip
+
+IEEE TRANSACTIONS ON NEURAL NETWORKS AND LEARNING SYSTEMS 10
+and its coherence with network information for anomaly
+detection on networks.
+ ANOMALOUS6 [18]. ANOMALOUS is also based on
+the residual analysis. It is a joint learning framework
+that conducts attribute selection and anomaly detection
+as a whole based on CUR decomposition and residual
+analysis.
+ DOMINANT7 [13]. DOMINANT is the state-of-the-
+art unsupervised anomaly detection framework based on
+deep learning. It utilizes a graph convolution autoencoder
+to jointly reconstruct the adjacency matrix as well as the
+attribute matrix. It evaluates the abnormality of each node
+by computing the weighted sum of the reconstruction
+error terms.
+ DGI8 [55]. DGI is a representative method for contrastive
+graph representation learning. It generates node embed-
+ding via node-graph contrasting. A bilinear function
+serves as a discriminator to predict the agreement between
+node and original/corrupted graphs.
+2) Evaluation metrics: To measure the performance of our
+proposed framework and the baselines, we employ ROC-AUC
+as the metrics. ROC-AUC is widely used in previous works
+for the evaluation of anomaly detection performance [13],
+[17], [18]. The ROC curve is a plot of true positive rate (an
+anomaly is recognized as an anomaly) against false positive
+rate (a normal node is recognized as an anomaly) according to
+the ground-truth anomalous labels and the anomaly detection
+results. AUC value is the area under the ROC curve, which
+represents the probability that a randomly chosen abnormal
+node is ranked higher than a normal node. The AUC which is
+close to 1 means the method has high performance.
+3) Parameter Settings: For the sake of efﬁciency and
+performance, we ﬁxed the size 𝑆 of the sampled subgraph
+(number of nodes in the subgraph) to 4. For isolated nodes
+or the nodes which belong to a community with a size
+smaller than the predetermined subgraph size, we sample the
+available nodes repeatedly until an overlapping subgraph with
+the set size is obtained. In the GNN-based contrastive learning
+model, the layer number of the GNN module is set to 1
+since it is enough to extract the information of subgraphs
+with a small size. The embedding dimension is ﬁxed to be
+64. In the training phase, the batch size 𝐵 is set to 300 for
+each dataset. Adam [67] optimization algorithm is employed
+to train the contrastive learning model. We train the model
+for BlogCatalog, Flickr and ACM datasets with 400 epochs,
+and train on Cora, Citeseer and Pubmed datasets with 100
+epochs. The learning rates for Cora, Citeseer, Pubmed and
+Flickr are 0001, while the learning rates for BlogCatalog and
+ACM are set to 0003 and 00005, respectively. For ogbn-
+arxiv dataset, we train for 2 000 epochs using a learning rates
+of 00001. In the inference phase, we sample 256 rounds to
+acquire accurate detection results for each dataset. We run
+our proposed framework for 10 times and report the average
+results to prevent extreme cases. For the consideration of
+6http://people.virginia.edu/%7Ejl6qk/code/ANOMALOUS.zip
+7https://github.com/kaize0409/GCN_AnomalyDetection
+8https://github.com/PetarV-/DGI
+detection performance and efﬁciency, we use PCA [68] to
+reduce the dimension of attributes to 30 before we run the
+shallow baselines (AMEN, Radar and ANOMALOUS). For
+DGI We employ Equation (12) to compute the anomaly score.
+4) Computing Infrastructures: Our proposed learning
+framework is implemented using PyTorch 1.4.0 [69]. For RWR
+subgraph sampling, we use the existing graph sampling func-
+tion from library DGL 0.3.1 [70]. The computation of ROC
+and AUC is acquired by Scikit-learn [71]. All experiments are
+conducted on a personal computer with Ubuntu 16.04 OS, an
+NVIDIA GeForce RTX 2070 (8GB memory) GPU, an Intel
+Core i7-7700k (4.20 GHz) CPU and 15.6 GB of RAM.
+C. Anomaly Detection Results
+In this subsection, we evaluate the anomaly detection per-
+formance of the proposed framework by comparing it with
+the baseline methods. The comparison of ROC curves is
+demonstrated in Figure 4. By calculating the area under the
+ROC curves, the AUC scores of the seven benchmark datasets
+are shown in Table III for comparison. According to the
+results, we have the following observations:
+ On all seven datasets, our proposed CoLA achieves the
+best anomaly detection performance. In particular, com-
+pared with the best results of the baselines, our framework
+obtains a signiﬁcant improvement of 644% on AUC
+averagely. The main reason is that CoLA successfully
+captures the relationship between each node and its local
+substructure with the instance pair sampling, and extracts
+discriminative scores from the contextual and structural
+information with the GNN-based contrastive learning
+model.
+ Compared to the deep learning-based methods, the shal-
+low methods, AMEN, Radar and ANOMALOUS, cannot
+achieve satisfying results. Their performance is limited
+by the shallow mechanisms to deal with the high-
+dimensional node attributes and the sparse, complex
+network structures.
+ The contrastive learning method, DGI, does not show
+competitive performance, even if it uses a contrastive
+mechanism and anomaly score function similar to CoLA.
+The reason is that it adopts “full graph v.s. node” instance
+pair when performing contrastive learning, which cannot
+capture the abnormality in local substructure. In the
+contrast, the “target node v.s. local subgraph” leveraged
+by CoLA is sensitive to the local abnormal information.
+ Compared to the autoencoder-based deep method DOM-
+INANT, CoLA achieves signiﬁcant performance gains,
+especially on the ﬁve citation network datasets. Two
+main reasons are: (1). CoLA well exploits the network
+data by constructing the instance pairs, instead of simply
+reconstructing the original data; (2). The objective of
+CoLA is related to the target of anomaly detection, which
+can train the learning model to generate discriminative
+scores for the ﬁnal abnormality ranking.
+ CoLA has better performance advantages on the ﬁve
+citation network datasets (ACM, Cora, Citeseer, Pubmed
+and ogbn-arxiv). The possible reason is that the mean
+
+IEEE TRANSACTIONS ON NEURAL NETWORKS AND LEARNING SYSTEMS 11
+0.0 0.2 0.4 0.6 0.8 1.0
+False Positive Rate
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0True Positive Rate
+AMEN
+Radar
+ANOMALOUS
+DOMINANT
+DGI
+CoLA
+(a) BlogCatalog
+0.0 0.2 0.4 0.6 0.8 1.0
+False Positive Rate
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0True Positive Rate
+AMEN
+Radar
+ANOMALOUS
+DOMINANT
+DGI
+CoLA (b) Flickr
+0.0 0.2 0.4 0.6 0.8 1.0
+False Positive Rate
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0True Positive Rate
+AMEN
+Radar
+ANOMALOUS
+DOMINANT
+DGI
+CoLA (c) ACM
+0.0 0.2 0.4 0.6 0.8 1.0
+False Positive Rate
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0True Positive Rate
+AMEN
+Radar
+ANOMALOUS
+DOMINANT
+DGI
+CoLA (d) Cora
+0.0 0.2 0.4 0.6 0.8 1.0
+False Positive Rate
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0True Positive Rate
+AMEN
+Radar
+ANOMALOUS
+DOMINANT
+DGI
+CoLA
+(e) Citeseer
+0.0 0.2 0.4 0.6 0.8 1.0
+False Positive Rate
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0True Positive Rate
+AMEN
+Radar
+ANOMALOUS
+DOMINANT
+DGI
+CoLA (f) Pubmed
+0.0 0.2 0.4 0.6 0.8 1.0
+False Positive Rate
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0True Positive Rate
+AMEN
+CoLA (g) ogbn-arxiv
+Fig. 4. ROC curves comparison on seven benchmark datasets. The area under the curve is larger, the anomaly detection performance is better. The dashed
+line is the “random line” which indicates the performance under randomly guessing.
+TABLE III
+AUC VALUES COMPARISON ON SEVEN BENCHMARK DATASETS . OOM MEANS THE ISSUE OUT-OF-MEMORY IS INCURRED . T HE BEST PERFORMING
+METHOD IN EACH EXPERIMENT IS IN BOLD .
+Methods Blogcatalog Flickr ACM Cora Citeseer Pubmed ogbn-arxiv
+AMEN 0.6392 0.6573 0.5626 0.6266 0.6154 0.7713 0.5279
+Radar 0.7401 0.7399 0.7247 0.6587 0.6709 0.6233 OOM
+ANOMALOUS 0.7237 0.7434 0.7038 0.5770 0.6307 0.7316 OOM
+DOMINANT 0.7468 0.7442 0.7601 0.8155 0.8251 0.8081 OOM
+DGI 0.5827 0.6237 0.6240 0.7511 0.8293 0.6962 OOM
+CoLA 0.7854 0.7513 0.8237 0.8779 0.8968 0.9512 0.8073
+degrees of citation networks ( 143 to 689) are much
+smaller than those of social networks ( 3164 to 3305).
+Therefore, on citation networks, the sampled substructure
+for each node has a better consistency under multiply
+rounds of sampling, which makes the model can capture
+the abnormality of each node more clearly.
+ CoLA is successfully run on the large-scale network
+dataset ogbn-arxiv, while most of the baselines (Radar,
+ANOMALOUS, DOMINANT, and DGI) fail to output
+the detection results due to their large requirement of
+memory. Meanwhile, our framework also outperforms the
+shallow method AMEN by a wide margin. The reason
+why CoLA can detect anomaly on large-scale networks is
+that the space complexity of CoLA is independent of the
+number of nodes 𝑛, which has been analyzed in Section
+IV-D.
+D. Parameter Study
+In this subsection, we investigate the impacts of three
+important parameters on the performance of the proposed
+framework: the number of sampling rounds, the size of
+subgraph, and the dimension of latent embedding. We only
+perform these experiments on the six small-scale datasets
+owing to the limitation of efﬁciency.
+1) Effect of the number of sampling rounds 𝑅: In this
+experiment, we modify the value of 𝑅 to study its impact
+on AUC. The performance variance results are demonstrated
+in Figure 5(a). As we can see, when the detection results
+are only computed with one-shot sampling, the detection
+performance is poor. With the sampling rounds growing, there
+is a signiﬁcant boost in the AUC of each dataset within
+a certain range. However, when 𝑅 is larger than 256, the
+performance improvement obtained by setting a larger 𝑅
+becomes little. The experiment results empirically prove our
+analysis in Subsection IV-C: with 𝑅 gets larger, the estimation
+for abnormalities for each node becomes more accurate. On
+
+IEEE TRANSACTIONS ON NEURAL NETWORKS AND LEARNING SYSTEMS 12
+1 2 4 8 16 32 64 128 256 512 1024
+Number of Sampling Rounds
+0.65
+0.70
+0.75
+0.80
+0.85
+0.90
+0.95AUC
+BlogCatalog
+Flickr
+ACM
+Cora
+Citeseer
+Pubmed
+(a) Sampling rounds w.r.t. AUC values
+2 3 4 5 6 7 8 9 10
+Subgraph Size
+0.65
+0.70
+0.75
+0.80
+0.85
+0.90
+0.95AUC
+BlogCatalog
+Flickr
+ACM
+Cora
+Citeseer
+Pubmed (b) Subgraph sizes w.r.t. AUC values
+1 2 4 8 16 32 64 128 256
+Embedding Dimension
+0.65
+0.70
+0.75
+0.80
+0.85
+0.90
+0.95AUC
+BlogCatalog
+Flickr
+ACM
+Cora
+Citeseer
+Pubmed (c) Embedding dimension w.r.t. AUC values
+Fig. 5. The experimental results for parameter study. The subﬁgure (a), (b) and (c) shows the impact of different sampling rounds, subgraph sizes and
+embedding dimension w.r.t. AUC values respectively.
+the basis of this result, we set 𝑅 = 256 in other experiments
+to balance performance and efﬁciency.
+2) Effect of subgraph size 𝑐: We further analyze the signif-
+icance of the subgraph size 𝑐 on different datasets. We report
+the AUC scores over different choices of subgraph sizes in
+Figure 5(b). As shown in the ﬁgure, when 𝑐 is extremely
+small ( 𝑐 = 2), the AUC is relatively low. The possible reason
+is that, in such a situation, only the target node itself and
+one of its neighbors are concluded in the subgraph, but there
+is no structural information other than the connection between
+these two nodes is considered. The lack of enough neighboring
+structural information results in poor performance. Within
+certain value ranges, the AUC increases follow 𝑐. Then, when
+𝑐 ¡ 5, the detection performance declines with 𝑐 get larger. A
+reasonable description is that: when the subgraph size is large,
+the nodes with relatively long distance to the target node will
+be sampled into the subgraph. However, these remote nodes
+are generally independent of the abnormality, which becomes
+the “noise information” for our detection task. For all datasets,
+better detection performance can be obtained when the value
+of 𝑆 is around 4. Consequently, we ﬁx the value of 𝑐 to 4 for
+the sake of running efﬁciency and robustness over all datasets.
+3) Effect of embedding dimension 𝑑: We explore the sen-
+sitivity of embedding dimension 𝑑 for CoLA framework. We
+alter the value of 𝑑 to see how it affects the performance of
+our method. The performance change of CoLA is illustrated in
+Figure 5(c). For each dataset, the AUC value increases with the
+embedding dimension growing. When adding the dimension of
+embedding from 1-neuron to 32-neurons, the performance of
+anomaly detection steadily rises; but when we further increase
+𝑑, the performance gain becomes light. We observed that,
+for most of the datasets, 64-dimension latent embedding can
+provide sufﬁcient information for the downstream contrastive
+learning and anomaly detection tasks. As a result, we set the
+hyper-parameter 𝑑 to 64 for efﬁciency consideration.
+E. Ablation Study
+In this subsection, we study the effect of changing different
+readout functions, the source of anomaly score computation,
+and the estimation mode of anomaly score. Here we only
+discuss the performance on the six small-scale datasets.
+1) Effect of readout function: In this experiment, we in-
+vestigate the choice of different types of readout functions
+in our framework. We carry out the experiments on three
+possible readout functions: Max Pooling, Min Pooling, and
+Weighted Average Pooling. Max/Min Pooling is to collect
+the maximum/minimum value on each dimension to generate
+the pooled vector. Weighted Average Pooling ﬁrst takes the
+embedding of the target node as a “query” and calculates
+the similarities between query and node embeddings in the
+local subgraph by inner production. Then, a Softmax function
+is utilized to regularize the similarities which further serve
+as “weights” to compute the readout output with a weighted
+average. Note that CoLA adopts Average Pooling, which is
+simpler than Weighted Average Pooling.
+The experimental results are illustrated in Table IV. Com-
+pared to other readout function, Min Pooling always has a
+minor performance, which means that using the minimum
+value would lead to lose of information. Max Pooling has
+competitive performance on most of the datasets, but is not
+the best. Although Weighted Average Pooling costs heavier
+computation, it has a close performance to Max Pooling, which
+indicates that the similarity-based weighted average may lead
+to a sub-optimal solution for subgraph readout. Compared to
+other readout functions, CoLA with Average Pooling achieves
+the best results on 4 of 6 datasets. On ACM and Pubmed,
+it also shows competitive performance, which evinces that
+Average Pooling has a better capability of generalization.
+2) Effect of the source of score computation: In Equation
+(12), we consider the predicted scores of both positive in-
+stances and negative instances as the source of anomaly score
+computation. Here, we investigate the contribution of each
+term. Table VI shows the AUC values of two variants of our
+framework: CoLA(+) denotes that only the predicted scores of
+positive instances are used to calculate the anomaly scores, and
+CoLA(-) means that only the negative scores are considered.
+Finally, CoLA(+/-) is the full version that considers both
+sides. As we can observe, for two social network datasets, the
+predicted scores of negative instances are more helpful to the
+
+IEEE TRANSACTIONS ON NEURAL NETWORKS AND LEARNING SYSTEMS 13
+TABLE IV
+EFFECT OF DIFFERENT READOUT FUNCTION ON AUC VALUES . T HE BEST PERFORMING METHOD IN EACH EXPERIMENT IS IN BOLD .
+BlogCatalog Flickr ACM Cora Citeseer Pubmed
+Max Pooling 0.7787 0.7507 0.8303 0.8681 0.8849 0.9508
+Min Pooling 0.7567 0.7389 0.7968 0.8553 0.8743 0.9350
+Weighted Average Pooling 0.7801 0.7494 0.8175 0.8764 0.8927 0.9523
+CoLA(Average Pooling) 0.7854 0.7513 0.8237 0.8779 0.8968 0.9512
+TABLE V
+EFFECT OF DIFFERENT SOURCE OF SCORE COMPUTATION ON AUC VALUES . THE BEST PERFORMING METHOD IN EACH EXPERIMENT IS IN BOLD .
+BlogCatalog Flickr ACM Cora Citeseer Pubmed
+CoLA(+) 0.7551 0.7213 0.8002 0.8658 0.8571 0.9509
+CoLA(-) 0.7745 0.7502 0.7718 0.6891 0.8254 0.6531
+CoLA(+/-) 0.7854 0.7513 0.8237 0.8779 0.8968 0.9512
+TABLE VI
+EFFECT OF DIFFERENT SCORE ESTIMATION MODE ON AUC VALUES . T HE BEST PERFORMING METHOD IN EACH EXPERIMENT IS IN BOLD .
+BlogCatalog Flickr ACM Cora Citeseer Pubmed
+CoLA(min) 0.7611 0.7219 0.5407 0.7525 0.6279 0.7987
+CoLA(mean+min) 0.7729 0.7371 0.6903 0.8165 0.7599 0.8796
+CoLA(max) 0.6465 0.6071 0.7093 0.8152 0.7906 0.8839
+CoLA(mean+max) 0.7383 0.6989 0.7652 0.8678 0.8638 0.9359
+CoLA(std) 0.3719 0.3581 0.8037 0.5453 0.7515 0.7035
+CoLA(mean+std) 0.7665 0.7241 0.8372 0.8869 0.9047 0.9532
+CoLA(-std) 0.6316 0.6449 0.2149 0.4256 0.2455 0.2969
+CoLA(mean-std) 0.7910 0.7526 0.7562 0.8479 0.8608 0.9387
+CoLA(mean) 0.7854 0.7513 0.8237 0.8779 0.8968 0.9512
+ﬁnal result. Nevertheless, for the remaining citation network
+datasets, the positive instances have a greater contribution.
+Despite the above difference, considering both positive and
+negative scores is always beneﬁcial to anomaly detection
+performance.
+3) Effect of estimation mode of anomaly score: In CoLA,
+we compute the mean values as the anomaly scores, which
+is a standard estimation mode for multiple sampling. In this
+experiment, we discuss the effect of other estimation modes.
+As shown in Table VI, we carry out our experiment on
+six estimation modes: CoLA(max)/CoLA(min) means using
+the maximum/minimum value of multi-round predictions as
+anomaly scores; CoLA(std) and CoLA(-std) adopt the standard
+deviation and the opposite of standard deviation as anomaly
+score, respectively; the rest three situations consider the sum
+of mean value and corresponding terms as an estimation.
+We make the following observations:
+ Using maximum/minimum value as the anomaly score is
+less effective than using mean value. Considering both
+the maximum/minimum and the mean value can obtain
+better performance, but it is still worse than only using
+the mean value.
+ Introducing the standard deviation can bring extra perfor-
+mance improvement. However, the correlation between
+abnormality and standard deviation varies with different
+datasets: for BlogCatalog and Flickr, there is a negative
+correlation between abnormality and standard deviation;
+on contrary, a positive correlation is shown for the citation
+networks.
+ Calculating the mean value is not the best but the most
+robust choice. For all datasets, we can obtain a relatively
+good detection performance with CoLA(mean). Further-
+more, compared with only using maximum/minimum
+value or standard deviation, the introduction of additional
+mean values will lead to a better result.
+VI. C ONCLUSION
+In this paper, we make the ﬁrst attempt to apply contrastive
+self-supervised learning to the anomaly detection problem of
+attributed networks. We propose a novel anomaly detection
+framework, CoLA, which is consisted of three components:
+contrastive instance pair sampling, GNN-based contrastive
+learning model, and multi-round sampling-based anomaly
+score computation. Our model successfully captures the re-
+lationship between each node and its neighboring structure
+and uses an anomaly-related objective to train the contrastive
+learning model. A series of experiments on seven benchmark
+datasets demonstrate the effectiveness and superiority of the
+proposed framework in solving the anomaly detection prob-
+lems on attributed networks.
+We believe that the proposed framework opens a new
+opportunity to expand self-supervised learning and contrastive
+
+IEEE TRANSACTIONS ON NEURAL NETWORKS AND LEARNING SYSTEMS 14
+learning to increasingly graph anomaly detection applications.
+In future works, we will extend self-supervised contrastive
+learning-based anomaly detection methods to more com-
+plex network/graph data, e.g., heterogeneous graph, spatial-
+temporal graph, and dynamic graph.
+REFERENCES
+[1] Z. Liu, C. Chen, X. Yang, J. Zhou, X. Li, and L. Song, “Heterogeneous
+graph neural networks for malicious account detection,” in Proceedings
+of the 27th ACM International Conference on Information and Knowl-
+edge Management, 2018, pp. 2077–2085.
+[2] L. Tang and H. Liu, “Relational learning via latent social dimensions,”
+in Proceedings of the 15th ACM SIGKDD international conference on
+Knowledge discovery and data mining , 2009, pp. 817–826.
+[3] Y . Zhang, Y . Fan, W. Song, S. Hou, Y . Ye, X. Li, L. Zhao, C. Shi,
+J. Wang, and Q. Xiong, “Your style your identity: Leveraging writing and
+photography styles for drug trafﬁcker identiﬁcation in darknet markets
+over attributed heterogeneous information network,” in The World Wide
+Web Conference, 2019, pp. 3448–3454.
+[4] R. Ying, R. He, K. Chen, P. Eksombatchai, W. L. Hamilton, and
+J. Leskovec, “Graph convolutional neural networks for web-scale rec-
+ommender systems,” in Proceedings of the 24th ACM SIGKDD Interna-
+tional Conference on Knowledge Discovery & Data Mining , 2018, pp.
+974–983.
+[5] W. Fan, Y . Ma, Q. Li, Y . He, E. Zhao, J. Tang, and D. Yin, “Graph
+neural networks for social recommendation,” in The World Wide Web
+Conference, 2019, pp. 417–426.
+[6] T. N. Kipf and M. Welling, “Semi-supervised classiﬁcation with graph
+convolutional networks,” in International Conference on Learning Rep-
+resentations, 2017.
+[7] P. Veli ˇckovi´c, G. Cucurull, A. Casanova, A. Romero, P. Liò, and
+Y . Bengio, “Graph attention networks,” in International Conference on
+Learning Representations, 2018.
+[8] K. Xu, W. Hu, J. Leskovec, and S. Jegelka, “How powerful are graph
+neural networks?” in International Conference on Learning Represen-
+tations, 2019.
+[9] Z. Ying, J. You, C. Morris, X. Ren, W. Hamilton, and J. Leskovec,
+“Hierarchical graph representation learning with differentiable pooling,”
+in Advances in neural information processing systems , 2018, pp. 4800–
+4810.
+[10] M. Zhang and Y . Chen, “Weisfeiler-lehman neural machine for link
+prediction,” in Proceedings of the 23rd ACM SIGKDD International
+Conference on Knowledge Discovery and Data Mining , 2017, pp. 575–
+583.
+[11] T. N. Kipf and M. Welling, “Variational graph auto-encoders,” arXiv
+preprint arXiv:1611.07308, 2016.
+[12] G. Pang, C. Shen, L. Cao, and A. v. d. Hengel, “Deep learning for
+anomaly detection: A review,” arXiv preprint arXiv:2007.02500 , 2020.
+[13] K. Ding, J. Li, R. Bhanushali, and H. Liu, “Deep anomaly detection
+on attributed networks,” in Proceedings of the 2019 SIAM International
+Conference on Data Mining . SIAM, 2019, pp. 594–602.
+[14] Y . Chen, X. S. Zhou, and T. S. Huang, “One-class svm for learning
+in image retrieval,” in Proceedings 2001 International Conference on
+Image Processing (Cat. No. 01CH37205) , vol. 1. IEEE, 2001, pp.
+34–37.
+[15] X. Xu, N. Yuruk, Z. Feng, and T. A. Schweiger, “Scan: a structural
+clustering algorithm for networks,” in Proceedings of the 13th ACM
+SIGKDD international conference on Knowledge discovery and data
+mining, 2007, pp. 824–833.
+[16] B. Perozzi and L. Akoglu, “Scalable anomaly ranking of attributed
+neighborhoods,” in Proceedings of the 2016 SIAM International Con-
+ference on Data Mining . SIAM, 2016, pp. 207–215.
+[17] J. Li, H. Dani, X. Hu, and H. Liu, “Radar: Residual analysis for anomaly
+detection in attributed networks.” in IJCAI, 2017, pp. 2152–2158.
+[18] Z. Peng, M. Luo, J. Li, H. Liu, and Q. Zheng, “Anomalous: A joint
+modeling approach for anomaly detection on attributed networks.” in
+IJCAI, 2018, pp. 3513–3519.
+[19] G. Pang, C. Shen, H. Jin, and A. van den Hengel, “Deep weakly-
+supervised anomaly detection,” 2020.
+[20] G. Pang, C. Shen, and A. van den Hengel, “Deep anomaly detection
+with deviation networks,” in Proceedings of the 25th ACM SIGKDD
+International Conference on Knowledge Discovery & Data Mining ,
+2019, pp. 353–362.
+[21] L. Ruff, R. Vandermeulen, N. Goernitz, L. Deecke, S. A. Siddiqui,
+A. Binder, E. Müller, and M. Kloft, “Deep one-class classiﬁcation,”
+in International conference on machine learning , 2018, pp. 4393–4402.
+[22] Y . Li, X. Huang, J. Li, M. Du, and N. Zou, “Specae: Spectral autoen-
+coder for anomaly detection in attributed networks,” in Proceedings of
+the 28th ACM International Conference on Information and Knowledge
+Management, 2019, pp. 2233–2236.
+[23] A. v. d. Oord, Y . Li, and O. Vinyals, “Representation learning with
+contrastive predictive coding,” arXiv preprint arXiv:1807.03748 , 2018.
+[24] T. Chen, S. Kornblith, M. Norouzi, and G. Hinton, “A simple frame-
+work for contrastive learning of visual representations,” arXiv preprint
+arXiv:2002.05709, 2020.
+[25] R. D. Hjelm, A. Fedorov, S. Lavoie-Marchildon, K. Grewal, P. Bachman,
+A. Trischler, and Y . Bengio, “Learning deep representations by mutual
+information estimation and maximization,” in International Conference
+on Learning Representations , 2018.
+[26] L. Liao, X. He, H. Zhang, and T. S. Chua, “Attributed social network
+embedding,” in arXiv:1705.04969, 2017.
+[27] S. Pan, J. Wu, X. Zhu, C. Zhang, and Y . Wang, “Tri-party deep network
+representation,” in IJCAI, 2016, pp. 1895–1901.
+[28] W. Yu, W. Cheng, C. Aggarwal, B. Zong, H. Chen, and W. Wang, “Self-
+attentive attributed network embedding through adversarial learning,” in
+2019 IEEE International Conference on Data Mining (ICDM) , 2019,
+pp. 758–767.
+[29] Y . LeCun, Y . Bengio, and G. Hinton, “Deep learning,” nature, vol. 521,
+no. 7553, pp. 436–444, 2015.
+[30] Z. Wu, S. Pan, F. Chen, G. Long, C. Zhang, and P. S. Yu, “A
+comprehensive survey on graph neural networks,” IEEE Transactions
+on Neural Networks and Learning Systems , pp. 1–21, 2020.
+[31] M. Gori, G. Monfardini, and F. Scarselli, “A new model for learning
+in graph domains,” in Proceedings. 2005 IEEE International Joint
+Conference on Neural Networks, 2005. , vol. 2. IEEE, 2005, pp. 729–
+734.
+[32] J. Bruna, W. Zaremba, A. Szlam, and Y . LeCun, “Spectral networks and
+locally connected networks on graphs,” arXiv preprint arXiv:1312.6203,
+2013.
+[33] M. Henaff, J. Bruna, and Y . LeCun, “Deep convolutional networks on
+graph-structured data,” arXiv preprint arXiv:1506.05163 , 2015.
+[34] M. Defferrard, X. Bresson, and P. Vandergheynst, “Convolutional neural
+networks on graphs with fast localized spectral ﬁltering,” in Advances
+in neural information processing systems , 2016, pp. 3844–3852.
+[35] D. I. Shuman, S. K. Narang, P. Frossard, A. Ortega, and P. Van-
+dergheynst, “The emerging ﬁeld of signal processing on graphs: Ex-
+tending high-dimensional data analysis to networks and other irregular
+domains,” IEEE signal processing magazine , vol. 30, no. 3, pp. 83–98,
+2013.
+[36] A. Vaswani, N. Shazeer, N. Parmar, J. Uszkoreit, L. Jones, A. N. Gomez,
+Ł. Kaiser, and I. Polosukhin, “Attention is all you need,” in Advances
+in neural information processing systems , 2017, pp. 5998–6008.
+[37] F. Wu, A. H. S. Jr., T. Zhang, C. Fifty, T. Yu, and K. Q. Weinberger,
+“Simplifying graph convolutional networks,” in ICML, 2019, pp. 6861–
+6871.
+[38] H. NT and T. Maehara, “Revisiting graph neural networks: All we have
+is low-pass ﬁlters,” arXiv preprint arXiv:1905.09550 , 2019.
+[39] S. Pan, R. Hu, S.-f. Fung, G. Long, J. Jiang, and C. Zhang, “Learning
+graph embedding with adversarial training methods,” IEEE Transactions
+on Cybernetics, vol. 50, no. 6, pp. 2475–2487, 2019.
+[40] W. Hamilton, Z. Ying, and J. Leskovec, “Inductive representation
+learning on large graphs,” in Advances in neural information processing
+systems, 2017, pp. 1024–1034.
+[41] W.-L. Chiang, X. Liu, S. Si, Y . Li, S. Bengio, and C.-J. Hsieh,
+“Cluster-gcn: An efﬁcient algorithm for training deep and large graph
+convolutional networks,” in Proceedings of the 25th ACM SIGKDD
+International Conference on Knowledge Discovery & Data Mining ,
+2019, pp. 257–266.
+[42] H. Zeng, H. Zhou, A. Srivastava, R. Kannan, and V . Prasanna, “Graph-
+saint: Graph sampling based inductive learning method,” in International
+Conference on Learning Representations , 2020.
+[43] J. Klicpera, S. Weißenberger, and S. Günnemann, “Diffusion improves
+graph learning,” in Advances in Neural Information Processing Systems,
+2019, pp. 13 354–13 366.
+[44] Z. Wu, S. Pan, G. Long, J. Jiang, and C. Zhang, “Graph wavenet for deep
+spatial-temporal graph modeling,” arXiv preprint arXiv:1906.00121 ,
+2019.
+[45] Z. Wu, S. Pan, G. Long, J. Jiang, X. Chang, and C. Zhang, “Con-
+necting the dots: Multivariate time series forecasting with graph neural
+networks,” arXiv preprint arXiv:2005.11650 , 2020.
+
+IEEE TRANSACTIONS ON NEURAL NETWORKS AND LEARNING SYSTEMS 15
+[46] S. Wan, C. Gong, P. Zhong, S. Pan, G. Li, and J. Yang, “Hyperspectral
+image classiﬁcation with context-aware dynamic graph convolutional
+network,” IEEE Transactions on Geoscience and Remote Sensing , 2020.
+[47] G. Wan, S. Pan, C. Gong, C. Zhou, and G. Haffari, “Reasoning
+like human: Hierarchical reinforcement learning for knowledge graph
+reasoning,” in International Joint Conference on Artiﬁcial Intelligence
+2020. Association for the Advancement of Artiﬁcial Intelligence
+(AAAI), 2020, pp. 1926–1932.
+[48] Y . Xian, Z. Fu, S. Muthukrishnan, G. De Melo, and Y . Zhang, “Rein-
+forcement knowledge graph reasoning for explainable recommendation,”
+in Proceedings of the 42nd International ACM SIGIR Conference on
+Research and Development in Information Retrieval , 2019, pp. 285–
+294.
+[49] M. Zhu and H. Zhu, “Mixedad: A scalable algorithm for detecting mixed
+anomalies in attributed graphs,” in Proceedings of the AAAI Conference
+on Artiﬁcial Intelligence , vol. 34, no. 01, 2020, pp. 1274–1281.
+[50] W. Yu, W. Cheng, C. C. Aggarwal, K. Zhang, H. Chen, and W. Wang,
+“Netwalk: A ﬂexible deep embedding approach for anomaly detection
+in dynamic networks,” in Proceedings of the 24th ACM SIGKDD
+International Conference on Knowledge Discovery & Data Mining ,
+2018, pp. 2672–2681.
+[51] X. Liu, F. Zhang, Z. Hou, Z. Wang, L. Mian, J. Zhang, and J. Tang,
+“Self-supervised learning: Generative or contrastive,” 2020.
+[52] K. He, H. Fan, Y . Wu, S. Xie, and R. Girshick, “Momentum contrast
+for unsupervised visual representation learning,” in Proceedings of the
+IEEE/CVF Conference on Computer Vision and Pattern Recognition ,
+2020, pp. 9729–9738.
+[53] J.-B. Grill, F. Strub, F. Altché, C. Tallec, P. H. Richemond,
+E. Buchatskaya, C. Doersch, B. A. Pires, Z. D. Guo, M. G. Azar, B. Piot,
+K. Kavukcuoglu, R. Munos, and M. Valko, “Bootstrap your own latent:
+A new approach to self-supervised learning,” 2020.
+[54] X. Chen and K. He, “Exploring simple siamese representation learning,”
+2020.
+[55] P. Veli ˇckovi´c, W. Fedus, W. L. Hamilton, P. Liò, Y . Bengio, and R. D.
+Hjelm, “Deep graph infomax,” in International Conference on Learning
+Representations, 2019.
+[56] K. Hassani and A. H. Khasahmadi, “Contrastive multi-view representa-
+tion learning on graphs,” in Proceedings of International Conference on
+Machine Learning, 2020, pp. 3451–3461.
+[57] J. Qiu, Q. Chen, Y . Dong, J. Zhang, H. Yang, M. Ding, K. Wang,
+and J. Tang, “Gcc: Graph contrastive coding for graph neural network
+pre-training,” in Proceedings of the 26th ACM SIGKDD International
+Conference on Knowledge Discovery & Data Mining , 2020, pp. 1150–
+1160.
+[58] Z. Peng, W. Huang, M. Luo, Q. Zheng, Y . Rong, T. Xu, and J. Huang,
+“Graph representation learning via graphical mutual information maxi-
+mization,” in Proceedings of The Web Conference 2020, 2020, pp. 259–
+270.
+[59] H. Tong, C. Faloutsos, and J.-Y . Pan, “Fast random walk with restart
+and its applications,” in Sixth international conference on data mining
+(ICDM’06). IEEE, 2006, pp. 613–622.
+[60] J. Leskovec and C. Faloutsos, “Sampling from large graphs,” in Proceed-
+ings of the 12th ACM SIGKDD international conference on Knowledge
+discovery and data mining , 2006, pp. 631–636.
+[61] P. Sen, G. Namata, M. Bilgic, L. Getoor, B. Galligher, and T. Eliassi-
+Rad, “Collective classiﬁcation in network data,” AI magazine , vol. 29,
+no. 3, pp. 93–93, 2008.
+[62] J. Tang, J. Zhang, L. Yao, J. Li, L. Zhang, and Z. Su, “Arnetminer:
+extraction and mining of academic social networks,” in Proceedings
+of the 14th ACM SIGKDD international conference on Knowledge
+discovery and data mining , 2008, pp. 990–998.
+[63] W. Hu, M. Fey, M. Zitnik, Y . Dong, H. Ren, B. Liu, M. Catasta, and
+J. Leskovec, “Open graph benchmark: Datasets for machine learning on
+graphs,” arXiv preprint arXiv:2005.00687 , 2020.
+[64] X. Song, M. Wu, C. Jermaine, and S. Ranka, “Conditional anomaly
+detection,” IEEE Transactions on knowledge and Data Engineering ,
+vol. 19, no. 5, pp. 631–645, 2007.
+[65] K. Ding, J. Li, and H. Liu, “Interactive anomaly detection on attributed
+networks,” in Proceedings of the Twelfth ACM International Conference
+on Web Search and Data Mining , 2019, pp. 357–365.
+[66] D. B. Skillicorn, “Detecting anomalies in graphs,” in 2007 IEEE
+Intelligence and Security Informatics . IEEE, 2007, pp. 209–216.
+[67] D. P. Kingma and J. Ba, “Adam: A method for stochastic optimization,”
+arXiv preprint arXiv:1412.6980 , 2014.
+[68] S. Wold, K. Esbensen, and P. Geladi, “Principal component analysis,”
+Chemometrics and intelligent laboratory systems , vol. 2, no. 1-3, pp.
+37–52, 1987.
+[69] A. Paszke, S. Gross, F. Massa, A. Lerer, J. Bradbury, G. Chanan,
+T. Killeen, Z. Lin, N. Gimelshein, L. Antiga et al. , “Pytorch: An
+imperative style, high-performance deep learning library,” Advances in
+Neural Information Processing Systems , vol. 32, pp. 8026–8037, 2019.
+[70] M. Wang, D. Zheng, Z. Ye, Q. Gan, M. Li, X. Song, J. Zhou, C. Ma,
+L. Yu, Y . Gai, T. Xiao, T. He, G. Karypis, J. Li, and Z. Zhang, “Deep
+graph library: A graph-centric, highly-performant package for graph
+neural networks,” arXiv preprint arXiv:1909.01315 , 2019.
+[71] F. Pedregosa, G. Varoquaux, A. Gramfort, V . Michel, B. Thirion,
+O. Grisel, M. Blondel, P. Prettenhofer, R. Weiss, V . Dubourg et al. ,
+“Scikit-learn: Machine learning in python,” the Journal of machine
+Learning research, vol. 12, pp. 2825–2830, 2011.

@@ -1,0 +1,66 @@
+{
+  "per_dataset": [
+    {
+      "dataset": "T-Finance",
+      "variant": "variance-median",
+      "expected_runs": 1,
+      "completed_runs": 1,
+      "complete": true,
+      "AUROC_mean": 0.9202275122999848,
+      "AUROC_std_population": 0.0,
+      "AP_mean": 0.5319827701130431,
+      "AP_std_population": 0.0,
+      "scoring_seconds_mean": 4.686661598000001,
+      "scoring_seconds_std_population": 0.0,
+      "load_and_scoring_seconds_mean": 27.428453571999967,
+      "load_and_scoring_seconds_std_population": 0.0
+    },
+    {
+      "dataset": "T-Finance",
+      "variant": "variance-mean",
+      "expected_runs": 1,
+      "completed_runs": 1,
+      "complete": true,
+      "AUROC_mean": 0.9095950893468938,
+      "AUROC_std_population": 0.0,
+      "AP_mean": 0.5208223981862441,
+      "AP_std_population": 0.0,
+      "scoring_seconds_mean": 5.197597924999968,
+      "scoring_seconds_std_population": 0.0,
+      "load_and_scoring_seconds_mean": 18.812119974999973,
+      "load_and_scoring_seconds_std_population": 0.0
+    },
+    {
+      "dataset": "T-Finance",
+      "variant": "std-median",
+      "expected_runs": 1,
+      "completed_runs": 1,
+      "complete": true,
+      "AUROC_mean": 0.9094178527754683,
+      "AUROC_std_population": 0.0,
+      "AP_mean": 0.3773304605222119,
+      "AP_std_population": 0.0,
+      "scoring_seconds_mean": 6.1941712850000386,
+      "scoring_seconds_std_population": 0.0,
+      "load_and_scoring_seconds_mean": 18.18596800800003,
+      "load_and_scoring_seconds_std_population": 0.0
+    },
+    {
+      "dataset": "T-Finance",
+      "variant": "mean-median",
+      "expected_runs": 1,
+      "completed_runs": 1,
+      "complete": true,
+      "AUROC_mean": 0.8270491674058535,
+      "AUROC_std_population": 0.0,
+      "AP_mean": 0.23054199978450068,
+      "AP_std_population": 0.0,
+      "scoring_seconds_mean": 4.953202354999917,
+      "scoring_seconds_std_population": 0.0,
+      "load_and_scoring_seconds_mean": 17.85148497299997,
+      "load_and_scoring_seconds_std_population": 0.0
+    }
+  ],
+  "complete_seven_target_averages": {},
+  "seed_std_note": "population std over specified pair seeds with fixed SVD seed; not source-domain std in Table 2"
+}

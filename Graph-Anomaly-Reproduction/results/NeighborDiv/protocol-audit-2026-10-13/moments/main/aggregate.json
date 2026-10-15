@@ -1,0 +1,116 @@
+{
+  "per_dataset": [
+    {
+      "dataset": "Cora",
+      "variant": "full",
+      "expected_runs": 1,
+      "completed_runs": 1,
+      "complete": true,
+      "AUROC_mean": 0.6846077664842325,
+      "AUROC_std_population": 0.0,
+      "AP_mean": 0.09779039581106895,
+      "AP_std_population": 0.0,
+      "scoring_seconds_mean": 0.06272833599996375,
+      "scoring_seconds_std_population": 0.0,
+      "load_and_scoring_seconds_mean": 0.11177472800000032,
+      "load_and_scoring_seconds_std_population": 0.0
+    },
+    {
+      "dataset": "YelpChi",
+      "variant": "full",
+      "expected_runs": 1,
+      "completed_runs": 1,
+      "complete": true,
+      "AUROC_mean": 0.5814784022433874,
+      "AUROC_std_population": 0.0,
+      "AP_mean": 0.06907070699469428,
+      "AP_std_population": 0.0,
+      "scoring_seconds_mean": 0.5464493130000392,
+      "scoring_seconds_std_population": 0.0,
+      "load_and_scoring_seconds_mean": 0.9101338099999907,
+      "load_and_scoring_seconds_std_population": 0.0
+    },
+    {
+      "dataset": "Reddit",
+      "variant": "full",
+      "expected_runs": 1,
+      "completed_runs": 1,
+      "complete": true,
+      "AUROC_mean": 0.5014015019345436,
+      "AUROC_std_population": 0.0,
+      "AP_mean": 0.03560281845262397,
+      "AP_std_population": 0.0,
+      "scoring_seconds_mean": 0.3834703470000136,
+      "scoring_seconds_std_population": 0.0,
+      "load_and_scoring_seconds_mean": 0.7111169920000293,
+      "load_and_scoring_seconds_std_population": 0.0
+    },
+    {
+      "dataset": "T-Finance",
+      "variant": "full",
+      "expected_runs": 1,
+      "completed_runs": 1,
+      "complete": true,
+      "AUROC_mean": 0.9202275122999848,
+      "AUROC_std_population": 0.0,
+      "AP_mean": 0.5319827701130431,
+      "AP_std_population": 0.0,
+      "scoring_seconds_mean": 6.202299320000009,
+      "scoring_seconds_std_population": 0.0,
+      "load_and_scoring_seconds_mean": 27.354484162000006,
+      "load_and_scoring_seconds_std_population": 0.0
+    },
+    {
+      "dataset": "Tolokers",
+      "variant": "full",
+      "expected_runs": 1,
+      "completed_runs": 1,
+      "complete": true,
+      "AUROC_mean": 0.5186809101343335,
+      "AUROC_std_population": 0.0,
+      "AP_mean": 0.21169120875144412,
+      "AP_std_population": 0.0,
+      "scoring_seconds_mean": 0.3277982910000219,
+      "scoring_seconds_std_population": 0.0,
+      "load_and_scoring_seconds_mean": 0.6519520770000327,
+      "load_and_scoring_seconds_std_population": 0.0
+    },
+    {
+      "dataset": "Disney",
+      "variant": "full",
+      "expected_runs": 1,
+      "completed_runs": 1,
+      "complete": true,
+      "AUROC_mean": 0.7245762711864407,
+      "AUROC_std_population": 0.0,
+      "AP_mean": 0.16170315655404693,
+      "AP_std_population": 0.0,
+      "scoring_seconds_mean": 0.005527804999985619,
+      "scoring_seconds_std_population": 0.0,
+      "load_and_scoring_seconds_mean": 0.026948447999984637,
+      "load_and_scoring_seconds_std_population": 0.0
+    },
+    {
+      "dataset": "Questions",
+      "variant": "full",
+      "expected_runs": 1,
+      "completed_runs": 1,
+      "complete": true,
+      "AUROC_mean": 0.49097128918826793,
+      "AUROC_std_population": 0.0,
+      "AP_mean": 0.03317710044932848,
+      "AP_std_population": 0.0,
+      "scoring_seconds_mean": 1.6469858830000135,
+      "scoring_seconds_std_population": 0.0,
+      "load_and_scoring_seconds_mean": 4.789468074000013,
+      "load_and_scoring_seconds_std_population": 0.0
+    }
+  ],
+  "complete_seven_target_averages": {
+    "full": {
+      "AUROC": 0.6317062362101701,
+      "AP": 0.16300259387517854
+    }
+  },
+  "seed_std_note": "population std over specified pair seeds with fixed SVD seed; not source-domain std in Table 2"
+}

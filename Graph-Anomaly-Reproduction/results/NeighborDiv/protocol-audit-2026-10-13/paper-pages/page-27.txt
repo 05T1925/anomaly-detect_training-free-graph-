@@ -1,0 +1,51 @@
+Table 18: AUC under controlled homophily sweep on synthetic SBM graphs (n=2000, k=5). TypeH: over-homogeneous anomalies; Type-D: over-diverse anomalies; Mixed: both types combined.
+Results averaged over 3 random seeds. Bold indicates best per setting.
+Anomaly Type Method h=0.1 h=0.3 h=0.5 h=0.7 h=0.9
+Type-H
+NeighborDiv (ours) 0.998 0.995 0.978 0.933 0.799
+NRS 0.752 0.700 0.677 0.634 0.537
+AMEN-Ego 0.523 0.531 0.548 0.558 0.528
+Type-D
+NeighborDiv (ours) 0.785 0.778 0.880 0.847 0.362
+NRS 0.541 0.481 0.504 0.600 0.740
+AMEN-Ego 0.594 0.626 0.580 0.530 0.645
+Mixed
+NeighborDiv (ours) 0.859 0.864 0.915 0.876 0.522
+NRS 0.619 0.580 0.588 0.620 0.654
+AMEN-Ego 0.534 0.549 0.543 0.515 0.541
+understand this unusually large margin and verify that NeighborDiv produces a meaningful ranking
+on T-Finance, we provide four complementary post-hoc diagnostics: (i) the precision–recall curve
+under three sampling configurations, (ii) Precision@K at multiple operating points, (iii) the score
+distribution separability between normal and anomalous nodes, and (iv) a comparison of the observed
+gap against the existing baseline variance reported in Table 2.
+Precision–recall curve and top-K precision. Figure 3 plots the precision–recall curve of our
+method on T-Finance under three sampling configurations (Full, k=100, k=50). The curve is smooth
+and remains substantially above the random-classifier baseline over a wide recall range. The three
+sampling configurations produce closely aligned curves (AP 0.6067, 0.5888, 0.5619), with Full dominating as expected. This indicates that the ranking quality is not sensitive to the sampling realization
+and that the reported AP is driven by a uniformly ordered score rather than a few extreme values.
+Table 19 further reports Precision@K for K ∈ {100, 500, 1000, 5000}, where K spans roughly 5.5%
+to 277% of the total anomaly count (1,803). Under the Full configuration, Precision@500 = 0.830
+(i.e., 415 of the top 500 candidates are true anomalies), and Precision@1000 = 0.804, confirming
+that the top of the ranking is densely populated with genuine anomalies across multiple operating
+points rather than in only a narrow region.
+0.0 0.2 0.4 0.6 0.8 1.0
+Recall
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Precision
+Precision-Recall Curve on T-Finance
+Full
+k=100
+k=50
+Random
+Figure 3: Precision–recall curve of our method on T-Finance under three sampling configurations.
+The dashed gray line indicates the random-classifier baseline. NeighborDiv maintains high precision
+across a wide recall range, and sampled variants closely track exhaustive computation.
+Score distribution separability. Figure 4 shows the distribution of our method’s anomaly scores
+on T-Finance, split by ground-truth label. The two distributions are cleanly separated: normal nodes
+concentrate around a sharp mode near score −0.5 with mean −0.121 and standard deviation 0.794,
+27

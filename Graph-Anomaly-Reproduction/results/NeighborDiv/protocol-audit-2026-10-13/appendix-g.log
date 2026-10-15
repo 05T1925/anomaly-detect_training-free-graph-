@@ -1,0 +1,4 @@
+/home/lwt2024212936/.venvs/tfgad/lib/python3.8/site-packages/scipy/sparse/_index.py:146: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+Matplotlib unavailable; wrote vector SVG figures and numerical diagnostics.
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/appendix-g-corrected

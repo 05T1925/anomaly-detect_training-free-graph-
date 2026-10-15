@@ -1,0 +1,6 @@
+{
+  "scripts/audit_projection_and_moments.py": "cc3ea50007ced72b6c26909c733d57fec9d31e61fdc859f89268981bc0073b0a",
+  "src/data.py": "7976b38be1e1b140d8bda7242fec20f0e10e5309b26c509ee4c9ed96817e550e",
+  "src/neighbordiv.py": "d1b3755e0e0e39da45e67deb44d965dfa83fab2a7a884be2a010b78c2f7faed1",
+  "configs/paper_experiments.json": "badc4aa18ebbd3441d09aa57b36852cdeaffd880a32cfae7b1ae691dad85beec"
+}

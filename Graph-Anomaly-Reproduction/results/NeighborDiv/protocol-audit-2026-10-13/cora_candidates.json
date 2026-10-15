@@ -1,0 +1,41 @@
+[
+  {
+    "file": "cora-aligngad.mat",
+    "nodes": 2708,
+    "adjacency_nnz": 11604,
+    "undirected_edges": 5802,
+    "valid": 2233,
+    "degree_one": 475,
+    "isolated": 0,
+    "anomalies": 150,
+    "sha256": "1f67271a4355d88efbc11fb4d67419c2e83f8f0f8bc5c5703d4cedb8f2fcca37",
+    "AUROC": 0.6846077664842325,
+    "AP": 0.09779039581106895
+  },
+  {
+    "file": "cora-cola.mat",
+    "nodes": 2708,
+    "adjacency_nnz": 11606,
+    "undirected_edges": 5803,
+    "valid": 2239,
+    "degree_one": 469,
+    "isolated": 0,
+    "anomalies": 150,
+    "sha256": "dfc945bfe11d742c2a6b5faf1d92bab3d20408e15984172c12d02b79e35836f8",
+    "AUROC": 0.667157935887412,
+    "AP": 0.0902362811300456
+  },
+  {
+    "file": "cora-freegad.mat",
+    "nodes": 2708,
+    "adjacency_nnz": 11604,
+    "undirected_edges": 5802,
+    "valid": 2233,
+    "degree_one": 475,
+    "isolated": 0,
+    "anomalies": 150,
+    "sha256": "1f67271a4355d88efbc11fb4d67419c2e83f8f0f8bc5c5703d4cedb8f2fcca37",
+    "AUROC": 0.6846077664842325,
+    "AP": 0.09779039581106895
+  }
+]

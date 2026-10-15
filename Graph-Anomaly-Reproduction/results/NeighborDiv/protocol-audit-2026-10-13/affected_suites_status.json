@@ -1,0 +1,95 @@
+[
+  {
+    "command": [
+      "/home/lwt2024212936/.venvs/cola/bin/python",
+      "-u",
+      "/mnt/c/Users/28641/Desktop/\u8bba\u6587\u79d1\u7814-\u6c5f\u6743\u5b66\u957f/Graph-Anomaly-Reproduction/Repositories/NeighborDiv/scripts/run_paper_experiments.py",
+      "--suite",
+      "sampling",
+      "--datasets",
+      "Cora",
+      "Tolokers",
+      "Disney",
+      "Questions",
+      "--full-backend",
+      "moments",
+      "--output-root",
+      "/mnt/c/Users/28641/Desktop/\u8bba\u6587\u79d1\u7814-\u6c5f\u6743\u5b66\u957f/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments",
+      "--execute"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "/home/lwt2024212936/.venvs/cola/bin/python",
+      "-u",
+      "/mnt/c/Users/28641/Desktop/\u8bba\u6587\u79d1\u7814-\u6c5f\u6743\u5b66\u957f/Graph-Anomaly-Reproduction/Repositories/NeighborDiv/scripts/run_paper_experiments.py",
+      "--suite",
+      "rank",
+      "--datasets",
+      "Cora",
+      "Questions",
+      "--full-backend",
+      "moments",
+      "--output-root",
+      "/mnt/c/Users/28641/Desktop/\u8bba\u6587\u79d1\u7814-\u6c5f\u6743\u5b66\u957f/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments",
+      "--execute"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "/home/lwt2024212936/.venvs/cola/bin/python",
+      "-u",
+      "/mnt/c/Users/28641/Desktop/\u8bba\u6587\u79d1\u7814-\u6c5f\u6743\u5b66\u957f/Graph-Anomaly-Reproduction/Repositories/NeighborDiv/scripts/run_paper_experiments.py",
+      "--suite",
+      "statistic",
+      "--datasets",
+      "Cora",
+      "Tolokers",
+      "Disney",
+      "Questions",
+      "--full-backend",
+      "moments",
+      "--output-root",
+      "/mnt/c/Users/28641/Desktop/\u8bba\u6587\u79d1\u7814-\u6c5f\u6743\u5b66\u957f/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments",
+      "--execute"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "/home/lwt2024212936/.venvs/cola/bin/python",
+      "-u",
+      "/mnt/c/Users/28641/Desktop/\u8bba\u6587\u79d1\u7814-\u6c5f\u6743\u5b66\u957f/Graph-Anomaly-Reproduction/Repositories/NeighborDiv/scripts/run_paper_experiments.py",
+      "--suite",
+      "low-degree",
+      "--datasets",
+      "Cora",
+      "Tolokers",
+      "Disney",
+      "Questions",
+      "--full-backend",
+      "moments",
+      "--output-root",
+      "/mnt/c/Users/28641/Desktop/\u8bba\u6587\u79d1\u7814-\u6c5f\u6743\u5b66\u957f/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments",
+      "--execute"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "/home/lwt2024212936/.venvs/cola/bin/python",
+      "-u",
+      "/mnt/c/Users/28641/Desktop/\u8bba\u6587\u79d1\u7814-\u6c5f\u6743\u5b66\u957f/Graph-Anomaly-Reproduction/Repositories/NeighborDiv/scripts/run_entropy_bin_sensitivity.py",
+      "--datasets",
+      "Cora",
+      "Tolokers",
+      "Disney",
+      "Questions",
+      "--output-dir",
+      "/mnt/c/Users/28641/Desktop/\u8bba\u6587\u79d1\u7814-\u6c5f\u6743\u5b66\u957f/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/entropy-corrected"
+    ],
+    "exit_code": 0
+  }
+]

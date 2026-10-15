@@ -1,0 +1,66 @@
+loading YelpChi from /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/YelpChi/yelpchi-freegad.mat
+/home/lwt2024212936/.venvs/tfgad/lib/python3.8/site-packages/scipy/sparse/_index.py:146: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+YelpChi loaded: nodes=23831, features=8, labels=1217, load_seconds=0.502
+YelpChi LCC: AUROC=0.5 AP=0.051067936721077588 scoring_seconds=1.137686120
+/home/lwt2024212936/.venvs/tfgad/lib/python3.8/site-packages/scipy/sparse/_index.py:146: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+YelpChi NRS: AUROC=0.54328206456410144 AP=0.061266041452513506 scoring_seconds=0.147186860
+/home/lwt2024212936/.venvs/tfgad/lib/python3.8/site-packages/scipy/sparse/_index.py:146: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+YelpChi PCD: AUROC=0.60047927349779839 AP=0.076369327255886202 scoring_seconds=0.151189025
+loading Reddit from /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Reddit/reddit-freegad.mat
+Reddit loaded: nodes=10984, features=8, labels=366, load_seconds=0.370
+/home/lwt2024212936/.venvs/tfgad/lib/python3.8/site-packages/scipy/sparse/_index.py:146: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+Reddit LCC: AUROC=0.5 AP=0.033321194464675893 scoring_seconds=0.917458822
+/home/lwt2024212936/.venvs/tfgad/lib/python3.8/site-packages/scipy/sparse/_index.py:146: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+Reddit NRS: AUROC=0.49345193799167719 AP=0.033556002792584652 scoring_seconds=0.105986108
+/home/lwt2024212936/.venvs/tfgad/lib/python3.8/site-packages/scipy/sparse/_index.py:146: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+Reddit PCD: AUROC=0.50051387117658752 AP=0.033291398040054779 scoring_seconds=0.083112470
+loading T-Finance from /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/T-Finance/tfinance-source.zip
+/home/lwt2024212936/.venvs/tfgad/lib/python3.8/site-packages/scipy/sparse/_index.py:146: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+T-Finance loaded: nodes=39357, features=8, labels=1804, load_seconds=39.664
+T-Finance LCC: AUROC=0.63978310506664249 AP=0.071775954751325949 scoring_seconds=644.590767639
+/home/lwt2024212936/.venvs/tfgad/lib/python3.8/site-packages/scipy/sparse/_index.py:146: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+T-Finance NRS: AUROC=0.51073371364628017 AP=0.049049729536275399 scoring_seconds=8.438207709
+/home/lwt2024212936/.venvs/tfgad/lib/python3.8/site-packages/scipy/sparse/_index.py:146: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+T-Finance PCD: AUROC=0.59831602082213087 AP=0.079516410064368562 scoring_seconds=6.987601192
+loading Tolokers from /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Tolokers/tolokers.npz
+/home/lwt2024212936/.venvs/tfgad/lib/python3.8/site-packages/scipy/sparse/_index.py:146: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+Tolokers loaded: nodes=11758, features=8, labels=2566, load_seconds=0.513
+Tolokers LCC: AUROC=0.50268566926270908 AP=0.20483893130846326 scoring_seconds=7.461939790
+/home/lwt2024212936/.venvs/tfgad/lib/python3.8/site-packages/scipy/sparse/_index.py:146: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+Tolokers NRS: AUROC=0.55582559506487395 AP=0.28600005219884056 scoring_seconds=0.124535833
+/home/lwt2024212936/.venvs/tfgad/lib/python3.8/site-packages/scipy/sparse/_index.py:146: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+Tolokers PCD: AUROC=0.52786247250141949 AP=0.21486563426932753 scoring_seconds=0.231880164
+loading Disney from /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Disney/disney-dominant.mat
+/home/lwt2024212936/.venvs/tfgad/lib/python3.8/site-packages/scipy/sparse/_index.py:146: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+Disney loaded: nodes=124, features=8, labels=6, load_seconds=0.041
+Disney LCC: AUROC=0.65748587570621486 AP=0.10201753961728813 scoring_seconds=0.005775993
+/home/lwt2024212936/.venvs/tfgad/lib/python3.8/site-packages/scipy/sparse/_index.py:146: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+Disney NRS: AUROC=0.51412429378531066 AP=0.062582760202215898 scoring_seconds=0.004877791
+/home/lwt2024212936/.venvs/tfgad/lib/python3.8/site-packages/scipy/sparse/_index.py:146: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+Disney PCD: AUROC=0.56214689265536721 AP=0.067847150523189834 scoring_seconds=0.005277335
+loading Questions from /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Questions/questions.npz
+/home/lwt2024212936/.venvs/tfgad/lib/python3.8/site-packages/scipy/sparse/_index.py:146: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+Questions loaded: nodes=48921, features=8, labels=1460, load_seconds=5.126
+Questions LCC: AUROC=0.4922778269569853 AP=0.029764900905270775 scoring_seconds=6.536146596
+/home/lwt2024212936/.venvs/tfgad/lib/python3.8/site-packages/scipy/sparse/_index.py:146: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+Questions NRS: AUROC=0.47900820803699529 AP=0.029765282549067549 scoring_seconds=0.294804399
+/home/lwt2024212936/.venvs/tfgad/lib/python3.8/site-packages/scipy/sparse/_index.py:146: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+Questions PCD: AUROC=0.47040858781528766 AP=0.027337631733938959 scoring_seconds=0.290497583

@@ -1,0 +1,43 @@
+{
+  "paper_section": "Appendix F, controlled homophily sweep",
+  "n": 2000,
+  "communities": 5,
+  "community_sizes": [
+    400,
+    400,
+    400,
+    400,
+    400
+  ],
+  "expected_average_degree": 15,
+  "feature_dimensions": 50,
+  "homophily_values": [
+    0.1,
+    0.3,
+    0.5,
+    0.7,
+    0.9
+  ],
+  "generation_seeds": [
+    0,
+    1,
+    2
+  ],
+  "anomaly_types": [
+    "Type-H",
+    "Type-D",
+    "Mixed"
+  ],
+  "anomalies_per_type": 50,
+  "svd_random_state": 0,
+  "neighbor_div_pair_mode": "Full",
+  "local_protocol_choices": [
+    "target p_in and p_out allocate expected degree 15 in proportions h and 1-h",
+    "each injected node keeps its sampled background degree after rewiring",
+    "rewired endpoints are sampled without replacement from normal nodes; Type-D samples uniformly over nodes, which gives equal-sized communities equal probability",
+    "graph/features/rewiring seeds 0, 1, 2 are local choices; paper specifies three seeds but does not publish values"
+  ],
+  "reference_table": "Table 18 reports AUC only; this run also records AP as an additional local metric",
+  "runs_csv": "runs.csv",
+  "summary_csv": "summary.csv"
+}

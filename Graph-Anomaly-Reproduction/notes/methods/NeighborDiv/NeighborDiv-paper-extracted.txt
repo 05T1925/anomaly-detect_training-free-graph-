@@ -1,0 +1,1569 @@
+NeighborDiv: Training-free Zero-shot Generalist
+Graph Anomaly Detection via Neighbor Diversity
+Kaifeng Wei∗
+Netease Yidun AI Lab
+Hangzhou, China
+hzweikaifeng@corp.netease.com
+Teng Liu∗
+School of Software Technology
+Zhejiang University
+Ningbo, China
+liuteng2@zju.edu.cn
+Liang Dong
+School of Advanced Technology
+Xi’an Jiaotong-Liverpool University
+Suzhou, China
+brady118899@gmail.com
+Xiubo Liang†
+School of Software Technology
+Zhejiang University
+Ningbo, China
+xiubo@zju.edu.cn
+Yuke Li†
+Netease Yidun AI Lab
+Hangzhou, China
+liyuke@corp.netease.com
+Abstract
+Graph Anomaly Detection (GAD) is increasingly shifting to Generalist GAD
+(GGAD) for cross-domain "one-for-all" detection, but existing GGAD methods
+predominantly rely on the neighbor consistency principle, falling into theNode-
+to-Neighbor Consistency Paradigmfor anomaly quantification. These methods
+suffer from complex training pipelines, heavy training data dependency, high
+computational costs, and unstable cross-domain generalization. To address these
+limitations, we propose NeighborDiv, a training-free generalist graph anomaly
+detection framework based on neighbor diversity. Departing from the dominant
+Node-to-Neighbor Consistency Paradigm, we shift the focus to theNeighbor-to-
+Neighbor Diversity Paradigm, and uncover that the internal structural dispersion
+of a node’s neighbor set is a powerful, independently discriminative anomaly
+signal. We quantify neighbor diversity via the variance of inter-neighbor feature
+similarities, which captures how a node organizes its local graph environment, and
+operates independently of conventional node-to-neighbor consistency frameworks.
+Extensive experiments under two standard GGAD evaluation paradigms show
+NeighborDiv achieves state-of-the-art performance, with relative gains of 10.25%
+in average AUC and 17.78% in average AP over the second-best baseline under
+Single-Domain Independent Training (SDIT), and 6.89%/9.58% in AUC/AP under
+Unified Multi-Domain Training (UMDT), respectively. Notably, NeighborDiv
+yields zero performance volatility across all datasets, eliminating training-set
+dependency and establishing a lightweight and highly practical GGAD framework.
+∗Equal contribution
+†Corresponding author
+Preprint.
+arXiv:2605.20879v1  [cs.LG]  20 May 2026
+1 Introduction
+Graph Anomaly Detection (GAD) has emerged as a critical research direction in graph data mining,
+aiming to identify nodes, edges, or subgraphs that deviate significantly from normal patterns [ 1,
+18, 21, 26]. Conventional GAD methods typically follow a "one-model-for-one-dataset" pattern,
+requiring specialized training or fine-tuning for each target graph [ 4, 16, 24, 2]. This paradigm
+incurs high computational costs, relies heavily on sufficient in-domain data, and suffers from poor
+generalizability when transferred to unseen graphs or diverse domains.
+To address these inherent limitations of dataset-specific GAD, Generalist Graph Anomaly Detection
+(GGAD) has emerged as a promising new paradigm, targeting "one-for-all" anomaly detection across
+diverse graph domains without target-specific retraining or fine-tuning [17, 20, 25, 36]. The core goal
+of GGAD is to learn universal anomaly patterns from auxiliary datasets, enabling direct zero-shot
+inference on unseen graphs, thus drastically reducing data dependency and deployment costs in
+real-world applications. Recent advances in GGAD have explored various technical routes, including
+in-context learning [17], neighborhood prompt learning [20], graph foundation model-based universal
+representation learning [25], and invariant feature learning for cross-domain adaptation [36]. Despite
+their effectiveness, a fundamental commonality unifies the vast majority of existing state-of-the-art
+GGAD methods: they are built on the neighbor consistency principle, rooted in the cross-domain
+generalizable homophily assumption of graph data. This principle guides these methods to quantify
+anomaly scores via the consistency degree between a target node and its neighborhood, and all these
+methods are exclusively constrained within the Node-to-Neighbor Consistency Paradigm [24, 37, 7].
+This dominant Node-to-Neighbor Consistency Paradigm, however, suffers from three critical inherent
+bottlenecks that severely limit the practicality of existing GGAD methods. First, all these methods
+require complex training pipelines, including pre-training on large auxiliary datasets, prompt tuning,
+and invariant feature learning, which significantly increase model complexity and computational
+overhead. Second, their generalization performance remains highly dependent on the quality, scale,
+and domain diversity of the training data, leading to severe performance degradation when facing
+unseen domains with large distribution shifts, and limiting their applicability in scenarios where
+training data is scarce or inaccessible. Third, training-based GGAD methods inevitably suffer from
+non-negligible performance volatility across different training runs and source dataset selections,
+making their deployment in high-stakes industrial scenarios (e.g., financial anti-fraud) unreliable.
+Motivated by these critical bottlenecks and the universal homophily-based insight in GAD, this paper
+explores a fundamental, under-explored research question: Can we design a simple yet effective
+generalist graph anomaly detection algorithm that leverages the homophily principle from a brand-
+new perspective, without relying on any training process, while completely breaking free from the
+dominant Node-to-Neighbor Consistency Paradigm? Existing GGAD methods have exhaustively
+explored the anomaly signal derived from node-to-neighbor consistency, but have largely overlooked
+a highly discriminative, independent anomaly signal source: the neighbor-to-neighbor diversity within
+the node’s own neighbor set, i.e., the internal structural dispersion of the neighbor ensemble. Normal
+nodes in real-world graphs typically conform to natural community structures, and their neighbors
+form a relatively homogeneous ensemble; in contrast, anomalous nodes often organize their local
+neighborhoods in an atypical way, either forming an overly uniform neighbor set or connecting to
+highly heterogeneous groups from multiple disjoint communities. This behavioral pattern of "how a
+node organizes its local graph environment" cannot be captured by the node-to-neighbor consistency
+metric, but can be fully characterized by the neighbor-to-neighbor diversity of its local neighborhood.
+Based on this core insight, we propose NeighborDiv, a training-free zero-shot generalist graph
+anomaly detection framework. Departing completely from the dominant Node-to-Neighbor Consis-
+tency Paradigm, we shift the core focus of anomaly quantification from "node-to-neighbor consistency
+matching" to "neighbor-to-neighbor diversity modeling", and formally propose the Neighbor-to-
+Neighbor Diversity Paradigm for GGAD. Specifically, we defineNeighbor Diversityas the variance
+of pairwise feature similarities among a node’s one-hop neighbors, which directly quantifies the
+structural dispersion of the neighbor ensemble. This metric operates independently without any
+residual-based framework, and naturally distinguishes normal nodes with concentrated neighbor
+diversity from anomalous nodes with significantly deviated diversity distributions. By eliminating
+pre-training, fine-tuning, and auxiliary data dependency entirely, NeighborDiv achieves zero perfor-
+mance volatility across all datasets, while maintaining strong cross-domain generalization on unseen
+graphs. Our key contributions are summarized as follows:
+2
+• A new paradigm for GGAD.We identify neighbor set internal dispersion as a discrimi-
+native, independently valid anomaly signal for zero-shot cross-domain detection, shifting
+GGAD’s core focus from the conventional Node-to-Neighbor Consistency Paradigm to our
+proposed Neighbor-to-Neighbor Diversity Paradigm. To our knowledge, this is the first
+training-free GGAD framework without dependency on training data.
+• Dual-sided neighbor diversity anomaly quantification.We propose Neighbor Diversity,
+a second-order statistic for anomaly quantification that fundamentally differs from first-
+order metrics in dominant paradigms. It enables robust unified detection of both overly
+homogeneous and heterogeneous anomalous neighborhoods, with adaptive graph-level
+calibration free of domain-specific tuning or training.
+• SOTA and stable performance.Extensive experiments under two standard GGAD pro-
+tocols show NeighborDiv achieves state-of-the-art results, delivering average relative im-
+provements of 10.25% in AUC and 17.78% in AP over the strongest learning-based GGAD
+baseline under SDIT, and 6.89%/9.58% (AUC/AP) under UMDT, with zero performance
+volatility across all datasets.
+2 Related Work
+Graph Anomaly Detection.Graph anomaly detection (GAD) aims to identify graph elements that
+deviate significantly from normal patterns [18, 26]. Existing GAD methods are typically categorized
+into supervised and unsupervised based on supervision information. Supervised GAD treats detection
+as binary classification, optimized on labeled nodes [30]. Early methods use GNNs like GCN [14]
+or GAT [31] to learn node representations. Specialized GNNs further enhance GAD performance:
+BWGNN [29] and BernNet [9] utilize spectral filters; GHRN [8] focus on heterophily awareness;
+CAGAD [34] introduces counterfactual data augmentation for detection robustness; while CARE-
+GNN [5] employs reinforcement learning for robust aggregation. However, supervised methods
+heavily rely on labels and generalize poorly across domains. Unsupervised GAD avoids costly
+annotations via three main branches. Reconstruction-based methods [4, 7] use autoencoders, treating
+high reconstruction errors as anomalies. Contrastive learning-based methods [16, 6] maximize node-
+to-neighborhood consistency to distinguish anomalies. Auxiliary task-based methods [ 13, 24, 3]
+leverage local homophily or self-supervised pretext tasks for detection. These methods still follow
+the "one-model-for-one-dataset" pattern, failing to generalize across domains.
+Generalist Graph Anomaly Detection.Generalist Graph Anomaly Detection (GGAD) has
+emerged as a "one-for-all" paradigm, aiming for cross-domain detection without target-domain
+retraining or fine-tuning [17, 20, 25, 36]. ARC [17] pioneers this field via in-context learning, utiliz-
+ing feature alignment and a cross-attentive module for few-shot inference. IA-GGAD [36] enhances
+zero-shot robustness by mitigating feature and structure shifts through invariant and affinity learning.
+UNPrompt [20] employs neighborhood prompt learning and attribute normalization, using attribute
+predictability as a universal anomaly measure. AnomalyGFM [ 25] leverages a graph foundation
+model to mine shared anomaly patterns through universal representations. However, existing GGAD
+methods are constrained by the Node-to-Neighbor Consistency Paradigm, heavy training dependency,
+and unstable cross-domain generalization. We address these with a training-free GGAD framework
+built on our novel Neighbor-to-Neighbor Diversity Paradigm.
+Intra-neighborhood Structural Metrics for Anomaly Detection.Characterizing the internal
+structure of node neighborhoods has a long history in graph mining and anomaly detection. Classical
+topological measures, including local clustering coefficient [32] and recursive ego-network feature
+extractor ReFeX [10], focus on topological connectivity patterns but cannot capture attribute-level
+heterogeneity within neighborhoods. For attributed graphs, the seminal AMEN [ 22] performs
+neighborhood anomaly ranking via ego-anchored attribute decomposition, while Akoglu et al. [1]
+provide a comprehensive survey of related neighborhood dispersion indicators. However, existing
+intra-neighborhood metrics are either topology-only, ego-anchored, or require downstream supervised
+learning, and none have been validated as training-free, independently discriminative anomaly scorers
+for zero-shot generalist graph anomaly detection (GGAD).
+3
+3 Method
+We instantiate our proposed Neighbor-to-Neighbor Diversity Paradigm into the NeighborDiv frame-
+work through three steps illustrated in Figure 1. Our method consists of three steps: (1) projecting
+raw node features into a low-dimensional space for stable similarity estimation; (2) computing a local
+diversity statistic from pairwise similarities among neighbors; and (3) calibrating this statistic against
+a graph-level reference to obtain anomaly scores.
+0.91
+0.87
+0.35
+0.62
+0.18...
+Neighbor-Pair
+Construction
+Neighbor Pair  ��,�� 
+Neighbor-Pair 
+Constrution 
+Pairwise 
+Cosine
+Similarity
+Typical neighborhood
+Normal 
+V
+�� = Var �� 
+sim ��,�� 
+Low variance
+Anomaly 
+High variance
+Anomaly  
+Low variance: overly uniform neighborhood
+High variance: mixed or disordered neigborhood
+Input Attributed Graph
+Target Node (��)
+��
+Global Typical 
+Diversity 
+�1
+�2
+�3
+�� …
+� = median({��∣�� ≥ 2} 
+Anomaly Score
+�� = |��− � |
+� (��) = zscore(�� 
+Normalizing
+Higher score → more anomalous
+↓ 
+↓ 
+↓ 
+Optional Thresholding
+Used for estimating anomaly 
+account, not for AUC
+� (��) > �� + λ� �
+Figure 1: High-level overview of NeighborDiv, our training-free zero-shot generalist graph anomaly
+detection framework, which quantifies anomalies via the absolute deviation of a node’s neighbor-to-
+neighbor feature similarity variance from the graph’s median neighborhood diversity level.
+3.1 Low-dimensional Feature Projection
+Raw node attributes in attributed graphs may be high-dimensional, noisy, and inconsistently scaled,
+which destabilizes pairwise similarity estimation in the original space. We therefore project them into
+a low-dimensional space before measuring neighborhood diversity.
+Let G= (V, E, X) be an attributed graph with node set V={v 1, . . . , vn}, edge set E, adjacency
+matrix A∈ {0,1} n×n, and attribute matrix X∈R n×d. We perform truncated singular value
+decomposition (SVD):
+X=UΣV ⊤, X (r) =U [:,1:r]Σ1:r,(1)
+retaining the top r components (r=8 in all experiments), and apply ℓ1 row-wise normalization to
+obtain ˜X with rows ˜xi. This suppresses noisy/redundant dimensions and makes pairwise similarity
+invariant to node-wise scale differences.
+3.2 Neighbor Diversity
+For an arbitrary nodev i, let its one-hop neighbor set be
+N(v i) ={v j |A ij = 1},(2)
+and let its degree be
+di =|N(v i)|.(3)
+Pairwise similarity.Pairwise similarity between neighbors is computed via cosine similarity, which
+is scale-invariant and focuses on feature directions. For two nodesv p andv q,
+sim(vp, vq) = ˜x⊤
+p ˜xq
+∥˜xp∥2∥˜xq∥2
+.(4)
+4
+The ℓ1 normalization removes magnitude inconsistency across nodes, while the cosine form further
+ensures that the similarity depends only on feature directions. In implementation, Eq. (4) reduces
+to an inner product after an additional ℓ2 normalization step applied internally to the similarity
+computation.
+Neighbor diversity by sampled pairwise dispersion.If di ≥2 , the neighbors of vi form a set
+of unordered node pairs. A direct implementation would enumerate all
+ di
+2
+
+pairs and compute the
+variance of their similarities. However, this becomes expensive for high-degree nodes. To make the
+method scalable, we adopt a sampling-based approximation.
+Let
+Pi ={(v p, vq)|v p, vq ∈ N(v i), p < q}(5)
+denote the set of all unordered neighbor pairs, and let
+Mi =|P i|=
+di
+2
+
+.(6)
+For each node, we uniformly sample at mostkpairs fromP i without replacement:
+ePi ⊆ P i,| ePi|= min(k, M i).(7)
+We then collect the sampled pairwise similarities:
+eSi =
+n
+sim(vp, vq)|(v p, vq)∈ ePi
+o
+.(8)
+Theneighbor diversityof nodev i is defined as the variance of these sampled similarities:
+Di = Var(eSi).(9)
+This quantity captures the dispersion of internal relations within the neighborhood of vi. When
+neighbors are very similar to each other and form an overly uniform local structure, eSi becomes
+concentrated and Di tends to be small. In contrast, when neighbors belong to several very different
+local groups, eSi becomes more dispersed and Di tends to be large. Therefore, Di measures the
+irregularity of the neighbor-neighbor structure rather than the direct discrepancy between the central
+node and its neighbors.
+Discussion.The above sampling procedure reduces per-node cost from O(d2
+i ) to O(min(k, d2
+i ))
+and empirically serves as a stable Monte Carlo estimator of the full pairwise-similarity variance
+(theoretically verified in Appendix A.4, empirically validated in Section 4.3). Conceptually, Di
+differs from classical neighborhood descriptors in three respects: it operates in attribute space rather
+than edge topology; it is a prototype-free second-order statistic over neighbor pairs, in contrast to first-
+order ego-anchored scores such as AMEN; and the median-calibrated deviation yields a two-sided
+score sensitive to both overly homogeneous and heterogeneous neighborhoods. Extended analysis
+and empirical comparison against LCC, NRS, PCD, and AMEN-Ego are deferred to Appendix D and
+Section 4.3 respectively.
+3.3 Global Calibration and Anomaly Scoring
+A local diversity value Di alone is not sufficient to determine whether node vi is anomalous, because
+the typical diversity level may vary across graphs. We therefore calibrate the local statistic against a
+graph-level reference.
+Graph-level reference.We first define the set of valid nodes:
+Vvalid ={v i |d i ≥2}.(10)
+Among these nodes, we use the median neighbor diversity as the global reference level:
+Dmed = Median ({Di |v i ∈ Vvalid}).(11)
+The median is adopted instead of the mean because it is more robust to extreme values in unsupervised
+settings. We also perform an ablation study on the choice of this global aggregation statistic.
+5
+Deviation.We then measure how far the neighborhood diversity of each node deviates from this
+reference:
+∆i =|D i −D med|.(12)
+This absolute deviation is sensitive to both types of atypical neighborhoods: overly homogeneous
+neighborhoods with unusually small diversity and overly heterogeneous neighborhoods with unusually
+large diversity.
+To make the deviations comparable across nodes, we standardize them on the valid-node set:
+si = ∆i −µ ∆
+σ∆
+.(13)
+where µ∆ and σ∆ are the mean and standard deviation of ∆i over Vvalid, respectively. The resulting
+si is used as the anomaly score of nodev i.
+Sparse-node handling.For nodes with di <2 , neighbor diversity is undefined because no valid
+neighbor pair can be formed. We assign such nodes a neutral score si = 0, which by construction
+of Eq. (13) coincides with the mean of the standardized score distribution over valid nodes. This
+keeps all anomaly scores on a unified scale and avoids introducing scale-induced bias from a separate
+scoring function.We further evaluate the sensitivity of this design choice in Appendix E.5.
+Notably, the anomaly score does not attempt to estimate whether a node is "normal-like" in an absolute
+sense. Instead, it measures whether the internal structure induced by that node’s neighborhood deviates
+significantly from the graph’s typical neighborhood organization.
+3.4 Binary Decision Rule
+When binary anomaly predictions are required, we apply a simple global threshold on the continuous
+anomaly scores. Let µs and σs denote the mean and standard deviation of {si}n
+i=1, respectively. We
+define the threshold as
+τ=µ s +λσ s,(14)
+whereλis a hyperparameter.
+The final binary prediction is given by
+ˆyi =
+1,ifs i > τ,
+0,otherwise. (15)
+whereˆyi = 1indicates that nodev i is predicted as anomalous.
+It is worth noting that this thresholding step is only used to estimate the anomalous node set or
+anomaly count. Ranking-based evaluation metrics such as AUC and AP are determined solely by the
+continuous anomaly scoress i.
+4 Experiments
+4.1 Experimental Setup
+Datasets.We use four source training datasets: Facebook [ 35], Amazon [5], PubMed [28], and
+Elliptic [33]. For testing, we employ seven target datasets where Cora [ 19], YelpChi [5], Reddit
+[15], and T-Finance [29] are intra-domain samples consistent with training domains, and Tolokers
+[23], Disney [ 27], and Questions [ 23] are cross-domain samples from unseen domains. Such a
+domain-aware train-test partition ensures comprehensive and reliable evaluation. Our method is
+training-free and requires no training data. Detailed dataset statistics are provided in Appendix B.1.
+Baselines.We compare with three mainstream paradigms: unsupervised GAD (AnomalyDAE [ 7],
+TAM [24], GADAM [3]), supervised GAD (GCN [14], GAT [31], BWGNN [29], GHRN [8]), and
+state-of-the-art zero-shot GGAD methods (AnomalyGFM [25], IA-GGAD [36], UNPrompt [20]).
+Detailed implementations are provided in Appendix B.3.
+6
+Table 1: AUC performance under the SDIT protocol. Each metric represents the mean result across
+four independent training datasets. (bold: highest value, underlined: second highest value)
+Method Cora YelpChi Reddit T-Finance Tolokers Disney Questions Avg
+Unsupervised GAD
+AnomalyDAE (ICASSP’20) 0.5591 0.4864 0.5206 0.3633 0.5170 0.4739 0.5081 0.4898
+TAM (NeurIPS’23) 0.7387 0.4983 0.5565 0.5232 0.5121 0.2359 0.5192 0.5120
+GADAM (ICLR’24) 0.5144 0.4844 0.5066 0.7431 0.5074 0.4686 0.4883 0.5304
+Supervised GAD
+GCN (ICLR’17) 0.4901 0.4258 0.5698 0.4180 0.4921 0.5424 0.5200 0.4940
+GAT (ICLR’18) 0.4868 0.5260 0.5149 0.4963 0.4777 0.4785 0.4801 0.4943
+BWGNN (ICML’22) 0.5013 0.4897 0.4854 0.4879 0.4627 0.4689 0.4679 0.4805
+GHRN (WWW’23) 0.5099 0.4696 0.4878 0.5855 0.4673 0.5107 0.4427 0.4962
+Generalist GAD
+UNPrompt (IJCAI’25) 0.6109 0.5368 0.5463 0.2327 0.4497 0.6385 0.4738 0.4984
+AnomalyGFM (KDD’25) 0.4388 0.4694 0.5391 0.5322 0.4740 0.6516 0.5099 0.5164
+IA-GGAD (NeurIPS’25) 0.88080.50730.58770.5768 0.4827 0.46120.6086 0.5864
+NeighborDiv (ours) 0.61660.61520.51220.9114 0.5624 0.72460.5832 0.6465
+Evaluation Metric.Following standard practice in graph anomaly detection research [ 25, 36,
+20, 17], we adopt two widely-used evaluation metrics, AUC (Area Under the ROC Curve) and AP
+(Average Precision), to comprehensively assess the performance of all compared methods. For both
+metrics, a higher value indicates superior anomaly detection capability.
+Implementation Details.All experiments are conducted in a fully unsupervised zero-shot setting.
+We fix the SVD projection dimension at r= 8 and the threshold coefficient at λ= 1.0 . Our method
+is implemented in PyTorch and requires no training or parameter optimization. Full implementation
+details are provided in Appendix B.4.
+4.2 Main Results
+To reconcile the inconsistent evaluation protocols in the existing GGAD literature and enable a
+fully fair and unbiased comparison with SOTA baselines, we evaluate NeighborDiv under two
+unified protocols: Single-Domain Independent Training (SDIT) and Unified Multi-Domain Training
+(UMDT). Full protocol alignment with prior works is detailed in Appendix B.2.
+Single-Domain Independent Training (SDIT).Table 1 reports average AUC across four source
+training sets and seven test sets, with aggregated metrics reducing training-set bias for robust general-
+ization ability measurement (per-training-set details in Appendix C.2). Notably, our training-free
+NeighborDiv yields SOTA average performance, showing relative gains of 10.25% (AUC) and
+17.78% (AP) over the strongest learning-based baseline IA-GGAD; full AP results are provided in
+Appendix C.1. Averaging across independent source datasets in SDIT eliminates source domain
+cherry-picking, and NeighborDiv yields zero performance volatility across all sets. This superiority
+is particularly remarkable as it bypasses the expensive training required by other GGAD algo-
+rithms, demonstrating that the proposed Neighbor-to-Neighbor Diversity Paradigm captures more
+fundamental and universal anomaly signals than traditional consistency-based learning models.
+The performance gap widens significantly under domain shift. While learning-based baselines (e.g.,
+UNPrompt [20] and AnomalyGFM [25]) perform competitively on intra-domain sets, they suffer
+catastrophic degradation on cross-domain benchmarks like Tolokers and Questions. Conversely,
+NeighborDiv maintains stable, high performance across all scenarios. This resilience suggests that
+baselines overfit to domain-specific features, whereas NeighborDiv utilizes neighbor diversity as a
+universal structural invariant that is robust to varying feature distributions. Consequently, our method
+serves as a more reliable generalist for real-world deployments with unknown or unlabeled target
+domains.
+Source-Domain Dependency Analysis.Reliance on auxiliary source data remains a fundamental
+bottleneck for learning-based GGAD methods. As shown in Table 2, baselines exhibit significant
+performance volatility across different source domains; for instance, the AUC of AnomalyGFM
+varies by 0.1096 on Tolokers. This instability reveals that existing models based on consistency
+inadvertently memorize domain distributions during training, failing to isolate truly universal anomaly
+7
+Table 2: Source-domain dependency under the SDIT protocol. Each metric represents the standard
+deviation of performance across four independent training datasets.
+Metric Method Cora YelpChi Reddit T-Finance Tolokers Disney Questions AvgStd
+AUC
+UNPrompt (IJCAI’25) 0.0261 0.0523 0.0176 0.0519 0.0293 0.0596 0.0385 0.0393
+AnomalyGFM (KDD’25) 0.0369 0.0040 0.0358 0.0959 0.1096 0.0246 0.0165 0.0462
+IA-GGAD (NeurIPS’25) 0.0026 0.0031 0.0056 0.0448 0.0059 0.0018 0.0113 0.0107
+NeighborDiv (ours)0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000
+AP
+UNPrompt (IJCAI’25) 0.0077 0.0096 0.0030 0.0019 0.0176 0.0287 0.0037 0.0103
+AnomalyGFM (KDD’25) 0.0067 0.0010 0.0030 0.0351 0.0582 0.0213 0.0010 0.0180
+IA-GGAD (NeurIPS’25) 0.0025 0.0009 0.0015 0.0269 0.0035 0.0005 0.0015 0.0053
+NeighborDiv (ours)0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000
+Table 3: AUC performance under the UMDT protocol. All learning-based methods are jointly trained
+on the union of four source domains. (bold: highest value, underlined: second highest value)
+Method Cora YelpChi Reddit T-Finance Tolokers Disney Questions Avg
+Unsupervised GAD
+AnomalyDAE (ICASSP’20) 0.6016 0.4307 0.4566 0.3096 0.5232 0.4782 0.5361 0.4766
+TAM (NeurIPS’23) 0.7338 0.4902 0.5590 0.5599 0.5095 0.2532 0.5108 0.5166
+GADAM (ICLR’24) 0.5111 0.4841 0.5237 0.7828 0.5347 0.4294 0.5066 0.5389
+Supervised GAD
+GCN (ICLR’17) 0.5705 0.44450.62170.5042 0.4787 0.5323 0.5447 0.5281
+GAT (ICLR’18) 0.4747 0.5581 0.5856 0.5000 0.3665 0.5000 0.5298 0.5021
+BWGNN (ICML’22) 0.5358 0.5012 0.5358 0.5612 0.3890 0.4986 0.5261 0.5068
+GHRN (WWW’23) 0.5632 0.4724 0.5083 0.7210 0.3809 0.5650 0.5212 0.5332
+Generalist GAD
+UNPrompt (IJCAI’25) 0.5519 0.5399 0.5312 0.2781 0.4438 0.5771 0.4626 0.4835
+AnomalyGFM (KDD’25) 0.4430 0.4675 0.4764 0.5411 0.46280.74720.5253 0.5233
+IA-GGAD (NeurIPS’25) 0.88090.5207 0.5862 0.6868 0.4770 0.45710.6251 0.6048
+NeighborDiv (ours) 0.61660.61520.51220.9114 0.56240.7246 0.5832 0.6465
+signals. While the zero variance of NeighborDiv is a natural consequence of its training-free design,
+its significance lies in the combination of stability and superior accuracy. By leveraging neighbor
+diversity as a structural invariant, NeighborDiv entirely eliminates the burden of source selection. It
+provides a deterministic framework that remains robust even in scenarios where learning paradigms
+falter due to overfitting on specific domains.
+Unified Multi-Domain Training (UMDT).We evaluate performance under the UMDT protocol
+where baselines leverage multi-domain joint training. As shown in Table 3, even against multi-domain
+jointly trained baselines, NeighborDiv delivers superior average performance, with a 6.89% higher
+average AUC than IA-GGAD; the corresponding AP gain is 9.58% (all relative improvements), with
+full results in Appendix C.1. Notably, on the complex T-Finance dataset, our method outperforms
+the second-best model by a large margin (0.9114 AUC). We provide specific diagnostic analyses in
+Appendix G to confirm the validity of our T-Finance results. While baselines suffer from feature
+washing and optimization conflicts across disparate datasets, NeighborDiv bypasses these pitfalls
+entirely due to its training-free nature. This demonstrates that a robust structural invariant, such as
+neighbor diversity, can outperform features learned through expensive multi-domain optimization,
+positioning NeighborDiv as a highly efficient yet powerful generalist for graph anomaly detection.
+4.3 Ablation Study
+We conduct ablation studies to examine three aspects of the proposed method: (1) the choice of
+diversity statistic and graph-level reference; (2) the distinctiveness of the captured signal relative
+to structure-based heuristics; and (3) the efficiency-performance trade-off of the sampling-based
+approximation. Representative results are summarized in Figure 2, with full per-dataset tables
+deferred to Appendix E.
+Neighborhood diversity and global reference.We compare four local diversity statistics (variance,
+standard deviation,mean, andentropy) and, for the variant that uses variance as the local statistic,
+two choices of graph-level reference (medianandmean).
+8
+Var
++Med
+Var
++Mean
+Std
++Med
+Mean
++Med
+Entropy
++Med
+0.0
+0.1
+0.2
+0.3
+0.4
+0.5
+0.6
+0.7
+0.8Average score across 7 datasets
+0.6465
+0.5787
+0.6305
+0.5726
+0.5365
+0.1762 0.1657
+0.1428 0.1479
+0.1144
+chosen
+(a) Diversity statistic & global reference
+Avg AUC
+Avg AP
+Cora YelpChiRedditT-FinanceTolokersDisneyQuestionsAvg
+0.3
+0.4
+0.5
+0.6
+0.7
+0.8
+0.9
+1.0AUC
+(b) Comparison with structure-based heuristics
+LCC NRS PCD AMEN-Ego Ours
+101
+102
+103
+104
+runtime (sec, log scale)
+2321.7s
+36.6s 32.6s
+63× faster
+Full k = 100 k = 50
+0.5
+0.6
+0.7
+0.8
+0.9
+1.0T-Finance score
+(c) T-Finance: efficiency–performance trade-off
+T-Finance runtime (s) AUC AP
+0.9114 0.9019 0.8927
+0.6067 0.5888
+0.5619
+Figure 2: Ablation studies of NeighborDiv. (a) Variance with median calibration gives the best
+overall performance; (b) Neighbor-to-neighbor diversity outperforms structure-based heuristics; (c)
+Neighbor-pair sampling greatly reduces runtime with limited performance loss.
+Figure 2(a) reports the average AUC and AP across the seven test datasets. Among all variants,
+variance + median achieves the highest average AUC (0.6465) and AP (0.1762). Replacing the
+median with the mean drops AUC to 0.5787, confirming the importance of robust global calibration.
+Standard deviation attains a comparable average AUC (0.6305) but a substantially worse AP (0.1428),
+suggesting that variance provides a more effective signal for ranking anomalous nodes. These results
+support variance + median as the default configuration.
+Comparison with structure-based heuristics.To verify that Neighbor Diversity captures a signal
+distinct from conventional neighborhood characterization approaches, we compare against four
+diagnostic baselines representing different paradigms:LCC(local clustering coefficient), a pure
+topological cohesion descriptor;NRS(neighborhood residual score), instantiating the classical node-
+to-neighbor consistency paradigm ;PCD(propagation consistency decay), a multi-hop cosine-based
+inconsistency score; andAMEN-Ego, an ego-anchored attributed normality score adapted from
+AMEN [22] for node-level scoring. To isolate the effect of the diversity statistic itself, all baselines
+are passed through the same graph-level median calibration and z-score normalization pipeline as our
+method. Full formal definitions are provided in Appendix D.
+Figure 2(b) reports the per-dataset AUC. LCC is competitive on citation-network graphs but fails
+to generalize across domains (average AUC 0.5775). NRS and PCD similarly underperform on
+average (0.5402 and 0.5378), suggesting that neighbor-to-neighbor dispersion provides a signal
+largely complementary to consistency-based formulations. AMEN-Ego, the most closely related
+attribute based heuristic baseline(0.5770), still trails our method by 0.0695 AUC (6.95 percentage
+points); AP results exhibit the same trend (Appendix E).
+Sampling-based approximation and efficiency analysis.A direct implementation of neighbor
+diversity requires evaluating all unordered neighbor pairs, which can be prohibitive on high degree
+nodes. We therefore adopt a sampling-based approximation that uniformly samples at mostk neighbor
+pairs per node. We compare three settings: Full (all pairs), Sampling (k=100), and Sampling (k=50);
+each sampling variant is averaged over 5 random seeds.
+Figure 2(c) illustrates the efficiency-performance trade-off on T-Finance, the densest test graph.
+Runtime drops from 2321.7 s under exhaustive computation to 36.6 s with k=100, corresponding
+to a 63× speedup, while AUC drops only from 0.9114 to 0.9019 and AP from 0.6067 to 0.5888.
+Across all seven datasets, sampling preserves performance remarkably well (average AUC 0.6445 for
+k=100 and 0.6421 for k=50, versus 0.6465 for Full), with standard deviations across random seeds
+consistently below 1.6×10 −3 in AUC, confirming that the Monte Carlo approximation is statistically
+stable. These results demonstrate a favorable efficiency-performance trade-off that is particularly
+important for dense, large-scale graphs. Per-dataset results and runtimes are reported in Appendix E.
+Additional analyses.We verify that r=8 is the optimal robust default SVD projection dimension
+for cross-domain zero-shot inference via a sweep over r∈ {8,16,32,64} (Appendix E.4), balancing
+high frequency noise suppression and core structural information retention across all datasets. We
+further validate our dual-sided detection mechanism via controlled SBM experiments with homophily
+ratios h∈ {0.1,0.3,0.5,0.7,0.9} , confirming robust detection of both over-homogeneous and
+over-diverse anomalies across most benchmark datasets’ homophily ranges (Appendix F).
+9
+5 Limitations
+Despite its strong cross-domain performance, NeighborDiv has clear limitations and future research
+directions: (1) Higher-order modeling. Our work focuses on one-hop Neighbor Diversity (standard for
+node-level GAD); extending to higher-order/global structures could expand detectable anomaly types.
+(2) Adaptive references. While a global median provides robust calibration, cluster-aware references
+could better accommodate extremely heterogeneous, multi-community graphs. (3) Scalability on
+ultra-dense graphs. Sampling acceleration already optimizes runtime; advanced techniques (e.g.,
+locality-sensitive hashing) can further support web-scale ultra-large graphs. (4) Complex graph
+settings. Adapting our framework from static, homogeneous graphs to dynamic, heterogeneous, or
+edge-level anomaly detection remains an open challenge.
+6 Conclusion
+This paper introduces NeighborDiv, a training-free framework that shifts Generalist Graph Anomaly
+Detection (GGAD) from the conventional Node-to-Neighbor Consistency to a new Neighbor-to-
+Neighbor Diversity Paradigm. By characterizing anomalies through the structural dispersion of
+inter-neighbor similarities, NeighborDiv provides a lightweight and training-free approach to GAD.
+Extensive experiments across standard GGAD benchmarks demonstrate that NeighborDiv achieves
+state-of-the-art performance with zero inference volatility. Our findings reveal that neighbor diversity
+is a powerful, underexplored anomaly signal, proving that superior cross-domain generalization
+can be achieved through simple, training-free principles rather than increasingly complex training
+pipelines.
+References
+[1] Leman Akoglu, Hanghang Tong, and Danai Koutra. Graph based anomaly detection and description: a
+survey.Data Mining and Knowledge Discovery, 29(3):626–688, 2015. doi: 10.1007/s10618-014-0365-y.
+[2] Jinyu Cai, Yunhe Zhang, Zhoumin Lu, Wenzhong Guo, and See-Kiong Ng. Towards effective federated
+graph anomaly detection via self-boosted knowledge distillation. InProceedings of the 32nd ACM
+International Conference on Multimedia, pages 5537–5546, 2024.
+[3] Jingyan Chen, Guanghui Zhu, Chunfeng Yuan, and Yihua Huang. Boosting graph anomaly detection with
+adaptive message passing. InThe Twelfth International Conference on Learning Representations, 2024.
+[4] Kaize Ding, Jundong Li, Rohit Bhanushali, and Huan Liu. Deep anomaly detection on attributed networks.
+InProceedings of the 2019 SIAM international conference on data mining, pages 594–602. SIAM, 2019.
+[5] Yingtong Dou, Zhiwei Liu, Li Sun, Yutong Deng, Hao Peng, and Philip S Yu. Enhancing graph neu-
+ral network-based fraud detectors against camouflaged fraudsters. InProceedings of the 29th ACM
+international conference on information & knowledge management, pages 315–324, 2020.
+[6] Jingcan Duan, Siwei Wang, Pei Zhang, En Zhu, Jingtao Hu, Hu Jin, Yue Liu, and Zhibin Dong. Graph
+anomaly detection via multi-scale contrastive learning networks with augmented view. InProceedings of
+the AAAI conference on artificial intelligence, volume 37, pages 7459–7467, 2023.
+[7] Haoyi Fan, Fengbin Zhang, and Zuoyong Li. Anomalydae: Dual autoencoder for anomaly detection on
+attributed networks. InICASSP 2020-2020 IEEE International Conference on Acoustics, Speech and
+Signal Processing (ICASSP), pages 5685–5689. IEEE, 2020.
+[8] Yuan Gao, Xiang Wang, Xiangnan He, Zhenguang Liu, Huamin Feng, and Yongdong Zhang. Addressing
+heterophily in graph anomaly detection: A perspective of graph spectrum. InProceedings of the ACM web
+conference 2023, pages 1528–1538, 2023.
+[9] Mingguo He, Zhewei Wei, Hongteng Xu, et al. Bernnet: Learning arbitrary graph spectral filters via
+bernstein approximation.Advances in neural information processing systems, 34:14239–14251, 2021.
+[10] Keith Henderson, Brian Gallagher, Lei Li, Leman Akoglu, Tina Eliassi-Rad, Hanghang Tong, and Christos
+Faloutsos. It’s who you know: Graph mining using recursive structural features. InProceedings of the
+17th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining, pages 663–671,
+2011. doi: 10.1145/2020408.2020512.
+10
+[11] Wassily Hoeffding. A class of statistics with asymptotically normal distribution. InBreakthroughs in
+statistics: Foundations and basic theory, pages 308–334. Springer, 1992.
+[12] Paul W. Holland, Kathryn Blackmond Laskey, and Samuel Leinhardt. Stochastic blockmodels: First steps.
+Social Networks, 5(2):109–137, 1983. doi: 10.1016/0378-8733(83)90021-7.
+[13] Tianjin Huang, Yulong Pei, Vlado Menkovski, and Mykola Pechenizkiy. Hop-count based self-supervised
+anomaly detection on attributed networks. InJoint European conference on machine learning and
+knowledge discovery in databases, pages 225–241. Springer, 2022.
+[14] Thomas N Kipf and Max Welling. Semi-supervised classification with graph convolutional networks. In
+International Conference on Learning Representations, 2017.
+[15] Srijan Kumar, Xikun Zhang, and Jure Leskovec. Predicting dynamic embedding trajectory in temporal
+interaction networks. InProceedings of the 25th ACM SIGKDD international conference on knowledge
+discovery & data mining, pages 1269–1278, 2019.
+[16] Yixin Liu, Zhao Li, Shirui Pan, Chen Gong, Chuan Zhou, and George Karypis. Anomaly detection on
+attributed networks via contrastive self-supervised learning.IEEE transactions on neural networks and
+learning systems, 33(6):2378–2392, 2021.
+[17] Yixin Liu, Shiyuan Li, Yu Zheng, Qingfeng Chen, Chengqi Zhang, and Shirui Pan. Arc: A generalist
+graph anomaly detector with in-context learning.Advances in Neural Information Processing Systems, 37:
+50772–50804, 2024.
+[18] Xiaoxiao Ma, Jia Wu, Shan Xue, Jian Yang, Chuan Zhou, Quan Z Sheng, Hui Xiong, and Leman Akoglu.
+A comprehensive survey on graph anomaly detection with deep learning.IEEE transactions on knowledge
+and data engineering, 35(12):12012–12038, 2021.
+[19] Andrew Kachites McCallum, Kamal Nigam, Jason Rennie, and Kristie Seymore. Automating the construc-
+tion of internet portals with machine learning.Information Retrieval, 3(2):127–163, 2000.
+[20] Chaoxi Niu, Hezhe Qiao, Changlu Chen, Ling Chen, and Guansong Pang. Zero-shot generalist graph
+anomaly detection with unified neighborhood prompts.arXiv preprint arXiv:2410.14886, 2024.
+[21] Guansong Pang, Chunhua Shen, Longbing Cao, and Anton Van Den Hengel. Deep learning for anomaly
+detection: A review.ACM computing surveys (CSUR), 54(2):1–38, 2021.
+[22] Bryan Perozzi and Leman Akoglu. Scalable anomaly ranking of attributed neighborhoods. InProceedings
+of the 2016 SIAM International Conference on Data Mining, pages 207–215, 2016. doi: 10.1137/1.
+9781611974348.24.
+[23] Oleg Platonov, Denis Kuznedelev, Michael Diskin, Artem Babenko, and Liudmila Prokhorenkova. A
+critical look at the evaluation of gnns under heterophily: Are we really making progress?arXiv preprint
+arXiv:2302.11640, 2023.
+[24] Hezhe Qiao and Guansong Pang. Truncated affinity maximization: One-class homophily modeling for
+graph anomaly detection.Advances in Neural Information Processing Systems, 36:49490–49512, 2023.
+[25] Hezhe Qiao, Chaoxi Niu, Ling Chen, and Guansong Pang. Anomalygfm: Graph foundation model for
+zero/few-shot anomaly detection. InProceedings of the 31st ACM SIGKDD Conference on Knowledge
+Discovery and Data Mining V . 2, pages 2326–2337, 2025.
+[26] Hezhe Qiao, Hanghang Tong, Bo An, Irwin King, Charu Aggarwal, and Guansong Pang. Deep graph
+anomaly detection: A survey and new perspectives.IEEE Transactions on Knowledge and Data Engineer-
+ing, 2025.
+[27] Patricia Iglesias Sánchez, Emmanuel Müller, Fabian Laforet, Fabian Keller, and Klemens Böhm. Statistical
+selection of congruent subspaces for mining attributed graphs. In2013 IEEE 13th international conference
+on data mining, pages 647–656. IEEE, 2013.
+[28] Prithviraj Sen, Galileo Namata, Mustafa Bilgic, Lise Getoor, Brian Galligher, and Tina Eliassi-Rad.
+Collective classification in network data.AI magazine, 29(3):93–93, 2008.
+[29] Jianheng Tang, Jiajin Li, Ziqi Gao, and Jia Li. Rethinking graph neural networks for anomaly detection. In
+International conference on machine learning, pages 21076–21089. PMLR, 2022.
+[30] Jianheng Tang, Fengrui Hua, Ziqi Gao, Peilin Zhao, and Jia Li. Gadbench: Revisiting and benchmarking
+supervised graph anomaly detection.Advances in Neural Information Processing Systems, 36:29628–
+29653, 2023.
+11
+[31] Petar Veliˇckovi´c, Guillem Cucurull, Arantxa Casanova, Adriana Romero, Pietro Lio, and Yoshua Bengio.
+Graph attention networks.arXiv preprint arXiv:1710.10903, 2017.
+[32] Duncan J. Watts and Steven H. Strogatz. Collective dynamics of ‘small-world’ networks.Nature, 393
+(6684):440–442, 1998. doi: 10.1038/30918.
+[33] Mark Weber, Giacomo Domeniconi, Jie Chen, Daniel Karl I Weidele, Claudio Bellei, Tom Robinson, and
+Charles E Leiserson. Anti-money laundering in bitcoin: Experimenting with graph convolutional networks
+for financial forensics.arXiv preprint arXiv:1908.02591, 2019.
+[34] Chunjing Xiao, Shikang Pang, Xovee Xu, Xuan Li, Goce Trajcevski, and Fan Zhou. Counterfactual data
+augmentation with denoising diffusion for graph anomaly detection.IEEE Transactions on Computational
+Social Systems, 11(6):7555–7567, 2024.
+[35] Zhiming Xu, Xiao Huang, Yue Zhao, Yushun Dong, and Jundong Li. Contrastive attributed network
+anomaly detection with data augmentation. InPacific-Asia conference on knowledge discovery and data
+mining, pages 444–457. Springer, 2022.
+[36] Xiong Zhang, Zhenli He, Changlong Fu, and Cheng Xie. Ia-ggad: Zero-shot generalist graph anomaly
+detection via invariant and affinity learning. InThe Thirty-ninth Annual Conference on Neural Information
+Processing Systems, volume 33, 2025.
+[37] Xiong Zhang, Hong Peng, Zhenli He, Cheng Xie, Xin Jin, and Hua Jiang. Gctam: Global and contextual
+truncated affinity combined maximization model for unsupervised graph anomaly detection.arXiv preprint
+arXiv:2603.01806, 2026.
+12
+A Theoretical Analysis and Mathematical Properties
+This appendix provides a rigorous mathematical foundation for the proposed NeighborDiv framework,
+focusing on its statistical invariance under cross-domain shifts, its bi-directional discriminative power,
+and the convergence guarantees of the sampling strategy.
+A.1 Notations and Preliminaries
+Throughout this analysis, we follow the notations defined in the main text. Let G= (V, E, X) be an
+attributed graph with X∈R n×d. For a node vi, its neighbor set is N(v i) with degree di =|N(v i)|.
+The neighbor-to-neighbor cosine similarity is defined as sim(vp, vq) =
+˜x⊤
+p ˜xq
+∥˜xp∥2∥˜xq∥2
+, where ˜xdenotes
+the projected features. The neighbor diversity is computed as Di =Var({sim(v p, vq)}(vp,vq)∈Pi),
+where Pi is the set of all neighbor pairs. The final anomaly score is derived from the absolute
+deviation∆ i =|D i −D med|, whereD med is the graph-wide median of diversity.
+A.2 Statistical Invariance and Stability under Feature-Space Shift
+One of the core motivations of NeighborDiv is its training-free zero-shot applicability across graph
+domains. We analyze its behavior under feature-space shifts while keeping the graph topology and
+neighbor sets unchanged. Let zi ∈R r denote the projected feature of node vi after SVD-based
+preprocessing, and let
+ui =
+zi/∥zi∥2, z i ̸= 0,
+0, z i = 0. (16)
+For a valid nodev i withd i ≥2, letP i be the set of unordered neighbor pairs and define
+Si ={⟨u p, uq⟩: (v p, vq)∈P i}, D i = Var(Si).(17)
+NeighborDiv further computes
+Dmed = Median{Di :v i ∈V valid},∆ i =|D i −D med|, s i = ∆i −µ ∆
+σ∆
+,(18)
+whereµ ∆ andσ ∆ are computed over valid nodes.
+Proposition 1 (Exact invariance to conformal linear transformations).Suppose the projected
+features are transformed as
+z′
+i =αOz i, α >0, O ⊤O=I.(19)
+Then NeighborDiv produces identical neighbor-diversity values, anomaly scores, and rankings. This
+follows because normalization gives u′
+i =Ou i, and orthogonal transformations preserve all inner
+products:
+⟨u′
+p, u′
+q⟩=⟨Ou p, Ouq⟩=⟨u p, uq⟩.(20)
+Thus S′
+i =S i, D′
+i =D i, D′
+med =D med, ∆′
+i = ∆ i, and s′
+i =s i for all valid nodes. Hence the
+anomaly ranking is exactly preserved.
+For raw feature transformationsX ′ =αXR , where α >0 and R⊤R=I , truncated SVD coordinates
+change only up to a global positive scaling and a common orthogonal basis transformation within the
+retained subspace. Therefore, the same invariance applies to conformal reparameterizations of the
+raw feature space.
+Proposition 2 (Stability under bounded residual perturbations).NeighborDiv is not claimed to
+be exactly invariant to arbitrary additive translations. Instead, consider the post-projection residual
+perturbation
+z′
+i =z i +e i,∥e i∥2 ≤ϵ∥z i∥2,0≤ϵ <1.(21)
+Then normalized directions change smoothly, and every pairwise cosine similarity changes by at most
+δϵ = 4ϵ
+1−ϵ .(22)
+13
+Since all cosine similarities lie in [−1,1] , the induced diversity and median-centered deviation
+perturbations satisfy
+|D′
+i −D i| ≤4δ ϵ,|∆ ′
+i −∆ i| ≤8δ ϵ.(23)
+Letη ϵ = 8δϵ. Ifσ ∆ ≥σ 0 >0andη ϵ ≤σ 0/4, then the standardized anomaly scores satisfy
+|s′
+i −s i| ≤B ϵ, B ϵ = 4ηϵ
+σ0
++ 4ηϵ
+σ2
+0
+.(24)
+Consequently, for any two nodesv i andv j, if their original score gap satisfies
+|si −s j|>2B ϵ,(25)
+then their relative ordering is preserved after perturbation.
+The correct theoretical claim is that NeighborDiv is exactly invariant to positive scaling and orthogonal
+feature reparameterization, and stable under bounded post-projection perturbations.
+A.3 Bi-directional Discriminative Power of Second-order Metrics
+We demonstrate that NeighborDiv captures anomalies that are inherently invisible to first-order
+node-to-neighbor consistency paradigms.
+Theorem 1 (Failure of First-order Consistency).Consider an anomaly node vi connecting two
+disjoint communities C1 and C2 with mean features µ1 and µ2. If vi’s feature ˜xi is the weighted
+average πµ1 + (1−π)µ 2, the first-order residual Ri =∥˜xi −E[˜xj∈N(v i)]∥ becomes zero, rendering
+vi undetectable.
+Theorem 2 (NeighborDiv Discriminability).
+• Over-diverse (Type-D):For the node in Theorem 1, the inter-neighbor similarity distribution
+is bi-modal (intra-community pairs ≈1 , inter-community pairs ≈0 ). The variance Di
+reaches up to 0.25 (when π= 0.5 ), significantly exceeding the Dmed of normal nodes
+(typically<0.05).
+• Over-homogeneous (Type-H):For malicious clusters (e.g., bot farms), sim(vp, vq)≈1
+for all pairs, leading to Di →0 . The deviation |0−D med| successfully flags these nodes
+givenD med >0in natural graphs.
+A.4 Convergence of Monte Carlo Sampling
+To ensure efficiency on dense graphs, we employ a sampling strategy. We modelDi as aU-statistic
+of order 2 with the kernelh(v p, vq) =sim(v p, vq).
+Theorem 3 (Exponential Convergence Bound).Let ˆDi be the estimate from k sampled pairs. For
+anyϵ >0, the Hoeffding-type bound for U-statistics [11] states:
+P(| ˆDi −D i|> ϵ)≤2 exp
+
+− kϵ2
+C
+
+,(26)
+where C= 8 given the range of cosine similarity is [−1,1] . This proves that a fixed sampling rate
+(e.g., k= 100 ) provides a high-confidence estimate regardless of the node’s total degreedi, justifying
+ourO(k)local complexity.
+A.5 Signal-to-Noise Enhancement via Truncated SVD
+We assume the attribute matrix X consists of a low-rank structural signal Xsig (community member-
+ship) and high-frequency noise Xnoise. By retaining the top- r (r= 8 ) singular values, we project
+nodes onto the underlying manifold where neighbor organization is most prominent. This filtering
+process prevents noisy feature dimensions from distorting the neighbor similarity distribution, which
+explains the robustness observed in our ablation studies.
+14
+Table 4: Statistics and characteristics of training/test datasets
+Dataset Role Domain #Nodes #Edges Feat. Dim. Ano. Type Ano. Rate
+PubMedTrain Citation Network 19,717 44,338 500 Injected 3.04%
+FacebookTrain Social Network 1,081 55,104 576 Real 2.31%
+AmazonTrain E-commerce 10,244 175,608 25 Real 6.76%
+EllipticTrain Finance 46,564 73,248 93 Real 9.80%
+CoraTest Citation Network 2,708 5,429 1,433 Injected 5.53%
+RedditTest Social Network 10,984 168,016 64 Real 3.33%
+YelpChiTest E-commerce 23,831 49,315 32 Real 5.10%
+T-FinanceTest Finance 39,357 21,222,543 10 Real 4.60%
+TolokersTest Crowdsourcing 11,758 519,000 10 Real 21.80%
+DisneyTest Co-purchase 124 335 28 Real 4.84%
+QuestionsTest Q&A Platform 48,921 153,540 301 Real 2.98%
+A.6 Applicability and Theoretical Boundaries
+Consistent with our Limitations section, the discriminative power of NeighborDiv is subject to:
+1. Homophily Range:Performance is optimal when the homophily h∈[0.1,0.7] . In ex-
+tremely homophilous graphs ( h≈0.9 ), detection of Type-D anomalies degrades sub-
+stantially, while Type-H anomaly detection remains relatively effective but also weakens
+compared with moderate homophily regimes.
+2. Degree Constraints:For nodes with di <2 , diversity is undefined. Such nodes are assigned
+a neutral score, as their local organization cannot be statistically measured via second-order
+metrics.
+B Details of Experimental Setup
+B.1 Datasets
+To ensure reliable, credible experimental results, training and test datasets are selected to maximize
+diversity in domain, scale, anomaly type, and anomaly rate, aiming to comprehensively evaluate
+GAD methods’ cross-domain generalization and SOTA models’ training-set dependency. As shown
+in Table 4, we summarize the statistics and characteristics of all training and test datasets (Feat. Dim.
+= Feature Dimension, Ano. Type = Anomaly Type, Ano. Rate = Anomaly Rate).
+• Domain Diversity. The training set covers four distinct GAD domains: social network
+(Facebook [35]), e-commerce (Amazon [5]), citation network (PubMed [28]), and finance
+(Elliptic [33]), avoiding single-domain overfitting. The test set includes 7 domains: 4
+intra-domain (Cora [19], YelpChi [5], Reddit [15], T-Finance [29], corresponding to training
+domains) for intra-domain generalization, and 3 cross-domain (Tolokers [23], Disney [27],
+Questions [23]) to test cross-domain transfer and expose SOTA’s training-set dependency.
+• Scale Diversity. Datasets span small to ultra-large graphs: node count 124 (Disney) to
+48,921 (Questions), edge count 335 (Disney) to 21,222,543 (T-Finance), feature dimension
+10D (T-Finance) to 1,433D (Cora). This validates method scalability and avoids size bias.
+• Anomaly Diversity. Datasets include both real-world anomalies (e.g., fake reviews, banned
+users) and injected structural anomalies (e.g., Cora, PubMed), ensuring practical relevance
+and controlled evaluation. Anomaly rates range from 2.31% (Facebook) to 21.80% (Tolok-
+ers), verifying robustness to class imbalance.
+B.2 Evaluation Protocols
+To ensure fully fair, unbiased, and comprehensive comparison with state-of-the-art GGAD methods,
+we unify two dominant, previously disjoint training-inference protocols widely used in the field:
+15
+Unified Multi-Domain Training (UMDT).Aligned with the evaluation paradigm of ARC [ 17]
+and IA-GGAD [36], all learning-based baselines are jointly trained on the union of the four source
+datasets, followed by direct zero-shot inference on all seven test datasets without target-domain
+fine-tuning.
+Single-Domain Independent Training (SDIT).This protocol follows the core single-source
+training paradigm of UNPrompt [20] and AnomalyGFM [25], where a model is trained on one single
+source dataset and directly applied to all test sets via zero-shot inference. To eliminate the randomness
+of source dataset selection and the common pitfall of cherry-picking optimal training sets in existing
+GGAD evaluations, we independently run this standard single-source pipeline on each of the four
+diverse source datasets for all learning-based baselines, and report the average performance across
+the four independent runs for unbiased, robust comparison.
+These two protocols enable a thorough evaluation of cross-domain generalization ability and training-
+set dependency for all methods, under both multi-domain fusion and single-domain specialization
+settings. Notably, our training-free NeighborDiv requires no training in either protocol, producing
+identical deterministic results across all settings with zero performance volatility.
+B.3 Baselines
+We compare our proposed method NeighborDiv with a comprehensive set of state-of-the-art graph
+anomaly detection (GAD) approaches, covering three distinct paradigms: unsupervised GAD, super-
+vised GAD, and generalist GAD. For unsupervised GAD, we include three representative methods:
+AnomalyDAE [7], TAM [24], and GADAM [ 3]. For supervised GAD, we evaluate against four
+competitive GNN-based baselines: GCN [ 14], GAT [31], BWGNN [29], and GHRN [8]. For the
+generalist zero-shot GAD setting, we compare with three leading zero-shot approaches: Anoma-
+lyGFM [25], IA-GGAD [36] and UNPrompt [20], representing the latest advancements in zero-shot
+generalist GAD.
+Baseline Implementation.We evaluate three categories of baselines: unsupervised GAD, super-
+vised GAD, and generalist GAD.
+· Unsupervised GAD:AnomalyDAE and TAM are implemented using the codebase released by
+AnomalyGFM. GADAM is adapted from its official repository with a two-stage pretrain-then-
+inference pipeline to enable cross-dataset zero-shot evaluation.
+· Supervised GAD:GCN, GAT, and BWGNN are implemented via the AnomalyGFM codebase.
+GHRN is adapted from its official repository following the same pretrain-then-inference paradigm as
+GADAM, with truncated SVD applied to align node features across datasets to a unified dimensional
+space.
+· Generalist GAD:AnomalyGFM, IA-GGAD, and UNPrompt are evaluated using their respective
+official codebases without modification. For IA-GGAD, the fusion hyperparameterλ∈[0,1] controls
+the relative contribution of the residual anomaly score and the local affinity score in the final anomaly
+prediction; we use the optimal λ values provided by the official repository for datasets where they are
+available, and set λ= 0.5 by default for the remaining datasets, giving equal weight to both signals.
+For UNPrompt, which is originally proposed as a single-source training method, we strictly follow its
+original design: under the SDIT protocol (Tables 7 to 10), UNPrompt is independently trained on
+each of the four auxiliary datasets and its average performance across these four source datasets is
+reported in Table 1; under the UMDT protocol (Table 3), since joint multi-source training is not part
+of UNPrompt’s design, we extend UNPrompt to support multi-source joint training, following the
+exact same data setup used for all competing generalist GAD baselines.
+For all adapted methods, models are trained exclusively on source datasets and directly applied to
+target datasets without any fine-tuning or access to target-domain labels. To enable cross-dataset
+transfer, node features across all datasets are projected to a unified d-dimensional space via truncated
+SVD, followed by batch normalization.
+16
+Table 5: AP performance under the SDIT protocol. Each metric represents the mean result across
+four independent training datasets. (bold: highest value, underlined: second highest value)
+Method Cora YelpChi Reddit T-Finance Tolokers Disney Questions Avg
+Unsupervised GAD
+AnomalyDAE (ICASSP’20) 0.0687 0.0615 0.0360 0.0371 0.2254 0.0836 0.0326 0.0778
+TAM (NeurIPS’23) 0.1977 0.0516 0.0404 0.0521 0.2332 0.0349 0.0420 0.0931
+GADAM (ICLR’24) 0.0555 0.0602 0.0333 0.4554 0.2295 0.0892 0.0314 0.1363
+Supervised GAD
+GCN (ICLR’17) 0.0519 0.0550 0.0386 0.0394 0.2213 0.1176 0.0385 0.0803
+GAT (ICLR’18) 0.0504 0.0653 0.0340 0.0461 0.2111 0.0520 0.0276 0.0695
+BWGNN (ICML’22) 0.0720 0.0523 0.0329 0.0509 0.2098 0.0665 0.0290 0.0734
+GHRN (WWW’23) 0.0809 0.0519 0.0334 0.0734 0.2078 0.1010 0.0277 0.0823
+Generalist GAD
+UNPrompt (IJCAI’25) 0.0866 0.0601 0.0376 0.0275 0.2010 0.0992 0.0298 0.0774
+AnomalyGFM (KDD’25) 0.0500 0.0553 0.0339 0.0766 0.2183 0.1153 0.0301 0.0828
+IA-GGAD (NeurIPS’25) 0.48350.05400.04310.1433 0.2173 0.05460.0512 0.1496
+NeighborDiv (ours) 0.06840.07500.03560.6067 0.2459 0.16170.0400 0.1762
+B.4 Implementation Details
+All experiments are conducted in the unsupervised setting. Unless otherwise specified, the SVD
+dimension is fixed to r= 8 for all datasets. For the binary decision rule, the threshold coefficient
+is set to λ= 1.0 . For the main results reported in Tables 1–3, we use the exhaustive computation
+over all unordered neighbor pairs (denoted as Full). The sampling-based approximation is only used
+in the ablation and efficiency analysis in Tables 13 and 14, where we explicitly vary the neighbor-
+pair sampling budget k. We adopt Full as the default setting in the main experiments to eliminate
+approximation effects and present the strongest deterministic version of the proposed method. The
+sampling-based variant is evaluated separately to study the efficiency-performance trade-off. We
+report AUC and AP as the main evaluation metrics. Since both metrics depend only on the ranking of
+anomaly scores, the threshold coefficient λ affects only binary anomaly prediction and does not affect
+ranking-based evaluation. The method is implemented in Python using PyTorch, NumPy, SciPy, and
+scikit-learn. As the proposed approach is training-free, it does not involve parameter optimization,
+model selection, or early stopping.
+C Supplemental Experiments
+C.1 Per-dataset AP Results of the Main Tables
+For completeness, we report the per-dataset Average Precision (AP) values corresponding to the main
+AUC tables in Section 4.2. Table 5 reports AP under the SDIT protocol (companion to Table 1),
+and Table 6 reports AP under the UMDT protocol (companion to Table 3). Consistent with the
+AUC results in the main text, NeighborDiv achieves the best average AP under both protocols, with
+a 17.78% improvement under SDIT and a 9.58% improvement under UMDT over the strongest
+learning-based baseline (IA-GGAD).
+C.2 Per-training-set Detailed Results under SDIT
+This appendix provides detailed experimental results to complement the average performance analysis
+presented in the main text (Table 1). Specifically, Tables 7 to 10 report the detailed anomaly detection
+performance of all evaluated methods when trained on each of the four auxiliary training sets
+(Facebook, Amazon, PubMed, and Elliptic) separately, followed by zero-shot inference on the same
+seven diverse test sets (Cora, YelpChi, Reddit, T-Finance, Tolokers, Disney, and Questions). These
+test sets cover both intra-domain scenarios (matching the domains of the training sets) and cross-
+domain scenarios (with distinct domains from the training sets), enabling a comprehensive evaluation
+of each method’s domain adaptability and stability across different training data distributions.
+All tables follow the same structure: the rows present two key evaluation metrics (AUC and AP),
+which are widely adopted in graph anomaly detection to measure the discriminative ability of
+anomaly detection methods. The columns correspond to the seven test sets, along with an "Avg"
+column that calculates the average performance of each method across all test sets when trained
+17
+Table 6: AP performance under the UMDT protocol. All learning-based methods are jointly trained
+on the union of four source domains. (bold: highest value, underlined: second highest value)
+Method Cora YelpChi Reddit T-Finance Tolokers Disney Questions Avg
+Unsupervised GAD
+AnomalyDAE (ICASSP’20) 0.0698 0.0461 0.0283 0.0317 0.2296 0.1155 0.0373 0.0798
+TAM (NeurIPS’23) 0.1829 0.0496 0.0407 0.0598 0.2308 0.0357 0.0400 0.0914
+GADAM (ICLR’24) 0.0538 0.0534 0.0359 0.4842 0.2384 0.0812 0.0336 0.1401
+Supervised GAD
+GCN (ICLR’17) 0.0603 0.04600.04870.0486 0.2148 0.1198 0.0389 0.0825
+GAT (ICLR’18) 0.04820.07760.0394 0.0458 0.1663 0.0484 0.0308 0.0652
+BWGNN (ICML’22) 0.0752 0.0533 0.0345 0.0521 0.1831 0.0619 0.0336 0.0705
+GHRN (WWW’23) 0.0781 0.0496 0.0323 0.1060 0.1770 0.0808 0.0333 0.0796
+Generalist GAD
+UNPrompt (IJCAI’25) 0.0720 0.0583 0.0336 0.0290 0.1995 0.0701 0.0281 0.0701
+AnomalyGFM (KDD’25) 0.0486 0.0552 0.0317 0.0638 0.2042 0.1278 0.0305 0.0803
+IA-GGAD (NeurIPS’25) 0.48600.0556 0.0441 0.2212 0.2122 0.05350.0533 0.1608
+NeighborDiv (ours) 0.0684 0.0750 0.03560.6067 0.2459 0.16170.0400 0.1762
+Table 7: Performance comparison of different anomaly detection methods (training set: Facebook)
+(bold: highest value, underlined: second highest value)
+Metric Method Cora YelpChi Reddit T-Finance Tolokers Disney Questions Avg
+AUC
+Unsupervised GAD
+AnomalyDAE (ICASSP’20) 0.4667 0.5836 0.5450 0.4182 0.5457 0.5531 0.4359 0.5069
+TAM (NeurIPS’23) 0.7415 0.4968 0.5546 0.5120 0.5133 0.2312 0.5219 0.5102
+GADAM (ICLR’24) 0.5267 0.4856 0.5081 0.7631 0.4695 0.4596 0.4879 0.5286
+Supervised GAD
+GCN (ICLR’17) 0.4675 0.3954 0.5349 0.4194 0.5051 0.5061 0.5026 0.4759
+GAT (ICLR’18) 0.4579 0.5873 0.4980 0.50720.61180.4579 0.4639 0.5120
+BWGNN (ICML’22) 0.4359 0.4774 0.5040 0.4854 0.5781 0.6102 0.4423 0.5047
+GHRN (WWW’23) 0.4168 0.4799 0.4524 0.5851 0.5043 0.6696 0.4277 0.5051
+Generalist GAD
+UNPrompt (IJCAI’25) 0.6281 0.5850 0.5366 0.2096 0.4507 0.6155 0.4835 0.5013
+AnomalyGFM (KDD’25) 0.4879 0.47290.58200.6170 0.4931 0.6362 0.5019 0.5416
+IA-GGAD (NeurIPS’25)0.87840.5075 0.5798 0.5613 0.4845 0.46130.6028 0.5822
+NeighborDiv (ours)0.61660.61520.51220.91140.56240.72460.5832 0.6465
+AP
+Unsupervised GAD
+AnomalyDAE (ICASSP’20) 0.0490 0.0804 0.0383 0.0500 0.2378 0.0969 0.0255 0.0826
+TAM (NeurIPS’23) 0.2000 0.0508 0.0398 0.0492 0.2339 0.0347 0.0425 0.0930
+GADAM (ICLR’24) 0.0566 0.0604 0.0330 0.4566 0.2070 0.1017 0.0320 0.1353
+Supervised GAD
+GCN (ICLR’17) 0.0489 0.0401 0.0355 0.0385 0.2261 0.2123 0.0380 0.0913
+GAT (ICLR’18) 0.04720.08240.0324 0.0485 0.2668 0.0528 0.0273 0.0796
+BWGNN (ICML’22) 0.0461 0.0513 0.0327 0.04040.27050.1218 0.0256 0.0841
+GHRN (WWW’23) 0.0486 0.0557 0.0293 0.0521 0.21470.23290.0268 0.0943
+Generalist GAD
+UNPrompt (IJCAI’25) 0.0930 0.0691 0.0348 0.0267 0.2054 0.1058 0.0314 0.0809
+AnomalyGFM (KDD’25) 0.0591 0.0566 0.0373 0.1236 0.2360 0.1166 0.0304 0.0942
+IA-GGAD (NeurIPS’25)0.48010.05410.04100.1348 0.2189 0.05450.0505 0.1477
+NeighborDiv (ours)0.0684 0.0750 0.03560.60670.2459 0.1617 0.0400 0.1762
+on the specific training set. The evaluated methods include three state-of-the-art (SOTA) zero-shot
+GGAD baselines (AnomalyGFM [25], IA-GGAD [36], UNPrompt [20] and our proposed training-
+free GGAD approach. Bold values in the "Avg" column indicate the best performance under the
+corresponding metric for that training set.
+Table 7 presents the detailed results when the training set is Facebook. It can be observed that our
+method achieves the highest average AUC (0.6465) and average AP (0.1762) among all methods,
+outperforming the second-best baselines (IA-GGAD with an average AUC of 0.5822) by significant
+margins. Notably, our method exhibits exceptional performance on the T-Finance test set (AUC =
+0.9114, AP = 0.6067), which far surpasses all baselines, demonstrating its strong ability to capture
+anomaly patterns even in domains different from the Facebook training set.
+18
+Table 8: Performance comparison of different anomaly detection methods (training set: Amazon)
+(bold: highest value, underlined: second highest value)
+Metric Method Cora YelpChi Reddit T-Finance Tolokers Disney Questions Avg
+AUC
+Unsupervised GAD
+AnomalyDAE (ICASSP’20) 0.4774 0.5207 0.5098 0.3786 0.5467 0.4291 0.4827 0.4779
+TAM (NeurIPS’23) 0.7427 0.5020 0.5569 0.4893 0.5103 0.2321 0.5196 0.5075
+GADAM (ICLR’24) 0.5216 0.4827 0.4946 0.8244 0.4770 0.4607 0.4857 0.5352
+Supervised GAD
+GCN (ICLR’17) 0.4498 0.56180.61560.3330 0.5105 0.5727 0.5113 0.5078
+GAT (ICLR’18) 0.4753 0.5014 0.5050 0.5016 0.5061 0.4918 0.4551 0.4909
+BWGNN (ICML’22) 0.5067 0.4232 0.4273 0.2852 0.4462 0.4336 0.4875 0.4300
+GHRN (WWW’23) 0.5004 0.4324 0.4431 0.4672 0.4983 0.3929 0.4544 0.4555
+Generalist GAD
+UNPrompt (IJCAI’25) 0.5844 0.5696 0.5275 0.3098 0.4711 0.5938 0.4169 0.4962
+AnomalyGFM (KDD’25) 0.4400 0.4641 0.4944 0.5975 0.3982 0.6808 0.4971 0.5103
+IA-GGAD (NeurIPS’25)0.88450.5108 0.5911 0.6404 0.4868 0.45870.6255 0.5997
+NeighborDiv (ours)0.61660.61520.51220.9114 0.5624 0.72460.5832 0.6465
+AP
+Unsupervised GAD
+AnomalyDAE (ICASSP’20) 0.0499 0.0741 0.0348 0.0343 0.2389 0.0525 0.0309 0.0736
+TAM (NeurIPS’23) 0.2115 0.0511 0.0407 0.0463 0.2320 0.0347 0.0418 0.0940
+GADAM (ICLR’24) 0.0562 0.0609 0.0315 0.5725 0.2163 0.0990 0.0324 0.1527
+Supervised GAD
+GCN (ICLR’17) 0.04580.0970 0.04470.0332 0.2278 0.1156 0.0364 0.0858
+GAT (ICLR’18) 0.0491 0.0591 0.0326 0.0461 0.2174 0.0495 0.0255 0.0685
+BWGNN (ICML’22) 0.0863 0.0424 0.0272 0.0298 0.2006 0.0510 0.0318 0.0670
+GHRN (WWW’23) 0.0681 0.0428 0.0281 0.0394 0.2165 0.0446 0.0292 0.0670
+Generalist GAD
+UNPrompt (IJCAI’25) 0.0911 0.0654 0.0353 0.0302 0.2171 0.0650 0.0242 0.0755
+AnomalyGFM (KDD’25) 0.0499 0.0547 0.0300 0.0790 0.1779 0.1102 0.0292 0.0758
+IA-GGAD (NeurIPS’25)0.48590.0538 0.0440 0.1811 0.2193 0.05400.0534 0.1559
+NeighborDiv (ours)0.0684 0.0750 0.03560.6067 0.2459 0.16170.0400 0.1762
+Table 8 reports the results when training on the Amazon dataset. Consistent with the Facebook
+training scenario, our method maintains the best average performance (AUC = 0.6465, AP = 0.1762),
+while baselines show varying degrees of performance fluctuation.
+Table 9 shows the experimental results with PubMed as the training set. This training scenario is
+particularly challenging for baselines, as PubMed belongs to the biomedical domain, which is distinct
+from most training sets. For instance, UNPrompt’s average AUC drops to 0.4850 and AnomalyGFM’s
+average AUC decreases to 0.4815 (the lowest in all training scenarios). In contrast, our method still
+achieves the highest average AUC (0.6465) and AP (0.1762) with stable performance. Notably, our
+method’s AP on T-Finance (0.6067) is nearly 15 times higher than AnomalyGFM’s (0.0404), further
+highlighting its superiority in cross-domain anomaly detection.
+Table 10 presents the results when training on the Elliptic dataset (a financial graph dataset). Baselines
+exhibit varying degrees of performance degradation under this training scenario: UNPrompt’s average
+AUC drops to 0.5109 and IA-GGAD’s average AUC decreases to 0.5792. Our method, however, still
+maintains the best average performance (AUC = 0.6465, AP = 0.1762) with consistent results across
+all test sets. This further confirms that our training-free design eliminates the dependency on training
+set distribution and enables robust generalization across diverse domains.
+Collectively, the detailed results in these four tables validate the core conclusions of the main text:
+our proposed training-free GGAD approach not only achieves SOTA average performance across all
+training scenarios but also maintains zero performance volatility (consistent average AUC and AP
+across all four training sets), while existing baselines suffer from significant performance fluctuations
+due to their reliance on training data. These detailed results further demonstrate that our method’s
+neighbor diversity-based anomaly characterization effectively captures universal anomaly patterns,
+enabling stable and robust zero-shot anomaly detection across diverse graph domains, regardless of
+the training set used.
+19
+Table 9: Performance comparison of different anomaly detection methods (training set: PubMed)
+(bold: highest value, underlined: second highest value)
+Metric Method Cora YelpChi Reddit T-Finance Tolokers Disney Questions Avg
+AUC
+Unsupervised GAD
+AnomalyDAE (ICASSP’20) 0.6561 0.4119 0.5094 0.3397 0.5007 0.4395 0.5534 0.4872
+TAM (NeurIPS’23) 0.7342 0.4958 0.5541 0.5462 0.5145 0.2355 0.5155 0.5137
+GADAM (ICLR’24) 0.5034 0.4812 0.5104 0.6045 0.5248 0.5006 0.5022 0.5182
+Supervised GAD
+GCN (ICLR’17) 0.5572 0.3158 0.5454 0.3643 0.4763 0.5338 0.5372 0.4757
+GAT (ICLR’18) 0.4624 0.5217 0.5038 0.4860 0.4390 0.4932 0.4834 0.4842
+BWGNN (ICML’22) 0.6589 0.4592 0.5222 0.4441 0.4516 0.3845 0.5167 0.4910
+GHRN (WWW’23) 0.7149 0.3590 0.5204 0.4960 0.5062 0.4407 0.4735 0.5015
+Generalist GAD
+UNPrompt (IJCAI’25) 0.5931 0.4687 0.5542 0.1972 0.4691 0.6184 0.4946 0.4850
+AnomalyGFM (KDD’25) 0.3996 0.4684 0.5420 0.4079 0.3833 0.6624 0.5067 0.4815
+IA-GGAD (NeurIPS’25)0.88050.50330.58770.5695 0.4855 0.46280.6030 0.5846
+NeighborDiv (ours)0.61660.61520.51220.9114 0.5624 0.72460.5832 0.6465
+AP
+Unsupervised GAD
+AnomalyDAE (ICASSP’20) 0.0832 0.0446 0.0339 0.0323 0.2173 0.0824 0.0358 0.0756
+TAM (NeurIPS’23) 0.1838 0.0528 0.0399 0.0559 0.2345 0.0350 0.0416 0.0919
+GADAM (ICLR’24) 0.0543 0.0611 0.0334 0.4449 0.2395 0.0736 0.0303 0.1339
+Supervised GAD
+GCN (ICLR’17) 0.0606 0.0347 0.0342 0.0346 0.2160 0.0687 0.0401 0.0698
+GAT (ICLR’18) 0.0488 0.0608 0.0333 0.0449 0.1960 0.0547 0.0280 0.0667
+BWGNN (ICML’22) 0.1117 0.0458 0.0370 0.0375 0.1985 0.0438 0.0341 0.0726
+GHRN (WWW’23) 0.1628 0.0363 0.0373 0.0423 0.2306 0.0572 0.0310 0.0854
+Generalist GAD
+UNPrompt (IJCAI’25) 0.0757 0.0473 0.0393 0.0261 0.2055 0.0922 0.0321 0.0740
+AnomalyGFM (KDD’25) 0.0431 0.0544 0.0337 0.0404 0.1665 0.1429 0.0293 0.0729
+IA-GGAD (NeurIPS’25)0.48460.05520.04300.1395 0.2188 0.05500.0502 0.1495
+NeighborDiv (ours)0.06840.07500.03560.6067 0.2459 0.16170.0400 0.1762
+D Heuristic Baseline Definitions
+For full reproducibility, we provide the complete specification of the four structure-based heuristic
+baselines used in Table 12. All baselines receive the same feature preprocessing as our method:
+truncated SVD projection tor= 8dimensions followed by L1 row normalization.
+Unified calibration pipeline.To isolate the effect of the diversity statistic itself from calibration
+differences, every baseline (and our method) follows an identical post-processing procedure. Given a
+raw score Ri computed per node, we define the valid-node set Vvalid (specified per method below),
+compute the global median reference Rmed = Median({R i :v i ∈V valid}), take the absolute
+deviation∆ i =|R i −R med|, and standardize via z-score:
+si = ∆i −µ ∆
+σ∆
+, v i ∈V valid,(27)
+where µ∆ and σ∆ are the mean and standard deviation of ∆i over Vvalid. Nodes outside Vvalid are
+assigned a default score ofs i = 0to ensure a complete anomaly ranking.
+LCC (Local Clustering Coefficient).For each nodev i withd i ≥2,
+LCCi = 2T i
+di(di −1) , T i =|{(v p, vq) :v p, vq ∈ N(v i), A pq = 1, p < q}|.(28)
+Valid-node set: Vvalid ={v i :d i ≥2} . This baseline captures pure topological cohesion, ignoring
+node attributes. We note that the edge-density view of the neighbor-induced subgraph, |{(vp, vq)∈
+N(v i)2 :A pq = 1, p < q}|/
+ di
+2
+
+, is numerically equivalent to LCCi on undirected unweighted
+graphs and is therefore not reported as a separate baseline.
+NRS (Neighborhood Residual Score).Let ˆA=D −1/2AD−1/2 be the symmetrically normalized
+adjacency, where the degree is clamped at a minimum of 1 to avoid division by zero for isolated nodes.
+The aggregated representation is¯xi = ( ˆA ˜X) i, and the raw score is the L2 norm of the residual:
+NRSi =∥˜xi −¯xi∥2.(29)
+20
+Table 10: Performance comparison of different anomaly detection methods (training set: Elliptic)
+(bold: highest value, underlined: second highest value)
+Metric Method Cora YelpChi Reddit T-Finance Tolokers Disney Questions Avg
+AUC
+Unsupervised GAD
+AnomalyDAE (ICASSP’20) 0.6360 0.4293 0.5181 0.3168 0.4749 0.4740 0.5605 0.4871
+TAM (NeurIPS’23) 0.7362 0.4986 0.5602 0.5451 0.5102 0.2448 0.5197 0.5164
+GADAM (ICLR’24) 0.5059 0.4879 0.5134 0.7805 0.5583 0.4534 0.4772 0.5395
+Supervised GAD
+GCN (ICLR’17) 0.4857 0.4300 0.5833 0.5554 0.4765 0.5569 0.5287 0.5166
+GAT (ICLR’18) 0.5517 0.4934 0.5529 0.4902 0.3537 0.4710 0.5180 0.4901
+BWGNN (ICML’22) 0.4035 0.5991 0.4879 0.7369 0.3747 0.4472 0.4251 0.4963
+GHRN (WWW’23) 0.4075 0.6072 0.5352 0.7937 0.3602 0.5397 0.4153 0.5227
+Generalist GAD
+UNPrompt (IJCAI’25) 0.6379 0.5238 0.5667 0.2140 0.40790.72630.5000 0.5109
+AnomalyGFM (KDD’25) 0.4275 0.4722 0.5380 0.50620.62130.6268 0.5340 0.5323
+IA-GGAD (NeurIPS’25)0.87970.50760.59230.5358 0.4739 0.46210.6029 0.5792
+NeighborDiv (ours)0.61660.61520.51220.91140.5624 0.7246 0.5832 0.6465
+AP
+Unsupervised GAD
+AnomalyDAE (ICASSP’20) 0.0927 0.0468 0.0369 0.0316 0.2077 0.1026 0.0382 0.0795
+TAM (NeurIPS’23) 0.1955 0.0518 0.0413 0.0571 0.2324 0.0353 0.0421 0.0936
+GADAM (ICLR’24) 0.0550 0.0582 0.0354 0.3476 0.2550 0.0826 0.0307 0.1235
+Supervised GAD
+GCN (ICLR’17) 0.0522 0.0482 0.0398 0.0514 0.2153 0.0737 0.0396 0.0743
+GAT (ICLR’18) 0.0566 0.0589 0.0376 0.0447 0.1642 0.0510 0.0294 0.0632
+BWGNN (ICML’22) 0.0440 0.0698 0.0348 0.0957 0.1694 0.0495 0.0244 0.0697
+GHRN (WWW’23) 0.0441 0.0727 0.0388 0.1596 0.1695 0.0693 0.0237 0.0825
+Generalist GAD
+UNPrompt (IJCAI’25) 0.0865 0.0586 0.0409 0.0268 0.1758 0.1339 0.0313 0.0791
+AnomalyGFM (KDD’25) 0.0477 0.0555 0.0347 0.06330.29280.0915 0.0313 0.0881
+IA-GGAD (NeurIPS’25)0.48320.05300.04450.1176 0.2120 0.05490.0505 0.1451
+NeighborDiv (ours)0.06840.07500.03560.60670.24590.16170.0400 0.1762
+Valid-node set: Vvalid ={v i :d i ≥1} (a single neighbor suffices for aggregation). NRS instantiates
+the classical node-to-neighbor consistency paradigm underlying many reconstruction-based GAD
+methods.
+PCD (Propagation Consistency Decay).Starting from h(0) = ˜X, we perform L= 3 rounds of
+symmetric-normalized propagation:
+h(ℓ) = ˆA h(ℓ−1), ℓ= 1, . . . , L.(30)
+The raw score accumulates the cosine-based consistency decay across hops:
+PCDi =
+LX
+ℓ=1
+wℓ ·
+
+1−cos
+
+h(ℓ−1)
+i , h (ℓ)
+i
+
+,(31)
+with hop weights (w1, w2, w3) = (1.0,0.7,0.5) , emphasizing closer-hop inconsistency. Valid-node
+set: Vvalid ={v i :d i ≥1} . PCD captures multi-hop representation drift, complementary to the
+one-hop residual formulation of NRS.
+Conceptual comparison and AMEN-Ego baseline.AMEN [ 22] and our neighbor diversity both
+operate in the attribute space, but characterize fundamentally different aspects of a neighborhood.
+AMEN’s normality score aggregates per-attribute internal and external contributions around an
+ego-anchored reference, yielding afirst-ordermeasure of how well neighbor attributes cohere with
+the central node. In contrast, Di is the variance of pairwise similaritiesamongneighbors and never
+references the central node’s attributes directly; it is asecond-orderstatistic on the distribution of
+inter-neighbor relations. This difference is not stylistic. Consider two anomaly patterns: (i) a node
+whose neighbors form a tight cluster in attribute space but whose own attributes lie far outside that
+cluster, and (ii) a node whose neighbors are drawn from several disjoint attribute groups regardless
+of where the node itself lies. AMEN strongly penalizes case (i), because the internal and external
+attribute decomposition detects the mismatch between the ego node and its neighbors. However, it
+has no direct signal for case (ii), since each neighbor may individually align with the ego node. Di
+shows the opposite behavior. Case (ii) produces a large variance among pairwise neighbor similarities
+21
+and is therefore assigned a high anomaly score. Case (i) produces low variance, but can still be
+identified through the two-sided calibration against Dmed. Real-world anomalies frequently fall into
+case (ii). For example, fraudulent accounts may interact with a mixture of otherwise unrelated users,
+which helps explain the empirical gap on T-Finance. (Table 12).
+To make this comparison concrete, we now detail the AMEN-Ego baseline used in Table 12. AMEN
+was originally proposed as a neighborhood-level scoring method that ranks a predefined set of
+candidate neighborhoods (e.g., ground-truth social circles) by their attributed normality. Since our
+evaluation is node-level and no ground-truth community structure is available across our seven
+benchmark datasets, we adopt the ego-network instantiation used in AMEN’s own experiments on
+datasets lacking ground-truth circles: for each node vi, we take Ci ={v i} ∪ N(v i) as the candidate
+neighborhood andB i ={v b /∈Ci | ∃v p ∈C i, A pb = 1}as its boundary.
+For ˜X linearly rescaled per dimension to [0,1] as required by the size-invariant form of AMEN [22],
+the per-attribute internal and external contribution vectors are computed as
+xI(f) =
+X
+p,q∈Ci
+
+Apq − kpkq
+2m
+
+˜xp(f)˜xq(f), x E(f) =−
+X
+(p,b)∈E
+p∈Ci, b∈Bi
+
+1−min(1, kpkb
+2m )
+
+˜xp(f)˜xb(f).
+(32)
+Applying the size-invariant rescaling of AMEN [22] to obtain ˆxI ∈[0,1] d and ˆxE ∈[−1,0] d, the
+L2 closed-form optimal normality is
+N ∗(Ci) =∥x +∥2,wherex= ˆx I + ˆxE, x + = max(x,0).(33)
+When x has no positive entry, we set N ∗(Ci) = max f x(f)≤0 , matching AMEN’s original
+convention. The raw anomaly statistic is Ri =−N ∗(Ci), so that low normality corresponds to
+high anomaly, which is then passed through the same median-calibrated z-score pipeline as all other
+heuristics. The valid-node set, sparse-node backoff, and hyperparameter choices follow the unified
+protocol described at the start of this appendix.
+E Full Per-Dataset Ablation Results
+E.1 Diversity Statistic & Global Reference
+Table 11 isolates the two design choices of Section 4.3: the local diversity statistic and the global
+reference.
+Median is a more robust reference than mean.Holding the variance statistic fixed, replacing the
+median reference with the mean reference decreases the average AUC from 0.6465 to 0.5787 and
+the average AP from 0.1762 to 0.1657. The drop is more evident on datasets whose diversity values
+contain pronounced tail values, such as Cora and Questions, while it is much smaller on T-Finance.
+This is consistent with the intuition from robust estimation: the median remains stable under a small
+fraction of extreme Di values, whereas the mean is pulled toward these extremes and may shift the
+reference level in the same direction as the anomalous tail, reducing the contrast between normal and
+anomalous neighborhoods.
+Second-order dispersion is the right statistic.Among the four statistics under median calibration,
+variance attains the best average AUC (0.6465) and AP (0.1762). Standard deviation, a monotone
+transform of variance, yields comparable AUC (0.6305) but markedly worse AP (0.1428, −19%
+relative): squaring amplifies large deviations and concentrates anomalous nodes at the top of the
+ranking, which AP rewards but AUC does not. The first-order mean of pairwise similarities loses all
+dispersion information and drops to 0.5726 AUC. Entropy is worst on average (0.5365), as binning
+discards the continuous shape of the similarity distribution that variance preserves. Variance+median
+dominates on 4 of 7 datasets and both averages, and is adopted as the default.
+E.2 Comparison with Structure-based Heuristics
+Table 12 compares Neighbor Diversity against four structure-based heuristics, all passed through the
+same median calibration and z-score pipeline (Appendix D) to isolate the effect of the underlying
+statistic. Our method achieves the best average AUC (0.6465) and AP (0.1762), with the largest
+per-dataset gain on T-Finance (0.9114 vs. 0.6610 for the best heuristic), precisely theover-diverse
+22
+Table 11: Ablation on neighborhood diversity statistics and graph-level reference. The best average
+results are shown in bold.
+MetricDiversity Metric Global Reference Cora YelpChi Reddit T-Finance Tolokers Disney Questions Avg
+AUC
+Variance Median 0.6166 0.6152 0.5122 0.9114 0.5624 0.7246 0.58320.6465Variance Mean 0.3215 0.6055 0.4986 0.9078 0.4902 0.7034 0.5241 0.5787Std. Dev. Median 0.5983 0.5648 0.4753 0.8953 0.5643 0.7119 0.6037 0.6305Mean Median 0.4226 0.5823 0.4733 0.9132 0.5220 0.6575 0.4375 0.5726Entropy Median 0.7415 0.5162 0.4581 0.4649 0.5343 0.4350 0.6055 0.5365
+AP
+Variance Median 0.0684 0.0750 0.0356 0.6067 0.2459 0.1617 0.04000.1762Variance Mean 0.0398 0.0693 0.0343 0.6031 0.2216 0.1562 0.0356 0.1657Std. Dev. Median 0.0659 0.0648 0.0304 0.3898 0.2467 0.1587 0.0431 0.1428Mean Median 0.0494 0.0663 0.0315 0.5621 0.2212 0.0782 0.0265 0.1479Entropy Median 0.2930 0.0594 0.0291 0.0391 0.2750 0.0511 0.0544 0.1144
+regime that second-order dispersion is designed to capture, where fraudulent accounts interact with
+heterogeneous user groups. Consistency-based heuristics (NRS 0.5402, PCD 0.5378) trail all attribute-
+aware methods on average, supporting the main claim that neighbor-to-neighbor dispersion carries a
+signal unavailable to first-order node-to-neighbor formulations.
+Dataset-level comparison.LCC (0.7020) and AMEN-Ego (0.7149) both outperform our method
+on Cora (0.6166), and LCC also leads on Questions (0.6154 vs. 0.5832); NRS narrowly beats our
+method on Reddit (0.5435 vs. 0.5122). These are not contradictions to our claim: Cora uses injected
+structural anomalies whose detectability is driven by topological cohesion and ego-attribute deviation,
+which these heuristics capture by construction. To check that the average gap is not an artifact of a
+single strong dataset, we recompute the AUC average excluding T-Finance: our method still averages
+0.6024 across the remaining six datasets, ahead of LCC (0.5671) and AMEN-Ego (0.5631) by 3.5-3.9
+percentage points in AUC. Under AP, the gap widens further (0.1762 vs. 0.0988 for the closest
+baseline), reflecting that Neighbor Diversity concentrates anomalous nodes at the top of the ranking
+more effectively than any heuristic we evaluate.
+Table 12: Comparison with structure-based heuristic baselines. Bold indicates best average perfor-
+mance.
+Metric Method Cora YelpChi Reddit T-Finance Tolokers Disney Questions Avg
+AUC
+LCC 0.7020 0.5000 0.4432 0.6400 0.4842 0.6575 0.6154 0.5775
+NRS 0.4509 0.5303 0.5435 0.6610 0.5647 0.4364 0.5947 0.5402
+PCD 0.4567 0.5968 0.5135 0.6167 0.4763 0.5537 0.5511 0.5378
+AMEN-Ego 0.7149 0.4818 0.5169 0.6602 0.5697 0.6123 0.4832 0.5770
+NeighborDiv (ours)0.6166 0.6152 0.5122 0.9114 0.5624 0.7246 0.58320.6465
+AP
+LCC 0.1082 0.0511 0.0282 0.0718 0.2088 0.1020 0.0541 0.0892
+NRS 0.0509 0.0581 0.0356 0.0719 0.2556 0.0628 0.0411 0.0823
+PCD 0.0497 0.0744 0.0348 0.0731 0.2126 0.0672 0.0389 0.0787
+AMEN-Ego 0.1477 0.0452 0.0372 0.0751 0.2676 0.0875 0.0313 0.0988
+NeighborDiv (ours)0.0684 0.0750 0.0356 0.6067 0.2459 0.1617 0.04000.1762
+E.3 Sampling Approximation and Runtime Analysis
+Tables 13 and 14 quantify the trade-off between Monte Carlo approximation and exhaustive pairwise
+enumeration.
+Performance is preserved across density regimes.On the seven dataset average, sampling with
+k= 100 retains more than 99.6% of the Full AUC (0.6445 vs. 0.6465), while sampling with k= 50
+still retains more than 99.3% (0.6421 vs. 0.6465). Both sampling budgets also preserve more than
+96% of the Full AP. Cora, YelpChi, Disney, and Questions are unaffected, because most nodes satisfy di
+2
+
+≤k and the sampler returns all pairs exactly. The gap emerges only on denser graphs, with
+T-Finance as the worst case: AUC 0.9114→0.9019→0.8927 and AP 0.6067→0.5888→0.5619 for
+Full→k=100→k=50. Standard deviations across five seeds remain below 1.6×10 −3 in AUC at
+every entry, confirming the estimator is stable in practice.
+Runtime scales with graph density.The speedup is concentrated where it matters. On T-Finance,
+Full enumeration takes 2321.7 s while k=100 completes in 36.6 s (63×). Tolokers and Questions
+see 2−3× speedups, and the sparsest graphs (Cora, YelpChi, Disney) finish under 4 s in every
+23
+Table 13: Ablation on the sampling-based approximation for neighbor diversity. Full denotes
+exhaustive computation over all unordered neighbor pairs.
+Metric Method Cora YelpChi Reddit T-Finance Tolokers Disney Questions Avg
+AUC Full 0.6166 0.6152 0.5122 0.9114 0.5624 0.7246 0.58320.6465Sampling (k= 100) 0.6166±0.0000 0.6152±0.0000 0.5116±0.0002 0.9019±0.0013 0.5587±0.0011 0.7246±0.0000 0.5831±0.0000 0.6445Sampling (k= 50) 0.6167±0.0001 0.6152±0.0000 0.5113±0.0009 0.8927±0.0016 0.5511±0.0007 0.7246±0.0000 0.5831±0.0000 0.6421
+AP Full 0.0684 0.0750 0.0356 0.6067 0.2459 0.1617 0.04000.1762Sampling (k= 100) 0.0684±0.0000 0.0750±0.0000 0.0356±0.0000 0.5888±0.0031 0.2445±0.0004 0.1617±0.0000 0.0400±0.0000 0.1734Sampling (k= 50) 0.0684±0.0000 0.0750±0.0000 0.0356±0.0001 0.5619±0.0017 0.2421±0.0006 0.1617±0.0000 0.0400±0.0000 0.1692
+Table 14: End-to-end runtime comparison (in seconds) between exhaustive computation and the
+proposed sampling-based approximation.
+Method Cora YelpChi Reddit T-Finance Tolokers Disney Questions
+Full 3.23 2.32 2.57 2321.74 4.53 0.02 17.32
+Sampling (k= 100) 3.29 2.32 1.54 36.61 2.12 0.02 9.17
+Sampling (k= 50) 2.68 2.29 1.46 32.58 1.99 0.02 8.39
+configuration, on Cora the sampled variant is marginally slower (3.29 s vs. 3.23 s) because the
+sampling overhead exceeds the negligible saving when di is already small. This makes k=100 a
+pragmatic default: negligible computational overhead on sparse graphs, and the only feasible option
+on web-scale dense graphs where exhaustive enumeration is prohibitive.
+E.4 Effect of SVD Projection Dimension
+The proposed method projects raw node features into an r-dimensional space via truncated SVD
+before computing neighbor diversity. We fixr=8 throughout the main experiments and justify this
+choice by sweeping r∈ {8,16,32,64} on test datasets whose raw feature dimension is large enough
+to support the full range: Cora (d=1433), YelpChi (d=32), Reddit (d=64), and Questions (d=301).
+T-Finance (d=10), Tolokers (d=10), and Disney (d=28) are excluded because their raw dimensions
+preclude the upper end of the sweep.
+Table 15 reports the results. Three observations emerge. First, r=8 achieves the best average AUC
+(0.5818) and AP (0.0548) across the four datasets, confirming it as a robust cross-domain default.
+Second, the optimal r varies per dataset: YelpChi favors r=32, reflecting that its raw dimension
+(d=32) is already compact and benefits from retaining nearly all directional information, while
+Cora degrades sharply as r grows (0.6166→0.2437 AUC), because its high-dimensional raw features
+(d=1433) contain many low-energy noisy directions that dilute cosine similarity once included. Third,
+no single r dominates on every dataset, the optimal projection rank depends on the intrinsic signal rank
+of each graph’s attribute space, which is not available a priori in the zero-shot setting. We therefore fix
+r=8 as the default, which trades marginal per-dataset gains for cross-domain stability. The Average
+(Avg) column at r=64 is marked "—" because YelpChi’s d=32 precludes r=64; averaging over a
+different set of datasets from the other rows would not be directly comparable.
+Table 15: Effect of SVD projection dimension r. Avg is computed across the four datasets shown.
+Bold indicates the best per column.
+Metric rCora YelpChi Reddit Questions Avg
+AUC
+8 0.6166 0.6152 0.5122 0.58320.5818
+16 0.5343 0.6761 0.4684 0.5857 0.5661
+32 0.3065 0.6900 0.4782 0.5854 0.5150
+64 0.2437 — 0.4738 0.5908 —
+AP
+8 0.0684 0.0750 0.0356 0.04000.0548
+16 0.0559 0.0879 0.0311 0.0397 0.0537
+32 0.0403 0.0913 0.0327 0.0398 0.0510
+64 0.0351 — 0.0318 0.0405 —
+24
+Table 16: Low-degree node statistics on the seven test datasets. Vvalid denotes nodes with di ≥2 , for
+which NeighborDiv is directly defined. Invalid nodes are those with di <2 , which receive a neutral
+fallback score.
+Dataset N|V valid|Valid ratio Isol.d= 1Invalid(d <2)
+Cora 2,708 2,233 82.5% 0 475 475
+YelpChi 23,831 15,679 65.8% 0 8,152 8,152
+Reddit 10,984 8,332 75.9% 0 2,652 2,652
+T-Finance 39,357 39,275 99.8% 0 82 82
+Tolokers 11,758 9,853 83.8% 930 975 1,905
+Disney 124 113 91.1% 0 11 11
+Questions 48,921 13,567 27.7% 17,603 17,751 35,354
+E.5 Low-degree Node Handling
+NeighborDiv is a second-order neighborhood statistic and therefore requires at least two neighbors
+to form a valid neighbor pair. For nodes with di <2 , the diversity statistic Di is undefined. Our
+main implementation assigns such nodes a neutral standardized score si = 0 . This choice does
+not indicate that low-degree nodes are necessarily normal; rather, it reflects that their second-order
+neighbor-to-neighbor organization cannot be measured by the proposed statistic.
+To quantify the scope of this issue, Table 16 reports the number of valid nodes with di ≥2 , the
+valid-node ratio, and degree statistics for all test datasets. The prevalence of low-degree nodes
+is dataset-dependent. It is negligible on dense graphs such as T-Finance (99.8% valid nodes), but
+substantial on sparse graphs such as Questions, where only 27.7% of nodes have at least two neighbors.
+This motivates an explicit sensitivity analysis of the sparse-node fallback assignment.
+We compare three evaluation settings in Table 17:
+• Zero fallback: the default setting used in the main experiments, where nodes with di <2
+receives i = 0.
+• Median fallback: nodes with di <2 receive the median standardized score of valid nodes.
+This is another neutral assignment that is less tied to the mean of the standardized score
+distribution.
+• Valid-only: evaluation is restricted to nodes with di ≥2 , i.e., the subset on which Neighbor-
+Div is directly defined.
+The default zero fallback achieves the best average AUC (0.6465) and AP (0.1762). Replacing it with
+the median fallback yields comparable average AP (0.1740) and a moderate decrease in average AUC
+(0.6343). The valid-only evaluation obtains a similar average AUC (0.6425) and AP (0.1756) to the
+full-node default evaluation. These results indicate that the main conclusions are not driven by the
+arbitrary treatment of low-degree nodes. Instead, the NeighborDiv signal remains effective on the
+valid-node subset, and using a neutral fallback mainly serves to produce a complete ranking over all
+nodes.
+We emphasize that this analysis does not claim that low-degree anomalies are fully solved by the
+current method. Nodes with di <2 are outside the direct scope of a second-order neighbor-pair
+statistic. Designing a principled degree-aware fallback for isolated or degree-one nodes is a natural
+future direction, for example by combining NeighborDiv with first-order node-to-neighbor residual
+scores or global feature outlier scores.
+F Controlled Homophily Sweep
+To systematically evaluate the sensitivity of our method to varying levels of graph homophily and
+to provide controlled evidence for the two-sided detection claim, we construct synthetic attributed
+graphs using the stochastic block model (SBM) [12].
+Graph generation.Each graph contains n=2000 nodes partitioned into k=5 equal-sized com-
+munities. The intra- and inter-community edge probabilities are calibrated to achieve a target edge
+25
+Table 17: Sensitivity analysis of low-degree node handling. Zero fallback is the default setting used
+in the main experiments. Median fallback assigns nodes with di <2 the median standardized score
+of valid nodes. Valid-only evaluates only nodes withd i ≥2.
+Metric Setting Cora YelpChi Reddit T-Finance Tolokers Disney Questions Avg
+AUC
+Median fallback 0.6315 0.5467 0.5122 0.9109 0.5656 0.6667 0.6067 0.6343
+Zero fallback 0.6166 0.6152 0.5122 0.9114 0.5624 0.7246 0.5832 0.6465
+Valid-only 0.6142 0.5164 0.5122 0.9122 0.5676 0.7477 0.6273 0.6425
+AP
+Median fallback 0.0704 0.0648 0.0356 0.6066 0.2477 0.1504 0.0427 0.1740
+Zero fallback 0.0684 0.0750 0.0356 0.6067 0.2459 0.1617 0.0400 0.1762
+Valid-only 0.0737 0.0270 0.0356 0.6084 0.2505 0.1851 0.0490 0.1756
+homophily ratio h∈ {0.1,0.3,0.5,0.7,0.9} with an expected average degree of 15. Node features
+are generated as xi =µ ci +ϵ i, where µci ∈R 50 is the community center sampled from N(0,9I)
+and ϵi ∼ N(0, I) . Features are preprocessed identically to the main experiments (truncated SVD to
+r=8dimensions followed byℓ 1 row normalization).
+Anomaly injection.We inject 50 anomalous nodes per type by rewiring their edges:
+• Type-H(over-homogeneous): all neighbors are replaced with nodes from thesamecom-
+munity as the target node, creating an artificially concentrated neighborhood that deviates
+below the graph’s typical diversity level.
+• Type-D(over-diverse): neighbors are replaced with nodes sampleduniformly across all k
+communities, creating a maximally dispersed neighborhood that deviates above the typical
+diversity level.
+• Mixed: both Type-H and Type-D anomalies are injected simultaneously (50 each, 100 total,
+5% anomaly rate).
+The edge homophily ratio h controls thebackgroundstructure of normal nodes: at h=0.9, normal
+neighborhoods are already highly concentrated within their community, while at h=0.1, normal
+neighborhoods span multiple communities. The detectability of each anomaly type depends on its
+contrast against the background neighborhood organization. Type-H anomalies are most salient when
+normal neighborhoods are not already highly homogeneous. Type-D anomalies are expected to be
+salient when normal neighborhoods have a coherent community structure, but this contrast can break
+down in the extreme homophily regime, where the variance induced by mixed-community neighbors
+may overlap with the normal diversity range.
+Results.Table 18 reports AUC averaged over 3 random seeds. Three key observations emerge:
+(1) Our method achieves strong and robust detection of Type-H anomalies across all homophily levels
+(AUC ≥0.80 ), substantially outperforming both baselines, which remain near random (AMEN-Ego:
+0.52–0.56; NRS: 0.54–0.75). (2) For Type-D anomalies, our method leads forh≤0.7 (AUC ≥0.78 ).
+At the extreme setting h= 0.9 , Type-D detection degrades for our method. In this regime, normal
+neighborhoods already consist almost entirely of same-community nodes, so their pairwise similarities
+concentrate near a high value with small variance. A Type-D anomaly whose neighbors span multiple
+communities induces a bimodal similarity distribution, but the induced variance can overlap with the
+normal diversity range, reducing the separation in the calibrated deviation |Di −D med|. First-order
+residual scores such as NRS are less affected in this regime because they aggregate neighbor features
+before comparison with the ego, making them complementary to the second-order neighbor diversity
+signal. (3) In the Mixed setting, our method maintains strong performance for h≤0.7 (AUC
+≥0.86 ), as Type-H and Type-D signals jointly contribute to the overall anomaly ranking. Overall, the
+results confirm that our two-sided scoring mechanism is effective across a wide homophily spectrum,
+covering the range of most real-world attributed graphs.
+G Diagnostic Analysis on T-Finance
+Our method achieves the largest margin over baselines on T-Finance under the UMDT protocol (AUC
+0.9114 vs. the next-best 0.7828 of GADAM, Table 3; AP 0.6067 vs. 0.4842, Table 6). To better
+26
+Table 18: AUC under controlled homophily sweep on synthetic SBM graphs (n=2000, k=5). Type-
+H: over-homogeneous anomalies; Type-D: over-diverse anomalies; Mixed: both types combined.
+Results averaged over 3 random seeds. Bold indicates best per setting.
+Anomaly Type Methodh=0.1h=0.3h=0.5h=0.7h=0.9
+Type-H
+NeighborDiv (ours) 0.998 0.995 0.978 0.933 0.799
+NRS 0.752 0.700 0.677 0.634 0.537
+AMEN-Ego 0.523 0.531 0.548 0.558 0.528
+Type-D
+NeighborDiv (ours) 0.785 0.778 0.880 0.8470.362
+NRS 0.541 0.481 0.504 0.6000.740
+AMEN-Ego 0.594 0.626 0.580 0.530 0.645
+Mixed
+NeighborDiv (ours) 0.859 0.864 0.915 0.8760.522
+NRS 0.619 0.580 0.588 0.6200.654
+AMEN-Ego 0.534 0.549 0.543 0.515 0.541
+understand this unusually large margin and verify that NeighborDiv produces a meaningful ranking
+on T-Finance, we provide four complementary post-hoc diagnostics: (i) the precision–recall curve
+under three sampling configurations, (ii) Precision@K at multiple operating points, (iii) the score
+distribution separability between normal and anomalous nodes, and (iv) a comparison of the observed
+gap against the existing baseline variance reported in Table 2.
+Precision–recall curve and top- K precision.Figure 3 plots the precision–recall curve of our
+method on T-Finance under three sampling configurations (Full,k=100, k=50). The curve is smooth
+and remains substantially above the random-classifier baseline over a wide recall range. The three
+sampling configurations produce closely aligned curves (AP 0.6067, 0.5888, 0.5619), with Full domi-
+nating as expected. This indicates that the ranking quality is not sensitive to the sampling realization
+and that the reported AP is driven by a uniformly ordered score rather than a few extreme values.
+Table 19 further reports Precision@K for K∈ {100,500,1000,5000} , where K spans roughly 5.5%
+to 277% of the total anomaly count (1,803). Under the Full configuration, Precision@500 = 0.830
+(i.e., 415 of the top 500 candidates are true anomalies), and Precision@1000 = 0.804, confirming
+that the top of the ranking is densely populated with genuine anomalies across multiple operating
+points rather than in only a narrow region.
+0.0 0.2 0.4 0.6 0.8 1.0
+Recall
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0Precision
+Precision-Recall Curve on T-Finance
+Full
+k=100
+k=50
+Random
+Figure 3: Precision–recall curve of our method on T-Finance under three sampling configurations.
+The dashed gray line indicates the random-classifier baseline. NeighborDiv maintains high precision
+across a wide recall range, and sampled variants closely track exhaustive computation.
+Score distribution separability.Figure 4 shows the distribution of our method’s anomaly scores
+on T-Finance, split by ground-truth label. The two distributions are cleanly separated: normal nodes
+concentrate around a sharp mode near score −0.5 with mean −0.121 and standard deviation 0.794,
+27
+Table 19: Precision@K on T-Finance under three sampling configurations. K denotes the top-K
+nodes ranked by anomaly score.
+ConfigurationK=100K=500K=1000K=5000
+Full 0.580 0.830 0.804 0.295
+k=1000.620 0.818 0.788 0.294
+k=500.620 0.800 0.747 0.289
+while anomalous nodes spread around a broad mode near score 3.5 with mean 2.493 and standard
+deviation 1.459. The two means are separated by more than 3 standard deviations of the normal
+group, and the Kolmogorov–Smirnov statistic between the two empirical distributions is 0.731 with
+p <10 −300 (below machine precision), indicating an extremely significant separation that cannot be
+explained by metric computation alone. This bimodal pattern is consistent with the mechanism argued
+in Section 3.2: fraudulent accounts in T-Finance tend to connect to an unusually heterogeneous set of
+users, producing neighbor diversity values far from the graph-level median and thus large calibrated
+deviations.
+2
+ 0 2 4 6 8
+Anomaly Score
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+1.2
+1.4Density
+Anomaly Score Distribution on T-Finance
+Normal (n=37554)
+Anomaly (n=1803)
+Figure 4: Distribution of anomaly scores produced by our method on T-Finance, split by ground-truth
+label. Normal nodes (blue) concentrate sharply near zero with a narrow spread; anomalous nodes
+(red) form a broader distribution shifted to the positive side, with only marginal overlap around the
+normal mode. Normal and anomalous nodes form clearly separated score distributions, supporting
+neighbor diversity as an effective fraud-detection signal.
+Baseline variance from existing source-domain analysis.While we do not re-run the learning-
+based baselines with additional random seeds (as several baselines involve non-trivial training
+pipelines that would require code modification), Table 2 already provides a direct quantification of
+baseline fluctuation on T-Finance: the standard deviation of each generalist baseline’s AUC across
+the four different auxiliary training sources under the SDIT protocol. On T-Finance, this source-level
+standard deviation is 0.0519 for UNPrompt, 0.0959 for AnomalyGFM, and 0.0448 for IA-GGAD.
+The AUC gap of 0.1286 between our method (0.9114) and the best baseline (0.7828) is therefore
+more than 1.34× times larger than the largest of these standard deviations. Since source-domain
+variation is typically a larger source of fluctuation than random-seed variation in training-based GGAD
+methods [20, 25], the observed gap is clearly outside any plausible range of baseline variability. Our
+method itself is training-free and deterministic (std exactly zero, Table 2), so its own variance does
+not contribute to the gap.
+Summary.The four diagnostics jointly support the reliability of the T-Finance result.(i)
+The precision–recall curve is smooth and consistent across sampling configurations, with
+Precision@500 = 0.830 ;(ii)Precision@ K remains high across multiple operating points, rul-
+ing out the possibility that the AP gain is concentrated in a single narrow region of the ranking;(iii)
+the score distribution exhibits a statistically overwhelming separation between normal and anomalous
+nodes (KS = 0.731 , p <10 −300); and(iv)the observed AUC gap is larger than the measured
+28
+source-domain standard deviations of the generalist baselines under SDIT, although this comparison
+is only a proxy for baseline variability. The strong performance on T-Finance is therefore attributable
+to the suitability of neighbor diversity as an anomaly signal for this particular financial-fraud domain,
+rather than to a metric artifact or baseline randomness.
+29

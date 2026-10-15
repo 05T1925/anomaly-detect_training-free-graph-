@@ -1,0 +1,22 @@
+[
+  {
+    "dataset": "T-Finance",
+    "variant": "full",
+    "pair_seed": 0,
+    "status": "completed",
+    "AUROC": 0.9202275122999848,
+    "AP": 0.5319825178183739,
+    "paper_auc": 0.9114,
+    "paper_ap": 0.6067,
+    "delta_auc": 0.008827512299984797,
+    "delta_ap": -0.0747174821816261,
+    "n_nodes": 39357,
+    "valid_nodes": 39275,
+    "paper_valid_nodes": 39275,
+    "scoring_seconds": 11095.823251214999,
+    "load_and_scoring_seconds": 11139.461896515,
+    "output_dir": "/mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/paper-audit-tfinance-full-retry/main/T-Finance/full/seed-0",
+    "data_note": "BWGNN original ZIP, optional DGL/torch required; temporary extraction at run time; one-hot labels decoded. Author NeighborDiv graph preprocessing is not fully specified.",
+    "error": ""
+  }
+]

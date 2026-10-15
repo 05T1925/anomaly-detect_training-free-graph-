@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "Repositories/NeighborDiv/scripts/audit_sbm_community_sampling.py", line 84, in <module>
+    if __name__=='__main__':main()
+  File "Repositories/NeighborDiv/scripts/audit_sbm_community_sampling.py", line 69, in main
+    assert row['AUROC_error_vs_historical']<1e-10
+AssertionError

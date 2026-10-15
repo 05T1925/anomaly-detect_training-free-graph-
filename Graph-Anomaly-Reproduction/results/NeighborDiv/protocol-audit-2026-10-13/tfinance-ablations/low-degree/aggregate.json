@@ -1,0 +1,51 @@
+{
+  "per_dataset": [
+    {
+      "dataset": "T-Finance",
+      "variant": "zero",
+      "expected_runs": 1,
+      "completed_runs": 1,
+      "complete": true,
+      "AUROC_mean": 0.9202275122999848,
+      "AUROC_std_population": 0.0,
+      "AP_mean": 0.5319827701130431,
+      "AP_std_population": 0.0,
+      "scoring_seconds_mean": 5.428303322999909,
+      "scoring_seconds_std_population": 0.0,
+      "load_and_scoring_seconds_mean": 27.30572748599991,
+      "load_and_scoring_seconds_std_population": 0.0
+    },
+    {
+      "dataset": "T-Finance",
+      "variant": "median",
+      "expected_runs": 1,
+      "completed_runs": 1,
+      "complete": true,
+      "AUROC_mean": 0.9197201584067172,
+      "AUROC_std_population": 0.0,
+      "AP_mean": 0.5318622482798251,
+      "AP_std_population": 0.0,
+      "scoring_seconds_mean": 5.236032675000047,
+      "scoring_seconds_std_population": 0.0,
+      "load_and_scoring_seconds_mean": 19.776289109999993,
+      "load_and_scoring_seconds_std_population": 0.0
+    },
+    {
+      "dataset": "T-Finance",
+      "variant": "valid-only",
+      "expected_runs": 1,
+      "completed_runs": 1,
+      "complete": true,
+      "AUROC_mean": 0.9210048978352996,
+      "AUROC_std_population": 0.0,
+      "AP_mean": 0.5333475150451146,
+      "AP_std_population": 0.0,
+      "scoring_seconds_mean": 5.51687360599999,
+      "scoring_seconds_std_population": 0.0,
+      "load_and_scoring_seconds_mean": 23.376010721999933,
+      "load_and_scoring_seconds_std_population": 0.0
+    }
+  ],
+  "complete_seven_target_averages": {},
+  "seed_std_note": "population std over specified pair seeds with fixed SVD seed; not source-domain std in Table 2"
+}

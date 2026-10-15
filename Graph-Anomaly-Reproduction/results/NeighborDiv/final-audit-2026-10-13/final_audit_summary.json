@@ -1,0 +1,78 @@
+{
+  "status": "final-audit-completed; unresolved paper metric discrepancies remain",
+  "live_production_checks": [
+    {
+      "dataset": "Cora",
+      "AUROC": 0.6846077664842325,
+      "AP": 0.09779039581106895,
+      "AUROC_error_vs_previous": 0.0,
+      "AP_error_vs_previous": 0.0
+    },
+    {
+      "dataset": "YelpChi",
+      "AUROC": 0.5814784022433874,
+      "AP": 0.06907070699469428,
+      "AUROC_error_vs_previous": 0.0,
+      "AP_error_vs_previous": 0.0
+    },
+    {
+      "dataset": "Reddit",
+      "AUROC": 0.5014015019345436,
+      "AP": 0.03560281845262397,
+      "AUROC_error_vs_previous": 0.0,
+      "AP_error_vs_previous": 0.0
+    },
+    {
+      "dataset": "T-Finance",
+      "AUROC": 0.9202275122999848,
+      "AP": 0.5319827701130431,
+      "AUROC_error_vs_previous": 0.0,
+      "AP_error_vs_previous": 0.0
+    },
+    {
+      "dataset": "Tolokers",
+      "AUROC": 0.5186809101343335,
+      "AP": 0.21169120875144412,
+      "AUROC_error_vs_previous": 0.0,
+      "AP_error_vs_previous": 0.0
+    },
+    {
+      "dataset": "Disney",
+      "AUROC": 0.7245762711864407,
+      "AP": 0.16170315655404693,
+      "AUROC_error_vs_previous": 0.0,
+      "AP_error_vs_previous": 0.0
+    },
+    {
+      "dataset": "Questions",
+      "AUROC": 0.49097128918826793,
+      "AP": 0.03317710044932848,
+      "AUROC_error_vs_previous": 0.0,
+      "AP_error_vs_previous": 0.0
+    }
+  ],
+  "public_data_byte_identity_passed": 6,
+  "repository_copy_identity_passed": 8,
+  "paper_byte_identity": true,
+  "independent_oracle_graphs": 7,
+  "independent_projection_controls": 44,
+  "independent_metric_formula_checks": 7,
+  "calibration_scope_controls": 49,
+  "paired_SBM_controls": 60,
+  "additional_DGL_inputs": 2,
+  "production_scoring_code_modified_this_round": false,
+  "production_source_hashes_unchanged": {
+    "src/data.py": true,
+    "src/neighbordiv.py": true,
+    "src/heuristic_baselines.py": true,
+    "src/amen_ego_native.cpp": true,
+    "scripts/run_neighbordiv.py": true,
+    "configs/paper_experiments.json": true
+  },
+  "audit_scripts_sha256": {
+    "Repositories/NeighborDiv/scripts/audit_calibration_scope.py": "1f51df0f67df6102a10fa45a76973b333b5e4ae57f6067ec35e4e8cb1eb0cdbc",
+    "Repositories/NeighborDiv/scripts/audit_sbm_community_sampling.py": "6850c4c86a0a14ee3476c2ace7e5641c73c0b2240360cccf59bda456c7bd4594",
+    "Repositories/NeighborDiv/scripts/audit_upstream_data.py": "f31e22f841bea96bfa287c8c6b3db72e5f3567890f1756ed65b17095c0d7cf6a",
+    "Repositories/NeighborDiv/scripts/final_independent_oracle.py": "2355f8b0b2a775b652113e91e6be8509eacf9fdbd76a55e39bb07e07395fd981"
+  }
+}

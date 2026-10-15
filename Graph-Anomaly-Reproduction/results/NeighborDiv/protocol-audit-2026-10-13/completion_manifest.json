@@ -1,0 +1,40 @@
+{
+  "status": "completed for the audit scope; paper metrics remain unresolved except specified matches",
+  "counts": {
+    "moments/main": 7,
+    "moments/sampling": 44,
+    "moments/rank": 8,
+    "moments/statistic": 16,
+    "moments/low-degree": 12,
+    "tfinance/statistic": 4,
+    "tfinance/low-degree": 3,
+    "appendix-d-corrected/metrics.csv": 28,
+    "appendix-f-corrected/runs.csv": 135,
+    "appendix-g-corrected/metrics.csv": 11,
+    "entropy-corrected/metrics.csv": 16,
+    "statistical_conventions.csv": 56
+  },
+  "regression_checks": 19,
+  "projection_runs": 31,
+  "main_degree_counts_match_Table16": true,
+  "python_syntax": "passed",
+  "svg_xml": "passed",
+  "source_hashes_at_audit_completion": {
+    "Repositories/NeighborDiv/configs/paper_experiments.json": "badc4aa18ebbd3441d09aa57b36852cdeaffd880a32cfae7b1ae691dad85beec",
+    "Repositories/NeighborDiv/scripts/audit_projection_and_moments.py": "cc3ea50007ced72b6c26909c733d57fec9d31e61fdc859f89268981bc0073b0a",
+    "Repositories/NeighborDiv/scripts/audit_score_conventions.py": "7686f81397e3b99b9cdbf1172517e6326f8bb9bd7b443a387e3864f98c28600b",
+    "Repositories/NeighborDiv/scripts/check_audit_regressions.py": "acb184129ef3862bef6449ca66f9e01118d043eb8ff6233e20254597fe7460bc",
+    "Repositories/NeighborDiv/scripts/run_appendix_d_heuristics.py": "6f03cc70c3b9daf6d977a652e45fc20f82c727d5372f2fccd34780c750dec9b3",
+    "Repositories/NeighborDiv/scripts/run_appendix_f_sbm.py": "25e0a04cbdc6f94da4eba6c8e3b75574b2d527a35be0f6b84e640027f2cd9af9",
+    "Repositories/NeighborDiv/scripts/run_appendix_g_diagnostics.py": "5669427c323d127007cb7f9f588a1d55bebb7ba815aa31d241889b5f05dc59e6",
+    "Repositories/NeighborDiv/scripts/run_cora.sh": "b7ee0a2517366455d798ffa08646ed6e3267b5a6f53eb9fbad8e4e60eb4a9e24",
+    "Repositories/NeighborDiv/scripts/run_entropy_bin_sensitivity.py": "6d70219fb92e8b018067247e477dc2f22575cf61294fe33a26d7bf1643c85ed2",
+    "Repositories/NeighborDiv/scripts/run_neighbordiv.py": "1fc60d06a0b413123b7b6d37a46fbf29c0ae8d9e5c1fdeea2190ae9bb8d735c5",
+    "Repositories/NeighborDiv/scripts/run_paper_experiments.py": "e932c992a3de6fd9773905c49c473bdec04a849aae52640db57ea5c74cfd02fb",
+    "Repositories/NeighborDiv/src/amen_ego_native.cpp": "e425eda5a147fd227502abd8b70bdaacc859f90ed29b330769ff6ee1f8ae87a9",
+    "Repositories/NeighborDiv/src/data.py": "7976b38be1e1b140d8bda7242fec20f0e10e5309b26c509ee4c9ed96817e550e",
+    "Repositories/NeighborDiv/src/heuristic_baselines.py": "336a60e69949ac616e0db3cef8e355e6469c46c68de414468f52e12ae790f495",
+    "Repositories/NeighborDiv/src/neighbordiv.py": "d1b3755e0e0e39da45e67deb44d965dfa83fab2a7a884be2a010b78c2f7faed1",
+    "Repositories/NeighborDiv/src/__init__.py": "8081241a91ed8c5c34365a43ece9b3bb87c04c3b00039ffac03a6f2b94cacf38"
+  }
+}

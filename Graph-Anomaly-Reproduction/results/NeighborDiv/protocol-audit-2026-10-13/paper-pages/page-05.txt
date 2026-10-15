@@ -1,0 +1,61 @@
+The ℓ1 normalization removes magnitude inconsistency across nodes, while the cosine form further
+ensures that the similarity depends only on feature directions. In implementation, Eq. (4) reduces
+to an inner product after an additional ℓ2 normalization step applied internally to the similarity
+computation.
+Neighbor diversity by sampled pairwise dispersion. If di ≥ 2, the neighbors of vi form a set
+of unordered node pairs. A direct implementation would enumerate all 
+di
+2
+
+pairs and compute the
+variance of their similarities. However, this becomes expensive for high-degree nodes. To make the
+method scalable, we adopt a sampling-based approximation.
+Let
+Pi = {(vp, vq) | vp, vq ∈ N (vi), p < q} (5)
+denote the set of all unordered neighbor pairs, and let
+Mi = |Pi| =
+
+di
+2
+
+. (6)
+For each node, we uniformly sample at most k pairs from Pi without replacement:
+Pei ⊆ Pi, |Pei| = min(k, Mi). (7)
+We then collect the sampled pairwise similarities:
+Sei =
+n
+sim(vp, vq) | (vp, vq) ∈ Pei
+o
+. (8)
+The neighbor diversity of node viis defined as the variance of these sampled similarities:
+Di = Var(Sei). (9)
+This quantity captures the dispersion of internal relations within the neighborhood of vi. When
+neighbors are very similar to each other and form an overly uniform local structure, Sei becomes
+concentrated and Ditends to be small. In contrast, when neighbors belong to several very different
+local groups, Sei becomes more dispersed and Ditends to be large. Therefore, Di measures the
+irregularity of the neighbor-neighbor structure rather than the direct discrepancy between the central
+node and its neighbors.
+Discussion. The above sampling procedure reduces per-node cost from O(d
+2
+i
+) to O(min(k, d2
+i
+))
+and empirically serves as a stable Monte Carlo estimator of the full pairwise-similarity variance
+(theoretically verified in Appendix A.4, empirically validated in Section 4.3). Conceptually, Di
+differs from classical neighborhood descriptors in three respects: it operates in attribute space rather
+than edge topology; it is a prototype-free second-order statistic over neighbor pairs, in contrast to firstorder ego-anchored scores such as AMEN; and the median-calibrated deviation yields a two-sided
+score sensitive to both overly homogeneous and heterogeneous neighborhoods. Extended analysis
+and empirical comparison against LCC, NRS, PCD, and AMEN-Ego are deferred to Appendix D and
+Section 4.3 respectively.
+3.3 Global Calibration and Anomaly Scoring
+A local diversity value Di alone is not sufficient to determine whether node viis anomalous, because
+the typical diversity level may vary across graphs. We therefore calibrate the local statistic against a
+graph-level reference.
+Graph-level reference. We first define the set of valid nodes:
+Vvalid = {vi| di ≥ 2}. (10)
+Among these nodes, we use the median neighbor diversity as the global reference level:
+Dmed = Median ({Di| vi ∈ Vvalid}). (11)
+The median is adopted instead of the mean because it is more robust to extreme values in unsupervised
+settings. We also perform an ablation study on the choice of this global aggregation statistic.
+5

@@ -1,0 +1,43 @@
+{
+  "paper": "NeighborDiv: Training-free Zero-shot Generalist Graph Anomaly Detection via Neighbor Diversity",
+  "arxiv": "2605.20879v1",
+  "data_path": "/mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/Repositories/CoLA/dataset/cora.mat",
+  "data_sha256": "dfc945bfe11d742c2a6b5faf1d92bab3d20408e15984172c12d02b79e35836f8",
+  "mat_keys": {
+    "adjacency": "Network",
+    "features": "Attributes",
+    "labels": "Label"
+  },
+  "parameters": {
+    "rank": 8,
+    "max_pairs": null,
+    "random_state": 0,
+    "low_degree_fallback": 0.0,
+    "variance_ddof": 0
+  },
+  "graph": {
+    "n_nodes": 2708,
+    "n_edges_directed": 11606,
+    "n_features": 1433,
+    "rank": 8,
+    "pair_mode": "full",
+    "max_pairs": null,
+    "n_valid_nodes_degree_ge_2": 2239,
+    "n_low_degree_nodes_score_zero": 469,
+    "diversity_median": 0.022837119002976122,
+    "deviation_mean": 0.02475415253645994,
+    "deviation_std_population": 0.020240750068224372,
+    "svd_random_state": 0,
+    "pair_sampling_random_state": 0,
+    "variance_ddof": 0
+  },
+  "metrics": {
+    "AUROC": 0.667157935887412,
+    "AP": 0.0902362811300456,
+    "positive_count": 150,
+    "positive_rate": 0.055391432791728215
+  },
+  "scoring_seconds": 1.2990921359999987,
+  "label_use": "evaluation only; labels are not passed to fit_score",
+  "implementation": "clean-room NumPy/SciPy/scikit-learn; no gradient training"
+}

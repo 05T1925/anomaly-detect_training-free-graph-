@@ -1,0 +1,721 @@
+{
+  "inputs": [
+    {
+      "dataset": "Cora",
+      "source": "/mnt/c/Users/28641/Desktop/\u8bba\u6587\u79d1\u7814-\u6c5f\u6743\u5b66\u957f/Graph-Anomaly-Reproduction/data/Cora/cora-freegad.mat",
+      "policy": "preserve",
+      "nodes": 2708,
+      "features": 1433,
+      "anomalies": 150,
+      "valid": 2233,
+      "isolated": 0,
+      "degree_one": 475,
+      "adjacency_sha256": "576101bfe417157141cc7a2840a093164d1cbcfee679c116e7602c5807b3350d",
+      "features_sha256": "62f8ac60c75bb70af45fa36a269078212f477c0ecd7dfa4da9133f8bfd70a769",
+      "labels_sha256": "8d571643489157313432b8c6b86ea44a37fa280d16dad0091e68d5e25e697fa8"
+    },
+    {
+      "dataset": "YelpChi",
+      "source": "/mnt/c/Users/28641/Desktop/\u8bba\u6587\u79d1\u7814-\u6c5f\u6743\u5b66\u957f/Graph-Anomaly-Reproduction/data/YelpChi/yelpchi-freegad.mat",
+      "policy": "preserve",
+      "nodes": 23831,
+      "features": 32,
+      "anomalies": 1217,
+      "valid": 15679,
+      "isolated": 0,
+      "degree_one": 8152,
+      "adjacency_sha256": "aad417ca0c18b072c7177fdbddd9a12bc74f4084267da3311cf68739d2867574",
+      "features_sha256": "3158a87d038b14da8097c842f0b521ce17bd33ecb3f54e274bd3b0816e423a5a",
+      "labels_sha256": "5f540b8b0182d6aa322b103db0b551525adb685baa972750d95a34c9a0279ef7"
+    },
+    {
+      "dataset": "Reddit",
+      "source": "/mnt/c/Users/28641/Desktop/\u8bba\u6587\u79d1\u7814-\u6c5f\u6743\u5b66\u957f/Graph-Anomaly-Reproduction/data/Reddit/reddit-freegad.mat",
+      "policy": "preserve",
+      "nodes": 10984,
+      "features": 64,
+      "anomalies": 366,
+      "valid": 8332,
+      "isolated": 0,
+      "degree_one": 2652,
+      "adjacency_sha256": "1e303170112881a50486d016944dbc39ba81805dd69a282587becb946ee664f9",
+      "features_sha256": "b29916f9934c2a3bb8d29198fd68d9e660399c78bab535da64a44ff57ada0fd4",
+      "labels_sha256": "07c97febfc3c3c85afd41e40d400c9bf6c23f45859583ea9d60917a4d383142d"
+    },
+    {
+      "dataset": "T-Finance",
+      "source": "/mnt/c/Users/28641/Desktop/\u8bba\u6587\u79d1\u7814-\u6c5f\u6743\u5b66\u957f/Graph-Anomaly-Reproduction/data/T-Finance/tfinance-source/tfinance",
+      "policy": "preserve",
+      "nodes": 39357,
+      "features": 10,
+      "anomalies": 1804,
+      "valid": 39275,
+      "isolated": 0,
+      "degree_one": 82,
+      "adjacency_sha256": "a564ff8178a7d186bf33419eacab212c183e843b1499e04b222e78e0bec1f932",
+      "features_sha256": "950cabcc7bc5827a3b2e284145ed359f136f2fe58eb93de04cce8ce6c0a7394d",
+      "labels_sha256": "343637bcc2e93dfcf1dccde170c87bcf0c8abb70957764b4eeb6473b86dab2f2"
+    },
+    {
+      "dataset": "Tolokers",
+      "source": "/mnt/c/Users/28641/Desktop/\u8bba\u6587\u79d1\u7814-\u6c5f\u6743\u5b66\u957f/Graph-Anomaly-Reproduction/data/Tolokers/tolokers.npz",
+      "policy": "incoming",
+      "nodes": 11758,
+      "features": 10,
+      "anomalies": 2566,
+      "valid": 9853,
+      "isolated": 930,
+      "degree_one": 975,
+      "adjacency_sha256": "3aa4fd2877bd786cdb9741aa92f30934813ade5d5fdeca31459d073c9bc35a48",
+      "features_sha256": "7eae7ccbddda428625174a5a86f3c7efbaa99a600736424921853f806e8f50a0",
+      "labels_sha256": "808c63a620abae774a7614459d9bfe6a258ee3460f2e39ca0511c59dbf553518"
+    },
+    {
+      "dataset": "Disney",
+      "source": "/mnt/c/Users/28641/Desktop/\u8bba\u6587\u79d1\u7814-\u6c5f\u6743\u5b66\u957f/Graph-Anomaly-Reproduction/data/Disney/disney-dominant.mat",
+      "policy": "undirected",
+      "nodes": 124,
+      "features": 28,
+      "anomalies": 6,
+      "valid": 113,
+      "isolated": 0,
+      "degree_one": 11,
+      "adjacency_sha256": "b508a5e31b1b3fe98e1dc49656df2d8ac196dd23215655dd9858240a2a6a09cd",
+      "features_sha256": "b8bab54da3e7648f55a2d974bdc9e303582111020b3665a1bff22ea5eba7be67",
+      "labels_sha256": "a16a8a5da5b8cc914ca6bf6a265388cef795431559c86aa9cdf52b8941abc8b2"
+    },
+    {
+      "dataset": "Questions",
+      "source": "/mnt/c/Users/28641/Desktop/\u8bba\u6587\u79d1\u7814-\u6c5f\u6743\u5b66\u957f/Graph-Anomaly-Reproduction/data/Questions/questions.npz",
+      "policy": "incoming",
+      "nodes": 48921,
+      "features": 301,
+      "anomalies": 1460,
+      "valid": 13567,
+      "isolated": 17603,
+      "degree_one": 17751,
+      "adjacency_sha256": "90eddfea5d293562186e195ef7609760722abf07d42050c0a40eeffa999b2e57",
+      "features_sha256": "c5f823f3d370020b0708a6c5cbc4f48b99a20179840054467f655fbbe4822b2f",
+      "labels_sha256": "e1ba8d2956ea5e70b047bc2a0ac8442b68ed35de2602ad8b5874f5fa1af1b02b"
+    }
+  ],
+  "runs": [
+    {
+      "dataset": "Cora",
+      "variant": "randomized-XV",
+      "policy": "preserve",
+      "AUROC": 0.6846077664842325,
+      "AP": 0.09779039581106895,
+      "paper_AUROC": 0.6166,
+      "paper_AP": 0.0684,
+      "score_seconds": 0.06605030799999767,
+      "max_variance_error_vs_production": 1.6653345369377348e-16,
+      "max_score_error_vs_production": 8.881784197001252e-15,
+      "production_metrics": {
+        "AUROC": 0.6846077664842325,
+        "AP": 0.09779039581106895
+      }
+    },
+    {
+      "dataset": "Cora",
+      "variant": "literal-randomized-US",
+      "policy": "preserve",
+      "AUROC": 0.6875918686473809,
+      "AP": 0.09812739285337016,
+      "paper_AUROC": 0.6166,
+      "paper_AP": 0.0684,
+      "score_seconds": 0.06032027400000217,
+      "relative_projection_change": 0.015236008669215045
+    },
+    {
+      "dataset": "Cora",
+      "variant": "exact-eigh-XV",
+      "policy": "preserve",
+      "AUROC": 0.6856971592389888,
+      "AP": 0.09828747945512564,
+      "paper_AUROC": 0.6166,
+      "paper_AP": 0.0684,
+      "score_seconds": 0.06093261399999861,
+      "relative_projection_change": 1.0123135857491503
+    },
+    {
+      "dataset": "Cora",
+      "variant": "row-L1-before-SVD",
+      "policy": "preserve",
+      "AUROC": 0.7035861350013032,
+      "AP": 0.09870637659426235,
+      "paper_AUROC": 0.6166,
+      "paper_AP": 0.0684,
+      "score_seconds": 0.06383261399999896,
+      "relative_projection_change": 0.9813405991787647
+    },
+    {
+      "dataset": "Cora",
+      "variant": "centered-PCA",
+      "policy": "preserve",
+      "AUROC": 0.5930101641907741,
+      "AP": 0.06931320828523485,
+      "paper_AUROC": 0.6166,
+      "paper_AP": 0.0684,
+      "score_seconds": 0.0651387949999993,
+      "relative_projection_change": 1.438880577417352
+    },
+    {
+      "dataset": "Cora",
+      "variant": "post-SVD-column-BN",
+      "policy": "preserve",
+      "AUROC": 0.5875423507948918,
+      "AP": 0.06580670534946716,
+      "paper_AUROC": 0.6166,
+      "paper_AP": 0.0684,
+      "score_seconds": 0.06865466900000072,
+      "relative_projection_change": 1.1185592109016205
+    },
+    {
+      "dataset": "YelpChi",
+      "variant": "randomized-XV",
+      "policy": "preserve",
+      "AUROC": 0.5814784022433874,
+      "AP": 0.06907070699469428,
+      "paper_AUROC": 0.6152,
+      "paper_AP": 0.075,
+      "score_seconds": 0.4353300209999986,
+      "max_variance_error_vs_production": 3.209238430557093e-17,
+      "max_score_error_vs_production": 3.6415315207705135e-14,
+      "production_metrics": {
+        "AUROC": 0.5814784022433874,
+        "AP": 0.06907070699469428
+      }
+    },
+    {
+      "dataset": "YelpChi",
+      "variant": "literal-randomized-US",
+      "policy": "preserve",
+      "AUROC": 0.5814470809779706,
+      "AP": 0.06906642346613874,
+      "paper_AUROC": 0.6152,
+      "paper_AP": 0.075,
+      "score_seconds": 0.4381824079999994,
+      "relative_projection_change": 6.33954274672686e-05
+    },
+    {
+      "dataset": "YelpChi",
+      "variant": "exact-eigh-XV",
+      "policy": "preserve",
+      "AUROC": 0.5814786202568358,
+      "AP": 0.06907072434005608,
+      "paper_AUROC": 0.6152,
+      "paper_AP": 0.075,
+      "score_seconds": 0.403683829000002,
+      "relative_projection_change": 1.9352196648872892
+    },
+    {
+      "dataset": "YelpChi",
+      "variant": "row-L1-before-SVD",
+      "policy": "preserve",
+      "AUROC": 0.5817694138613967,
+      "AP": 0.06909250006377614,
+      "paper_AUROC": 0.6152,
+      "paper_AP": 0.075,
+      "score_seconds": 0.40252300599999913,
+      "relative_projection_change": 0.9560289698833578
+    },
+    {
+      "dataset": "YelpChi",
+      "variant": "centered-PCA",
+      "policy": "preserve",
+      "AUROC": 0.5153266179377541,
+      "AP": 0.05859314485173876,
+      "paper_AUROC": 0.6152,
+      "paper_AP": 0.075,
+      "score_seconds": 0.389851685,
+      "relative_projection_change": 1.0550527410862778
+    },
+    {
+      "dataset": "YelpChi",
+      "variant": "post-SVD-column-BN",
+      "policy": "preserve",
+      "AUROC": 0.5394257518502619,
+      "AP": 0.061148749924303344,
+      "paper_AUROC": 0.6152,
+      "paper_AP": 0.075,
+      "score_seconds": 0.3992820520000002,
+      "relative_projection_change": 1.0388398182320213
+    },
+    {
+      "dataset": "Reddit",
+      "variant": "randomized-XV",
+      "policy": "preserve",
+      "AUROC": 0.5014015019345436,
+      "AP": 0.03560281845262397,
+      "paper_AUROC": 0.5122,
+      "paper_AP": 0.0356,
+      "score_seconds": 0.26073187500000117,
+      "max_variance_error_vs_production": 3.864236303174635e-14,
+      "max_score_error_vs_production": 9.403513634431704e-09,
+      "production_metrics": {
+        "AUROC": 0.5014015019345436,
+        "AP": 0.03560281845262397
+      }
+    },
+    {
+      "dataset": "Reddit",
+      "variant": "literal-randomized-US",
+      "policy": "preserve",
+      "AUROC": 0.5015368530807053,
+      "AP": 0.03561096521510998,
+      "paper_AUROC": 0.5122,
+      "paper_AP": 0.0356,
+      "score_seconds": 0.24996073199999813,
+      "relative_projection_change": 0.0002567600818056167
+    },
+    {
+      "dataset": "Reddit",
+      "variant": "exact-eigh-XV",
+      "policy": "preserve",
+      "AUROC": 0.5013345983261748,
+      "AP": 0.035589969435697054,
+      "paper_AUROC": 0.5122,
+      "paper_AP": 0.0356,
+      "score_seconds": 0.24879258900000067,
+      "relative_projection_change": 1.9982391473383203
+    },
+    {
+      "dataset": "Reddit",
+      "variant": "row-L1-before-SVD",
+      "policy": "preserve",
+      "AUROC": 0.5014015019345436,
+      "AP": 0.03560281845262397,
+      "paper_AUROC": 0.5122,
+      "paper_AP": 0.0356,
+      "score_seconds": 0.24745455300000074,
+      "relative_projection_change": 4.8799394502207706e-08
+    },
+    {
+      "dataset": "Reddit",
+      "variant": "centered-PCA",
+      "policy": "preserve",
+      "AUROC": 0.4890307674255594,
+      "AP": 0.03290525435889384,
+      "paper_AUROC": 0.5122,
+      "paper_AP": 0.0356,
+      "score_seconds": 0.24639046799999775,
+      "relative_projection_change": 1.0033422659751894
+    },
+    {
+      "dataset": "Reddit",
+      "variant": "post-SVD-column-BN",
+      "policy": "preserve",
+      "AUROC": 0.4875606892924377,
+      "AP": 0.0326939774611963,
+      "paper_AUROC": 0.5122,
+      "paper_AP": 0.0356,
+      "score_seconds": 0.24089881700000149,
+      "relative_projection_change": 15.903057512630586
+    },
+    {
+      "dataset": "T-Finance",
+      "variant": "randomized-XV",
+      "policy": "preserve",
+      "AUROC": 0.9202275122999848,
+      "AP": 0.5319828638571784,
+      "paper_AUROC": 0.9114,
+      "paper_AP": 0.6067,
+      "score_seconds": 3.147165152999996,
+      "max_variance_error_vs_production": 8.76382300063483e-15,
+      "max_score_error_vs_production": 7.12874204111813e-13,
+      "production_metrics": {
+        "AUROC": 0.9202275122999848,
+        "AP": 0.5319827701130431
+      }
+    },
+    {
+      "dataset": "T-Finance",
+      "variant": "literal-randomized-US",
+      "policy": "preserve",
+      "AUROC": 0.9202275122999848,
+      "AP": 0.5319825178183739,
+      "paper_AUROC": 0.9114,
+      "paper_AP": 0.6067,
+      "score_seconds": 3.320967438000004,
+      "relative_projection_change": 4.453031138365725e-15
+    },
+    {
+      "dataset": "T-Finance",
+      "variant": "exact-eigh-XV",
+      "policy": "preserve",
+      "AUROC": 0.9202275122999848,
+      "AP": 0.5319827046534705,
+      "paper_AUROC": 0.9114,
+      "paper_AP": 0.6067,
+      "score_seconds": 3.0375455140000014,
+      "relative_projection_change": 1.9999261509850652
+    },
+    {
+      "dataset": "T-Finance",
+      "variant": "row-L1-before-SVD",
+      "policy": "preserve",
+      "AUROC": 0.9202274975388812,
+      "AP": 0.5319845612985733,
+      "paper_AUROC": 0.9114,
+      "paper_AP": 0.6067,
+      "score_seconds": 2.8530138400000027,
+      "relative_projection_change": 0.9999881734520962
+    },
+    {
+      "dataset": "T-Finance",
+      "variant": "centered-PCA",
+      "policy": "preserve",
+      "AUROC": 0.8308884861797396,
+      "AP": 0.29190806071003084,
+      "paper_AUROC": 0.9114,
+      "paper_AP": 0.6067,
+      "score_seconds": 3.0524646960000013,
+      "relative_projection_change": 1.8564506158541791
+    },
+    {
+      "dataset": "T-Finance",
+      "variant": "post-SVD-column-BN",
+      "policy": "preserve",
+      "AUROC": 0.6133418943798161,
+      "AP": 0.07713207572900253,
+      "paper_AUROC": 0.9114,
+      "paper_AP": 0.6067,
+      "score_seconds": 3.0245667009999977,
+      "relative_projection_change": 0.9999177936637897
+    },
+    {
+      "dataset": "Tolokers",
+      "variant": "randomized-XV",
+      "policy": "incoming",
+      "AUROC": 0.5186809101343335,
+      "AP": 0.21169120875144412,
+      "paper_AUROC": 0.5624,
+      "paper_AP": 0.2459,
+      "score_seconds": 0.4004735720000028,
+      "max_variance_error_vs_production": 5.55805401702969e-15,
+      "max_score_error_vs_production": 4.303224443447107e-13,
+      "production_metrics": {
+        "AUROC": 0.5186809101343335,
+        "AP": 0.21169120875144412
+      }
+    },
+    {
+      "dataset": "Tolokers",
+      "variant": "literal-randomized-US",
+      "policy": "incoming",
+      "AUROC": 0.5186809101343335,
+      "AP": 0.21169120875144412,
+      "paper_AUROC": 0.5624,
+      "paper_AP": 0.2459,
+      "score_seconds": 0.4201857529999984,
+      "relative_projection_change": 7.438568756270502e-15
+    },
+    {
+      "dataset": "Tolokers",
+      "variant": "exact-eigh-XV",
+      "policy": "incoming",
+      "AUROC": 0.5186809101343335,
+      "AP": 0.21169120875144412,
+      "paper_AUROC": 0.5624,
+      "paper_AP": 0.2459,
+      "score_seconds": 0.4275072800000004,
+      "relative_projection_change": 1.8268935409789395
+    },
+    {
+      "dataset": "Tolokers",
+      "variant": "row-L1-before-SVD",
+      "policy": "incoming",
+      "AUROC": 0.5191688975875867,
+      "AP": 0.21204654034316145,
+      "paper_AUROC": 0.5624,
+      "paper_AP": 0.2459,
+      "score_seconds": 0.3993196659999967,
+      "relative_projection_change": 0.8714028917678623
+    },
+    {
+      "dataset": "Tolokers",
+      "variant": "centered-PCA",
+      "policy": "incoming",
+      "AUROC": 0.40857067499815153,
+      "AP": 0.18160976132233791,
+      "paper_AUROC": 0.5624,
+      "paper_AP": 0.2459,
+      "score_seconds": 0.40056175199999444,
+      "relative_projection_change": 1.091965697694075
+    },
+    {
+      "dataset": "Tolokers",
+      "variant": "post-SVD-column-BN",
+      "policy": "incoming",
+      "AUROC": 0.4700806667426418,
+      "AP": 0.20078778534617647,
+      "paper_AUROC": 0.5624,
+      "paper_AP": 0.2459,
+      "score_seconds": 0.390330855000002,
+      "relative_projection_change": 1.340535288490659
+    },
+    {
+      "dataset": "Tolokers",
+      "variant": "official-undirected-XV",
+      "policy": "undirected",
+      "AUROC": 0.5286077874826937,
+      "AP": 0.21923897555641708,
+      "paper_AUROC": 0.5624,
+      "paper_AP": 0.2459
+    },
+    {
+      "dataset": "Disney",
+      "variant": "randomized-XV",
+      "policy": "undirected",
+      "AUROC": 0.7245762711864407,
+      "AP": 0.16170315655404693,
+      "paper_AUROC": 0.7246,
+      "paper_AP": 0.1617,
+      "score_seconds": 0.004560059999988653,
+      "max_variance_error_vs_production": 1.1102230246251565e-16,
+      "max_score_error_vs_production": 3.3306690738754696e-15,
+      "production_metrics": {
+        "AUROC": 0.7245762711864407,
+        "AP": 0.16170315655404693
+      }
+    },
+    {
+      "dataset": "Disney",
+      "variant": "literal-randomized-US",
+      "policy": "undirected",
+      "AUROC": 0.7245762711864407,
+      "AP": 0.16170315655404693,
+      "paper_AUROC": 0.7246,
+      "paper_AP": 0.1617,
+      "score_seconds": 0.0040766909999945256,
+      "relative_projection_change": 1.0083259539676837e-14
+    },
+    {
+      "dataset": "Disney",
+      "variant": "exact-eigh-XV",
+      "policy": "undirected",
+      "AUROC": 0.7245762711864407,
+      "AP": 0.16170315655404693,
+      "paper_AUROC": 0.7246,
+      "paper_AP": 0.1617,
+      "score_seconds": 0.003653317000001266,
+      "relative_projection_change": 1.9998603668854034
+    },
+    {
+      "dataset": "Disney",
+      "variant": "row-L1-before-SVD",
+      "policy": "undirected",
+      "AUROC": 0.7245762711864407,
+      "AP": 0.16170315655404693,
+      "paper_AUROC": 0.7246,
+      "paper_AP": 0.1617,
+      "score_seconds": 0.004361821000003374,
+      "relative_projection_change": 0.9999567406766116
+    },
+    {
+      "dataset": "Disney",
+      "variant": "centered-PCA",
+      "policy": "undirected",
+      "AUROC": 0.5480225988700566,
+      "AP": 0.06599425900896488,
+      "paper_AUROC": 0.7246,
+      "paper_AP": 0.1617,
+      "score_seconds": 0.004181713999997783,
+      "relative_projection_change": 1.5408190040731389
+    },
+    {
+      "dataset": "Disney",
+      "variant": "post-SVD-column-BN",
+      "policy": "undirected",
+      "AUROC": 0.5466101694915254,
+      "AP": 0.14552551035397412,
+      "paper_AUROC": 0.7246,
+      "paper_AP": 0.1617,
+      "score_seconds": 0.004064470000002984,
+      "relative_projection_change": 0.9999495102358944
+    },
+    {
+      "dataset": "Questions",
+      "variant": "randomized-XV",
+      "policy": "incoming",
+      "AUROC": 0.49097128918826793,
+      "AP": 0.03317710044932848,
+      "paper_AUROC": 0.5832,
+      "paper_AP": 0.04,
+      "score_seconds": 0.43200823499999785,
+      "max_variance_error_vs_production": 3.191891195797325e-15,
+      "max_score_error_vs_production": 1.2878587085651816e-13,
+      "production_metrics": {
+        "AUROC": 0.49097128918826793,
+        "AP": 0.03317710044932848
+      }
+    },
+    {
+      "dataset": "Questions",
+      "variant": "literal-randomized-US",
+      "policy": "incoming",
+      "AUROC": 0.49047292759188305,
+      "AP": 0.03313274164779235,
+      "paper_AUROC": 0.5832,
+      "paper_AP": 0.04,
+      "score_seconds": 0.3948079660000019,
+      "relative_projection_change": 0.00030966147971381747
+    },
+    {
+      "dataset": "Questions",
+      "variant": "exact-eigh-XV",
+      "policy": "incoming",
+      "AUROC": 0.49049649416550517,
+      "AP": 0.03313386654443271,
+      "paper_AUROC": 0.5832,
+      "paper_AP": 0.04,
+      "score_seconds": 0.37004021799999975,
+      "relative_projection_change": 0.9259653598960597
+    },
+    {
+      "dataset": "Questions",
+      "variant": "row-L1-before-SVD",
+      "policy": "incoming",
+      "AUROC": 0.4941234086068648,
+      "AP": 0.03340950763239304,
+      "paper_AUROC": 0.5832,
+      "paper_AP": 0.04,
+      "score_seconds": 0.36187224999999046,
+      "relative_projection_change": 1.130991992040699
+    },
+    {
+      "dataset": "Questions",
+      "variant": "centered-PCA",
+      "policy": "incoming",
+      "AUROC": 0.516967716536115,
+      "AP": 0.0363597267695087,
+      "paper_AUROC": 0.5832,
+      "paper_AP": 0.04,
+      "score_seconds": 0.3668898309999946,
+      "relative_projection_change": 1.475408846111126
+    },
+    {
+      "dataset": "Questions",
+      "variant": "post-SVD-column-BN",
+      "policy": "incoming",
+      "AUROC": 0.48822049423131264,
+      "AP": 0.03190167513085395,
+      "paper_AUROC": 0.5832,
+      "paper_AP": 0.04,
+      "score_seconds": 0.3735778239999945,
+      "relative_projection_change": 3.2342222016484716
+    },
+    {
+      "dataset": "Questions",
+      "variant": "official-undirected-XV",
+      "policy": "undirected",
+      "AUROC": 0.4992225556210102,
+      "AP": 0.03322052353496762,
+      "paper_AUROC": 0.5832,
+      "paper_AP": 0.04
+    }
+  ],
+  "independent_metric_checks": [
+    {
+      "dataset": "Cora",
+      "rank_formula": {
+        "AUROC": 0.6846077664842325,
+        "AP": 0.09779039581106894
+      },
+      "sklearn": {
+        "AUROC": 0.6846077664842325,
+        "AP": 0.09779039581106895
+      }
+    },
+    {
+      "dataset": "YelpChi",
+      "rank_formula": {
+        "AUROC": 0.5814784022433874,
+        "AP": 0.06907070699469427
+      },
+      "sklearn": {
+        "AUROC": 0.5814784022433874,
+        "AP": 0.06907070699469428
+      }
+    },
+    {
+      "dataset": "Reddit",
+      "rank_formula": {
+        "AUROC": 0.5014015019345436,
+        "AP": 0.03560281845262397
+      },
+      "sklearn": {
+        "AUROC": 0.5014015019345436,
+        "AP": 0.03560281845262397
+      }
+    },
+    {
+      "dataset": "T-Finance",
+      "rank_formula": {
+        "AUROC": 0.9202275122999848,
+        "AP": 0.531982770113043
+      },
+      "sklearn": {
+        "AUROC": 0.9202275122999848,
+        "AP": 0.5319827701130431
+      }
+    },
+    {
+      "dataset": "Tolokers",
+      "rank_formula": {
+        "AUROC": 0.5186809101343335,
+        "AP": 0.21169120875144415
+      },
+      "sklearn": {
+        "AUROC": 0.5186809101343335,
+        "AP": 0.21169120875144412
+      }
+    },
+    {
+      "dataset": "Disney",
+      "rank_formula": {
+        "AUROC": 0.7245762711864406,
+        "AP": 0.1617031565540469
+      },
+      "sklearn": {
+        "AUROC": 0.7245762711864407,
+        "AP": 0.16170315655404693
+      }
+    },
+    {
+      "dataset": "Questions",
+      "rank_formula": {
+        "AUROC": 0.49097128918826793,
+        "AP": 0.03317710044932848
+      },
+      "sklearn": {
+        "AUROC": 0.49097128918826793,
+        "AP": 0.03317710044932848
+      }
+    }
+  ],
+  "tfinance_float32_dot_checks": [
+    {
+      "node": 1969,
+      "degree": 2,
+      "float32_dot_variance": 0.0,
+      "float64_variance": 0.0,
+      "error": 0.0
+    },
+    {
+      "node": 3854,
+      "degree": 7723,
+      "float32_dot_variance": 0.03340549394488335,
+      "float64_variance": 0.033405494334008745,
+      "error": 3.89125398569945e-10
+    },
+    {
+      "node": 26880,
+      "degree": 265,
+      "float32_dot_variance": 0.04904044046998024,
+      "float64_variance": 0.04904044199650459,
+      "error": 1.5265243513695737e-09
+    }
+  ]
+}

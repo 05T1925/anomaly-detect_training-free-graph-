@@ -1,0 +1,11 @@
+{
+  "interpretation": "Appendix F uniform across communities is ambiguous: IID uniform endpoints vs approximately equal quotas. Diagnostic only; author code unknown.",
+  "graph_seed_formula": "seed_index*100+round(h*10)",
+  "selection_seed_formula": "seed_index*10000+round(h*100)",
+  "n_runs": 60,
+  "scorer": "independent Eq.4/9/10-13 oracle",
+  "feature_projection": "sklearn randomized r8 n_iter5 seed0",
+  "historical_uniform_runs_independently_verified": 30,
+  "historical_max_AUROC_error": 5.128205128213104e-06,
+  "historical_tie_tolerance": "2/(positive_count*negative_count) AUROC pair-order units"
+}

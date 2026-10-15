@@ -1,0 +1,67 @@
+and is therefore assigned a high anomaly score. Case (i) produces low variance, but can still be
+identified through the two-sided calibration against Dmed. Real-world anomalies frequently fall into
+case (ii). For example, fraudulent accounts may interact with a mixture of otherwise unrelated users,
+which helps explain the empirical gap on T-Finance. (Table 12).
+To make this comparison concrete, we now detail the AMEN-Ego baseline used in Table 12. AMEN
+was originally proposed as a neighborhood-level scoring method that ranks a predefined set of
+candidate neighborhoods (e.g., ground-truth social circles) by their attributed normality. Since our
+evaluation is node-level and no ground-truth community structure is available across our seven
+benchmark datasets, we adopt the ego-network instantiation used in AMEN’s own experiments on
+datasets lacking ground-truth circles: for each node vi, we take Ci = {vi} ∪ N (vi) as the candidate
+neighborhood and Bi = {vb ∈/ Ci| ∃vp ∈ Ci, Apb = 1} as its boundary.
+For X˜ linearly rescaled per dimension to [0, 1] as required by the size-invariant form of AMEN [22],
+the per-attribute internal and external contribution vectors are computed as
+xI (f) = X
+p,q∈Ci
+
+Apq −
+kpkq
+2m
+
+x˜p(f)˜xq(f), xE(f) = −
+X
+(p,b)∈E
+p∈Ci, b∈Bi
+
+1 − min(1,
+kpkb
+2m )
+
+x˜p(f)˜xb(f).
+(32)
+Applying the size-invariant rescaling of AMEN [22] to obtain xˆI ∈ [0, 1]dand xˆE ∈ [−1, 0]d, the
+L2 closed-form optimal normality is
+N
+∗
+(Ci) = ∥x+∥2, where x = ˆxI + ˆxE, x+ = max(x, 0). (33)
+When x has no positive entry, we set N ∗(Ci) = maxf x(f) ≤ 0, matching AMEN’s original
+convention. The raw anomaly statistic is Ri = −N ∗(Ci), so that low normality corresponds to
+high anomaly, which is then passed through the same median-calibrated z-score pipeline as all other
+heuristics. The valid-node set, sparse-node backoff, and hyperparameter choices follow the unified
+protocol described at the start of this appendix.
+E Full Per-Dataset Ablation Results
+E.1 Diversity Statistic & Global Reference
+Table 11 isolates the two design choices of Section 4.3: the local diversity statistic and the global
+reference.
+Median is a more robust reference than mean. Holding the variance statistic fixed, replacing the
+median reference with the mean reference decreases the average AUC from 0.6465 to 0.5787 and
+the average AP from 0.1762 to 0.1657. The drop is more evident on datasets whose diversity values
+contain pronounced tail values, such as Cora and Questions, while it is much smaller on T-Finance.
+This is consistent with the intuition from robust estimation: the median remains stable under a small
+fraction of extreme Di values, whereas the mean is pulled toward these extremes and may shift the
+reference level in the same direction as the anomalous tail, reducing the contrast between normal and
+anomalous neighborhoods.
+Second-order dispersion is the right statistic. Among the four statistics under median calibration,
+variance attains the best average AUC (0.6465) and AP (0.1762). Standard deviation, a monotone
+transform of variance, yields comparable AUC (0.6305) but markedly worse AP (0.1428, −19%
+relative): squaring amplifies large deviations and concentrates anomalous nodes at the top of the
+ranking, which AP rewards but AUC does not. The first-order mean of pairwise similarities loses all
+dispersion information and drops to 0.5726 AUC. Entropy is worst on average (0.5365), as binning
+discards the continuous shape of the similarity distribution that variance preserves. Variance+median
+dominates on 4 of 7 datasets and both averages, and is adopted as the default.
+E.2 Comparison with Structure-based Heuristics
+Table 12 compares Neighbor Diversity against four structure-based heuristics, all passed through the
+same median calibration and z-score pipeline (Appendix D) to isolate the effect of the underlying
+statistic. Our method achieves the best average AUC (0.6465) and AP (0.1762), with the largest
+per-dataset gain on T-Finance (0.9114 vs. 0.6610 for the best heuristic), precisely the over-diverse
+22

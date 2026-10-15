@@ -1,0 +1,78 @@
+[
+  {
+    "dataset": "Cora",
+    "keys": [
+      "Network",
+      "Attributes",
+      "Label"
+    ],
+    "raw_adjacency_dtype": "float64",
+    "nonzero_edge_values": [
+      1.0
+    ],
+    "raw_self_loops": 0,
+    "feature_dtype": "float64",
+    "nonfinite_features": 0,
+    "label_values": [
+      0,
+      1
+    ]
+  },
+  {
+    "dataset": "YelpChi",
+    "keys": [
+      "Network",
+      "Attributes",
+      "Label"
+    ],
+    "raw_adjacency_dtype": "float64",
+    "nonzero_edge_values": [
+      1.0
+    ],
+    "raw_self_loops": 0,
+    "feature_dtype": "float64",
+    "nonfinite_features": 0,
+    "label_values": [
+      0,
+      1
+    ]
+  },
+  {
+    "dataset": "Reddit",
+    "keys": [
+      "Network",
+      "Attributes",
+      "Label"
+    ],
+    "raw_adjacency_dtype": "float64",
+    "nonzero_edge_values": [
+      1.0
+    ],
+    "raw_self_loops": 10984,
+    "feature_dtype": "float64",
+    "nonfinite_features": 0,
+    "label_values": [
+      0.0,
+      1.0
+    ]
+  },
+  {
+    "dataset": "Disney",
+    "keys": [
+      "A",
+      "X",
+      "gnd"
+    ],
+    "raw_adjacency_dtype": "float64",
+    "nonzero_edge_values": [
+      1.0
+    ],
+    "raw_self_loops": 0,
+    "feature_dtype": "float64",
+    "nonfinite_features": 0,
+    "label_values": [
+      0,
+      1
+    ]
+  }
+]

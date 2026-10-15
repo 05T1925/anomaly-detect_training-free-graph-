@@ -1,0 +1,49 @@
+{
+  "paper_section": "Appendix D, Table 12 heuristic baseline comparison",
+  "datasets_requested": [
+    "Cora",
+    "YelpChi",
+    "Reddit",
+    "T-Finance",
+    "Tolokers",
+    "Disney",
+    "Questions"
+  ],
+  "methods_requested": [
+    "LCC",
+    "NRS",
+    "PCD",
+    "AMEN-Ego"
+  ],
+  "rank": 8,
+  "svd_random_state": 0,
+  "svd_algorithm": "sklearn TruncatedSVD randomized; n_iter=5",
+  "feature_preprocessing": "U Sigma, row-wise L1 normalization; AMEN-Ego then min-max rescales each dimension to [0,1]",
+  "edge_policy": "undirected union for all baselines, as required by LCC and symmetric-normalized propagation",
+  "calibration": "valid-set median, absolute deviation and population z-score; invalid nodes receive zero",
+  "valid_node_sets": {
+    "LCC": "degree>=2",
+    "NRS": "degree>=1",
+    "PCD": "degree>=1",
+    "AMEN-Ego": "degree>=1"
+  },
+  "local_implementation_choices": [
+    "The paper does not fully specify input edge symmetrization for every dataset; baselines use an undirected union consistently.",
+    "AMEN-Ego applies the size-invariant AMEN internal/external rescaling and reports negative optimized normality as anomaly score.",
+    "For graphs with an estimated AMEN ego-edge workload of at least 1e9, an OpenMP bitset kernel computes the same score; smaller graphs use the direct Python reference path."
+  ],
+  "source_sha256": {
+    "src/heuristic_baselines.py": "33866278193b3f1ad2e2a1afca33b9103279717613da8cf182de3353286b1ad5",
+    "src/amen_ego_native.cpp": "60f37a3f89b13ad4fcb4bf1fa001db4a40b44a684822a33b467a338e05278a50",
+    "scripts/run_appendix_d_heuristics.py": "0dd478339d04ca998b603690b52d8ae1f0c12a9774b702adc975d361328dd71e"
+  },
+  "expected_combinations": 28,
+  "completed_combinations": 28,
+  "execution_status": "complete; all 7 datasets x 4 methods have finite AUROC/AP and saved score vectors",
+  "native_amen_validation": {
+    "T-Finance_backend": "OpenMP bitset kernel",
+    "Disney_max_abs_error_vs_python": 5.551115123125783e-16,
+    "synthetic_with_isolate_max_abs_error": 0.0,
+    "T-Finance_scoring_seconds": 131.704951581
+  }
+}

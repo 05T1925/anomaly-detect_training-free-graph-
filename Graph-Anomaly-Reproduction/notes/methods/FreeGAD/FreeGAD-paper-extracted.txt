@@ -1,0 +1,1229 @@
+FreeGAD: A Training-Free yet Effective Approach for Graph
+Anomaly Detection
+Yunfeng Zhao∗
+Guangxi University
+Nanning, China
+yunf.zhao@st.gxu.edu.cn
+Yixin Liu∗
+Griffith University
+Gold Coast, Australia
+yixin.liu@griffith.edu.au
+Shiyuan Li∗
+Guangxi University
+Nanning, China
+li.shiy511@gmail.com
+Qingfeng Chen†
+Guangxi University
+Nanning, China
+qingfeng@gxu.edu.cn
+Yu Zheng
+Griffith University
+Gold Coast, Australia
+zhengyu511@gmail.com
+Shirui Pan
+Griffith University
+Gold Coast, Australia
+s.pan@griffith.edu.au
+Abstract
+Graph Anomaly Detection (GAD) aims to identify nodes that de-
+viate from the majority within a graph, playing a crucial role in
+applications such as social networks and e-commerce. Despite the
+current advancements in deep learning-based GAD, existing ap-
+proaches often suffer from high deployment costs and poor scalabil-
+ity due to their complex and resource-intensive training processes.
+Surprisingly, our empirical findings suggest that the training phase
+of deep GAD methods, commonly perceived as crucial, may actually
+contribute less to anomaly detection performance than expected. In-
+spired by this, we proposeFreeGAD, a novel training-free yet effec-
+tive GAD method. Specifically, it leverages an affinity-gated residual
+encoder to generate anomaly-aware representations. Meanwhile,
+FreeGAD identifies anchor nodes as pseudo-normal and anomalous
+guides, followed by calculating anomaly scores through anchor-
+guided statistical deviations. Extensive experiments demonstrate
+that FreeGAD achieves superior anomaly detection performance,
+efficiency, and scalability on multiple benchmark datasets from
+diverse domains, without any training or iterative optimization.
+CCS Concepts
+• Computing methodologies → Neural networks; • Mathe-
+matics of computing → Graph algorithms.
+Keywords
+Unsupervised Learning, Graph neural networks, Anomaly detection
+ACM Reference Format:
+Yunfeng Zhao, Yixin Liu, Shiyuan Li, Qingfeng Chen, Yu Zheng, and Shirui
+Pan. 2025. FreeGAD: A Training-Free yet Effective Approach for Graph
+Anomaly Detection. In Proceedings of the 34th ACM International Conference
+∗All authors contributed equally to this research.
+†Corresponding author.
+Permission to make digital or hard copies of all or part of this work for personal or
+classroom use is granted without fee provided that copies are not made or distributed
+for profit or commercial advantage and that copies bear this notice and the full citation
+on the first page. Copyrights for components of this work owned by others than the
+author(s) must be honored. Abstracting with credit is permitted. To copy otherwise, or
+republish, to post on servers or to redistribute to lists, requires prior specific permission
+and/or a fee. Request permissions from permissions@acm.org.
+CIKM ’25, Seoul, Republic of Korea
+© 2025 Copyright held by the owner/author(s). Publication rights licensed to ACM.
+ACM ISBN 979-8-4007-2040-6/2025/11
+https://doi.org/10.1145/3746252.3761125
+on Information and Knowledge Management (CIKM ’25), November 10–14,
+2025, Seoul, Republic of Korea. ACM, New York, NY, USA, 11 pages. https:
+//doi.org/10.1145/3746252.3761125
+1 Introduction
+Graph anomaly detection (GAD) is a critical research area focused
+on identifying abnormal nodes that significantly deviate from nor-
+mal patterns within a graph [ 27, 37]. GAD has been applied to
+numerous real-world scenarios, such as fraud detection in financial
+networks, intrusion detection in cybersecurity, and identifying ir-
+regularities in social or communication networks [13, 35, 51]. The
+growing importance of GAD in real-world applications has led to
+increasing research attention being devoted to developing effective
+and robust methods for detecting anomalies in graph-structured
+data [7, 25, 36].
+Due to the difficulty of obtaining labeled anomaly data in real-
+world scenarios, the mainstream GAD methods primarily focus
+on unsupervised scenarios [2, 8, 36, 37]. While the early shallow
+GAD methods often face limitations in handling complex and high-
+dimensional real-world graph data [7], deep learning-based GAD
+methods have emerged in recent years as the de facto solution,
+demonstrating superior performance in benchmark datasets [2, 36].
+These deep GAD methods leverage graph neural networks (GNNs)
+as their backbone models and employ anomaly-aware unsupervised
+techniques or customized objectives for model optimization. Af-
+ter sufficient training, the model output can be transformed into
+abnormality measurements through specific rules or algorithms.
+For example, DOMINANT [7] and AnomalyDAE [8] employ graph
+autoencoder models to reconstruct graph data, using reconstruction
+errors as indicators of anomalies. CoLA [25] and ANEMONE [14]
+introduce GNN-based contrastive learning frameworks for GAD,
+where the degree of mutual agreement between contrastive ele-
+ments can measure the node abnormality. More recent methods
+adopt diverse unsupervised learning and anomaly scoring strate-
+gies, such as hop counting [11] and local affinity estimation [36],
+to further raise the bar of GAD performance.
+Despite their effectiveness, the costs associated with training
+these deep GAD models are non-negligible. To achieve optimal
+detection performance, hundreds of epochs of training are often
+necessary, leading to high computational costs and prolonged de-
+ployment times. As shown in Fig. 1(a), the training time constitutes a
+substantial portion of the deployment duration for most approaches,
+arXiv:2508.10594v2  [cs.LG]  19 Aug 2025
+
+CIKM ’25, November 10–14, 2025, Seoul, Republic of Korea Yunfeng Zhao et al.
+Cora Reddit YelpChi0
+20
+40Time (seconds)
+TAM(train)
+TAM(test)
+FIAD(train)
+FIAD(test)
+CoLA(train)
+CoLA(test)
+(a) Runtime comparison
+Amazon Reddit Tolokers0.00
+0.25
+0.50
+0.75
+1.00AUC
+TAM
+TAM(TF)
+CoLA
+CoLA(TF) (b) Training-free performance
+Figure 1: (a): The efficiency of different GAD methods, with
+the runtime square-rooted for comparison. (b): The differ-
+ence of GAD methods with and without training.
+causing delays in applying anomaly detection to time-sensitive sys-
+tems and diminishing their practical utility. Moreover, since GNNs
+require complete graph structures for propagation operations, the
+training of GNN models typically involves performing backpropaga-
+tion over the entire graph [6]. As a result, training GNN-based GAD
+models on large-scale datasets becomes highly challenging due to
+increased memory requirements, further limiting their scalability
+and practical applicability in real-world scenarios. As evidence, our
+experiments in Table 2 show that most GAD methods fail to run on
+T-Finance dataset (with 39k nodes) on a GPU with 24GB memory.
+The aforementioned limitations prompt us to consider a question:
+Is it truly necessary to heavily train GNN-based GAD models
+to achieve effective anomaly detection?
+Recalling the framework architectures of mainstream deep GAD
+approaches, the learnable components mainly lie in the transforma-
+tion operations within the GNN model, where features are trans-
+formed through learnable projections to refine node representa-
+tions. Apart from this, other components, such as propagation and
+anomaly scoring, are typically parameter-free, and thus do not re-
+quire training for optimization. To verify the contribution of model
+training to the final anomaly detection performance, we modify
+two representative GAD methods (i.e., CoLA [25] and TAM [36])
+into training-free (TF) variants by removing the learnable compo-
+nents. We evaluate their performance against the original models
+and the comparison is demonstrated in Fig. 1(b). Surprisingly, the
+training-free variants perform competitively against their fully
+trained counterparts, with only a 5.0% drop in average. Our ob-
+servation suggests that model training may not be as critical to
+anomaly detection performance as previously thought. In this case,
+a natural question arises: Can we design a GAD approach that
+achieves competitive anomaly detection performance without
+the need for training?
+Motivated by the above question, this paper proposes a training-
+Free yet effective approach for Graph Anomaly Detection, ab-
+breviated as FreeGAD. FreeGAD can effectively detect abnormal
+nodes without the need for training, leveraging a propagation-only
+encoder to generate node representations and an anchor-based
+distance measurement module to predict node abnormality. To
+be more specific, FreeGAD begins with an affinity-gated residual
+encoder to generate anomaly-aware representations, explicitly cap-
+turing the inherent affinity between nodes and their multi-hop
+neighbors. After that, an anchor node selection module identifies
+anchor nodes, which are the most representative samples, serving
+as pseudo normal and anomaly nodes for guiding the model in
+discriminating between normal and anomalous patterns. Finally,
+an anchor-guided anomaly scoring module calculates the abnor-
+mality score for each node by measuring its statistical deviation
+from the anchor nodes, enabling precise identification of anom-
+alies. The entire process operates directly on the data in a single
+run, without requiring any training or optimization. To verify the
+effectiveness of FreeGAD, we conduct extensive experiments on 10
+real-world benchmark datasets, comparing its performance against
+state-of-the-art GAD methods. The empirical study demonstrates
+the advantages of FreeGAD:
+• Superior Detection Performance. Without the need for
+training, FreeGAD achieves state-of-the-art performance on
+6 out of 10 datasets and competitive performance on the
+remaining ones. Notably, FreeGAD excels in detecting real
+anomalies compared to the synthetic ones, which highlights
+its potential in real-world fraud and intrusion detection sce-
+narios.
+• Extremely Low Time Cost. Due to its training-free na-
+ture, FreeGAD has significantly shorter deployment time
+compared to baselines, indicating its applicability for time-
+sensitive applications.
+• Excellent Scalability. FreeGAD demonstrates enhanced
+scalability, as it can be effectively applied to large-scale
+datasets, such as Elliptic with 200k+ nodes, as well as to
+the over-dense dataset T-Finance with 21m+ edges, high-
+lighting its capacity to handle complex and large-scale graph
+data.
+2 Related Work
+2.1 Graph Anomaly Detection
+Graph anomaly detection (GAD) aims to identify the nodes that
+exhibit anomalous behavior or deviate significantly from the normal
+patterns in a graph.
+Earlier studies primarily focus on using shallow learning ap-
+proaches for GAD [1, 17]. For example, AMEN [33] leveraged the
+information of ego-network for each node to detect anomalous
+neighborhoods within attributed networks. ANOMALOUS [ 32]
+employs a joint framework with CUR decomposition and residual
+analysis for GAD. Although these methods do not leverage deep
+learning techniques, most of them still require iterative optimiza-
+tion for training.
+Recent research highlights the effectiveness of deep learning in
+GAD, utilizing graph neural networks (GNNs) to build powerful
+GAD models [ 37, 53]. For instance, DOMINANT [ 7] employs a
+graph-convolutional autoencoder (GAE) to reconstruct both the ad-
+jacency and attribute matrices, where node anomalies are assessed
+based on reconstruction errors. SpecAE [20] and AnomalyDAE [8]
+use advanced GAE architectures to boost the performance of DOM-
+INANT. Apart from reconstruction models, another line of studies,
+such as CoLA [25] and ANEMONE [14], utilizes contrastive GNN
+frameworks to learn robust scoring models for anomaly detection.
+PREM [31] further refines contrastive GAD models by simplifying
+their architecture and eliminating redundant components. Recently,
+
+FreeGAD: A Training-Free yet Effective Approach for Graph Anomaly Detection CIKM ’25, November 10–14, 2025, Seoul, Republic of Korea
+Qiao et al. [36] indicate the key role of local affinity in detecting
+anomalous nodes and propose a truncated affinity maximization
+(TAM) model for GAD. HUGE [ 30] proposes HALO, a label-free
+heterogeneity measure estimated from node attributes, for unsuper-
+vised node anomaly detection. For all deep learning GAD methods,
+gradient descent-based optimization is required for model training,
+which can be time-consuming.
+While existing deep GAD methods have demonstrated strong
+performance, they require iterative training or optimization to
+achieve strong detection performance, leading to increased deploy-
+ment time and resource demands. To address this problem, the aim
+of this paper is to propose a learning-free yet effective baseline
+model for GAD.
+2.2 Graph Neural Networks
+Graph neural networks (GNNs) are a neural network architecture
+designed for graph-structured data, employing a message-passing
+mechanism with two key operations: propagation (P), which fa-
+cilitates information exchange between neighboring nodes, and
+transformation (T), which updates node embeddings through learn-
+able non-linear projections [ 49]. Due to their powerful capabil-
+ities, GNNs have been successfully applied across a wide range
+of tasks [ 18, 19, 23, 24, 40]. Different GNN models leverage di-
+verse propagations and aggregation functions. Frequently utilized
+P functions comprise averaging aggregation [15], attention aggre-
+gation [46], and LSTM aggregation [ 10], while T operations are
+typically implemented as one or more perceptron layers followed
+by non-linear activations.
+Most GNN-based models [5, 7, 25, 26, 29] adopt the PTPT struc-
+ture, which is constructed by sequentially stacking multiple "P-T"
+operations. Although this design is widely used, it often faces issues
+of increased runtime and reduced efficiency, and is also prone to
+overfitting during the training process. Moreover, in some decou-
+pled GNN models [52], propagation and transformation operations
+are not simply alternated but instead repeat one operation several
+times before switching to the other. For example, in models such as
+APPNP [9], SGC [48], and AP-GCN [41], the propagation and trans-
+formation operations can be nested cyclically in multiple levels to
+enhance the expressive power of the model. This design approach
+provides a more flexible architecture for GNNs that can adapt to
+different task requirements.
+Building on decoupled models, in this paper, we design an affinity-
+gated residual encoder with multi-hop propagation while discard-
+ing feature transformation, which ensures the generation of high-
+quality representations without requiring training.
+3 Preliminaries
+Notations. A undirected attributed graph can be denoted as G =
+(V, E, X), where V = {𝑣1, · · ·, 𝑣𝑛 } represents the set of nodes, E
+is the set of edges, and |V | = 𝑛, |E | = 𝑒, respectively. The features
+of nodes can be described by the node feature matrix X ∈ R𝑛×𝑚,
+where 𝑚 is the dimension of features and the𝑖-th row x𝑖 represents
+the feature vector of the 𝑖-th node 𝑣𝑖. The connection between
+nodes can be represented by an adjacency matrix A ∈ { 0, 1}𝑛×𝑛,
+where the 𝑖, 𝑗 -th entry A𝑖 𝑗 = 1 means 𝑣𝑖 and 𝑣 𝑗 are connected and
+vice versa. The symmetric normalization of the adjacency matrix
+is denoted by ˆA = eD− 1
+2 ˜AeD− 1
+2 , where ˜A = A + I represents the
+adjacency matrix of the undirected graph with the addition of the
+self-loops and eD is the diagonal degree matrix of ˜A.
+Problem Formulation. Considering the sparsity of anomaly labels,
+this paper focuses on unsupervised graph node anomaly detection
+(GAD) scenarios. In unsupervised GAD scenario, the node set V
+can be divided into anomalous node set V𝑎 and normal node set
+V𝑛, with V = V𝑎 ∪V𝑛, V𝑎 ∩V𝑛 = ∅, and |V𝑎 | = 𝑁𝑎 ≪ |V𝑛 | = 𝑁𝑛.
+The objective of unsupervised GAD is to learn a scoring function
+(i.e., GAD model) F to obtain anomaly score for all nodes in G:
+F (A, X) → s ∈ R𝑛, where s is the anomaly scores for all nodes,
+with each entry 𝑠𝑖 indicating the abnormal degree of node 𝑣𝑖, i.e.,
+the probability of 𝑣𝑖 belonging to V𝑎 rather than V𝑛.
+4 Methodology
+In this section, we introduce FreeGAD, a training-free and effec-
+tive method for graph anomaly detection (GAD). As illustrated
+in Fig. 2, the overall pipeline of FreeGAD consists of three com-
+ponents: ❶ Affinity-gated residual encoder to generate anomaly-
+sensitive node representations (Sec. 4.1); ❷ Anchor node selection
+to choose the pseudo normal/abnormal nodes that characterize
+the underlying data distribution (Sec. 4.2); and ❸ Anchor-guided
+anomaly scoring to measure node-level abnormality by statistically
+evaluating the distance between the representations of each node
+and the selected anchor nodes (Sec. 4.3). The following subsections
+offer a comprehensive explanation of each module.
+4.1 Affinity-Gated Residual Encoder
+In the first step of FreeGAD, we design an encoder to generate
+representations of nodes. The representations are expected to in-
+corporate the semantic and structural information of each node,
+providing anomaly-related cues for effective abnormality prediction.
+The state-of-the-art GAD methods (e.g., CoLA [25] and TAM [36])
+usually employ GCN [15] as encoder, which may suffer from two
+limitations. Firstly, stacking many layers can degrade the repre-
+sentation capability of GCN due to over-smoothing [3] and model
+degradation issues [52]. This limitation hinders GCN from captur-
+ing high-order information from long-range nodes, which is crucial
+for detecting real-world anomalies. Secondly, GCN learns represen-
+tations by simply averaging ego and neighbor information, which
+may fail to capture anomaly-sensitive knowledge (e.g. affinity [36]).
+To generate high-quality and task-specific representations, we
+design an advanced, training-free encoder. To address the first limi-
+tation, we use a multi-hop propagation-based architecture without
+feature transformation, which prevents model degradation; also,
+we introduce a residual design to alleviate over-smoothing problem.
+To address the second one, we explicitly estimate the affinity from
+the propagated features and use the affinity to gate the residual
+connection. In this way, the output affinity-aware representations
+can better indicate the node-level abnormality. The following para-
+graphs introduce the detailed procedure of each step.
+Multi-Hop Propagation. To capture high-order information in a
+training-free manner, in FreeGAD, we focus exclusively on prop-
+agating node feature representations without introducing addi-
+tional feature transformation operation with learnable parameters.
+
+CIKM ’25, November 10–14, 2025, Seoul, Republic of Korea Yunfeng Zhao et al.
+!(")=!
+!($)
+!(%)
+!(&)
+#$
+#$
+#$…
+%($)
+%(%)
+%(&)
+&($)'($)
+'(%)
+'(&)
+Softmax'
+(a) Affinity-gated residual encoder
+%'∗=cos(      ,      )	.'      :%$∗=cos(      ,      )	.$      :!)')
+%*∗=cos(      ,      )	.*      :……!'''
+!*'*
+Sort by %∗
+%∗ …Positive anchors/+
+Negative anchors(b) Anchor node selection……
+/,
+Top-!Least-!
+.'
+(c) Anchor-guided anomaly scoring
+'/+
+'+
+/,
+',"!""#"
+"$"
+"!%"#%
+"$%
+maxavgminmaxavgmin
+0+ 0,
+…
+…
+!=#!#−%!$
+&(%)
+&(&)
+.'
+Figure 2: The overall pipeline of FreeGAD. In blocks (a) and (c), we omit the subscript “ 𝑖 ” for variables x, 𝑎, 𝑤 , h, 𝑑, and 𝑠 for
+simplicity.
+Specifically, we can achieve this by repeatedly performing message
+propagation operations:
+X(𝑙 ) = ˆAX(𝑙 −1), (1)
+where 𝑙 ∈ { 1, . . . , 𝐿} is the layer index, 𝐿 is a pre-defined number
+of layers, X(𝑙 ) is the propagated feature matrix at the 𝑙-th layer,
+and ˆA is the normalized adjacency matrix. The features at the first
+input layer are denoted as the original features, i.e., X(0) = X. The
+propagation-only design not only prevents the model degradation
+issues caused by excessive transformations [52], but also achieves
+our training-free design goal by removing the transformations.
+Affinity Estimation.As highlighted by Qiao et al. [36], node affin-
+ity is a key property that strongly correlates with node abnormality.
+While they only focus on local affinity between each node and its 1-
+hop neighbors, in real-world data, the abnormality can also related
+to high-order affinity, i.e., the similarity between each node and its
+high-order neighbors [24]. To capture such patterns in the learned
+representations, in FreeGAD, we estimate multi-order affinity and
+leverage it during representation generation.
+Specifically, we quantify neighborhood-specific affinity by mea-
+suring the similarity between the raw features and the propagated
+features derived from different neighborhoods. For node 𝑣𝑖, the
+similarity between the 𝑙-th propagated feature and the raw feature
+is calculated as follows:
+𝑎 (𝑙 )
+𝑖 =
+Í𝑚
+𝑗=1 x(0)
+𝑖 𝑗 ·x(𝑙 )
+𝑖 𝑗
+|| x(0)
+𝑖 ||
+2
+· ||x(𝑙 )
+𝑖 ||
+2
++ 𝜎
+, (2)
+where ||·|| represents the𝑙2 norm, x(𝑙 )
+𝑖 𝑗 stands for the𝑖-th node’s𝑗-th
+feature, and the 𝜎 represents a small value to prevent denominator
+tend to 0. After obtaining the feature similarity between a node
+and its multi-hop neighborhoods, we conduct a layer-wise Softmax-
+based normalization to obtain the affinity weights:
+𝑤 (𝑙 )
+𝑖 =
+exp
+
+𝑎 (𝑙 )
+𝑖
+
+Í𝐿
+𝑘=1 exp
+
+𝑎 (𝑘 )
+𝑖
+ . (3)
+Affinity-Gated Residual. Once we obtain the normalized affinity
+at each propagation step, we employ the affinity as a gating scalar
+for the residual operation between propagated features and original
+features. Specifically, the representation at the 𝑙-th layer, denoting
+as h(𝑙 )
+𝑖 , can be written as:
+h(𝑙 )
+𝑖 = (1 − 𝑤 (𝑙 )
+𝑖 )x(𝑙 )
+𝑖 + 𝑤 (𝑙 )
+𝑖 x(0)
+𝑖 . (4)
+According to Eq. (4), the representation of each node can be
+expressed as the linear combination of its propagated and original
+features. The gating mechanism ensures that, if a node has a higher
+affinity with its𝑙-hop neighbors, then its 𝑙-layer representation will
+be closer to the original feature, preserving its original attributes;
+conversely, if a node exhibits lower affinity with its𝑙-hop neighbors,
+its 𝑙-layer representation will incorporate more information from
+the propagated features, emphasizing the differences. Such differ-
+ential treatment not only effectively distinguishes nodes with high
+and low affinity (which reflects the degree of node abnormality)
+at the representation level, but also preserves the ego information
+within the features. Moreover, the residual operation helps miti-
+gate the over-smoothing problem caused by multi-hop propagation,
+ensuring the informativeness of the representations.
+Multi-Hop Mixing. To unify the representations learned at dif-
+ferent propagation steps into a single representation, we perform
+
+FreeGAD: A Training-Free yet Effective Approach for Graph Anomaly Detection CIKM ’25, November 10–14, 2025, Seoul, Republic of Korea
+multi-hop mixing by averaging the representations from each layer:
+h𝑖 = 1
+𝐿
+𝐿∑︁
+𝑙=1
+h(𝑙 )
+𝑖 , (5)
+where h𝑖 is the final representation vector for node𝑣𝑖. With the mix-
+ing operations, the information from different propagation steps is
+effectively aggregated, enabling the final representation to capture
+both local and global contextual information.
+The representations generated by our affinity-gated residual en-
+coder enjoy several notable merits. ❶ Multi-scale-aware: The
+multi-hop mixing mechanism incorporates information from multi-
+hop neighbors, which enriches the representation with broader con-
+textual insights. ❷ Affinity-aware: Thanks to the affinity-gated
+residual mechanism, the learned representations effectively capture
+each node’s affinity with its multi-hop neighbors, thereby reflect-
+ing its abnormality accurately. ❸ Training-free: Our encoder has
+no learnable parameters, eliminating the need for training in the
+entire learning process. ❹ Original space-preserving: All opera-
+tions are performed in the original feature space, which facilitates
+the computation of affinity for anchor node selection in the next
+subsection.
+4.2 Anchor Node Selection
+After obtaining the node representations, the next key step is to
+predict the abnormality (i.e., anomaly score) of each node. However,
+in unsupervised GAD settings, the inaccessibility of labels compli-
+cates the direct supervision of the scoring module. As a result, it is
+necessary to design a training-free mechanism that can effectively
+estimate the anomaly scores without relying on labeled data for
+FreeGAD.
+According to the idea of pseudo-label self-supervised learn-
+ing [42], we design an anchor node-guided anomaly scoring al-
+gorithm. Our rationale is to filter out the most representative nodes
+from the graph as anchor nodes, and then measure the degree of
+abnormality of each node based on its distance to the anchor nodes.
+To be more specific, we incorporate two types of anchor nodes:pos-
+itive anchor nodes corresponding to the pseudo-normal nodes
+in the graph, and negative anchor nodes corresponding to the
+nodes that exhibit abnormal characteristics. To select the anchor
+nodes with a simple criterion, we again rely on the affinity mea-
+surement due to its strong correlation with abnormality. Based on
+the similarity between the representation and raw feature of each
+node 𝑣𝑖, its affinity 𝑎∗
+𝑖 can be calculated by:
+𝑎∗
+𝑖 = sim(x𝑖, h𝑖 ), (6)
+where sim(·) represents the similarity function defined according
+to Eq. (2). By collecting the affinity of all nodes, we can obtain an
+affinity list, denoted by a∗ = [𝑎∗
+1, 𝑎∗
+2, . . . , 𝑎∗𝑛]. Then, we rearrange
+the list in descending order based on the affinity values, which
+can be denoted as a∗
+𝑠𝑜𝑟𝑡𝑒𝑑 = sort(a∗). According to the sorted list,
+we select the top-𝐾 nodes with the highest affinity values as the
+positive anchor nodes:
+V+ = {𝑣𝑖 ∈ V | idx(𝑎∗
+𝑖 , a∗
+𝑠𝑜𝑟𝑡𝑒𝑑 ) ≤ 𝐾 }, (7)
+where V+ = {𝑣 +
+1 , 𝑣+
+2 , . . . , 𝑣+
+𝐾 } is the set of positive anchor nodes
+and idx(𝑎∗
+𝑖 , a∗
+𝑠𝑜𝑟𝑡𝑒𝑑 ) returns the index of 𝑎∗
+𝑖 within a∗
+𝑠𝑜𝑟𝑡𝑒𝑑 . In the
+same way, the negative anchor nodes can be selected as the top-𝐾
+nodes with the smallest affinity values:
+V − = {𝑣𝑖 ∈ V | idx(𝑎∗
+𝑖 , a∗
+𝑠𝑜𝑟𝑡𝑒𝑑 ) ≥ 𝑛 − 𝐾 + 1}, (8)
+where V − = {𝑣 −
+1 , 𝑣−
+2 , . . . , 𝑣−
+𝐾 } denotes the set of negative anchor
+nodes. Through the simple selection algorithm, the most represen-
+tative nodes in a graph can be identified and then serve as a critical
+clue to predict the abnormality of each node.
+4.3 Anchor-Guided Anomaly Scoring
+After collecting positive anchor nodes (i.e. pseudo-normal nodes)
+and negative anchor nodes (i.e. pseudo-abnormal nodes), we utilize
+an anchor-guided anomaly scoring algorithm to generate the anom-
+aly scores via distance measurement. Our basic assumption is that
+normal nodes share common patterns with each other and, hence,
+have closer distances in the representation space; similarly, anom-
+alies may have different shared patterns, leading to their closer
+representation distances. Therefore, a node that is closer to the
+positive anchor nodes is potentially more likely to be normal, and
+vice versa. Motivated by this, we propose to leverage the statistic of
+the distance measurement between a node 𝑣𝑖 and the anchor nodes
+V+/V − to estimate the anomaly score of 𝑣𝑖.
+Formally, given a node 𝑣𝑖 and a positive anchor node 𝑣 +
+𝑘 , we can
+calculate the Euclidean distance 𝑑+
+𝑖𝑘 between their representations,
+which can be denoted by:
+𝑑+
+𝑖𝑘 = ∥h𝑖 − h+
+𝑘 ∥2. (9)
+In the same way, we can obtain 𝑣𝑖’s distance to all positive and
+negative anchor nodes, denoted as D+
+𝑖 = {𝑑+
+𝑖1, · · ·, 𝑑+
+𝑖𝐾 } and D −
+𝑖 =
+{𝑑 −
+𝑖1, · · ·, 𝑑−
+𝑖𝐾 }, respectively. Considering the diversity of anchor
+nodes, we combine multiple statistics of the distances D+
+𝑖 and D −
+𝑖
+to obtain a more comprehensive anomaly assessment. Concretely,
+the positive score 𝑠+
+𝑖 for node 𝑣𝑖 can be computed by:
+𝑠+
+𝑖 = min(D +
+𝑖 ) + max(D +
+𝑖 ) + avg(D +
+𝑖 ), (10)
+where min(·), max(·), and avg(·) extract the minimum, maximum,
+and average values of the positive distance set D+
+𝑖 , respectively. In
+a similar way, the negative score 𝑠 −
+𝑖 can be calculated according
+to the negative distance set D −
+𝑖 . Finally, we perform a weighted
+sum of the positive and negative scores to obtain the final anomaly
+score of the node 𝑣𝑖:
+𝑠𝑖 = 𝛼𝑠 +
+𝑖 − 𝛽𝑠 −
+𝑖 , (11)
+where 𝛼 and 𝛽 are hyper-parameters between 0 and 1.
+It is worth noting that there are no learnable parameters involved
+in the entire architecture of FreeGAD, which means that the model
+does not require any training and learning. It also avoids overfitting
+to specific anomaly patterns caused by training towards specific
+data. Compared with existing GAD methods such as those based
+on data reconstruction and the comparative GAD methods that
+include negative score computation and multiple rounds of estima-
+tion [14, 25], FreeGAD also provides higher running efficiency in
+the anomaly score estimation process.
+In general, the overall procedures of FreeGAD are shown in
+Algo. 1.
+
+CIKM ’25, November 10–14, 2025, Seoul, Republic of Korea Yunfeng Zhao et al.
+Algorithm 1 The Overall Procedure of FreeGAD
+Input: Graph G, Propagation iteration:𝐿, Number of anchor nodes:
+𝐾, Positive score weight: 𝛼, Negative score weight: 𝛽.
+Output: Anomaly score 𝑠.
+1: Extract feature matrix X, adjacency matrix A from G.
+2: // Affinity-gated residual encoder.
+3: for 𝑙 = 1:𝐿 do
+4: X(𝑙 ) ← Propagation(X, A; 𝐿) via Eq. (1)
+5: end for
+6: for x𝑖 ∈ X do
+7: for 𝑙 = 1:𝐿 do
+8: 𝑎 (𝑙 )
+𝑖 ← Similarity(x(0)
+𝑖 , x(𝑙 )
+𝑖 ) via Eq. (2)
+9: end for
+10: Calculate 𝑊𝑖 = {𝑤 (1)
+𝑖 , . . . , 𝑤 (𝑙 )
+𝑖 } ← Softmax(a𝑖 ) via Eq. (3)
+11: for 𝑙 = 1:𝐿 do
+12: h(𝑙 )
+𝑖 ← Gating mechanism via Eq. (4)
+13: end for
+14: h𝑖 ← Mean(h(1)
+𝑖 , . . . , h(𝑙 )
+𝑖 ) via Eq. (5)
+15: end for
+16: // Anchor node selection.
+17: Calculate the affinity a∗ = [𝑎∗
+1, 𝑎∗
+2, . . . , 𝑎∗𝑛] of raw feature
+[x1, x2, . . . , x𝑛] and representation [h1, h2, . . . , h𝑛] via Eq. (6)
+18: The set of positive anchor nodes V+ = {𝑣 +
+1 , 𝑣+
+2 , . . . , 𝑣+
+𝐾 } ←
+Top(𝑎∗, 𝐾, h) via Eq. (7)
+19: The set of negative anchor nodes V − = {𝑣 −
+1 , 𝑣−
+2 , . . . , 𝑣−
+𝐾 } ←
+Bottom(𝑎∗, 𝐾, h) via Eq. (8)
+20: // Anchor-guided anomaly scoring.
+21: for h𝑖 ∈ h do
+22: D+
+𝑖 = {𝑑+
+𝑖1, . . . , 𝑑+
+𝑖𝑘 } as the distances between the target node
+h𝑖 and each of the 𝐾 positive anchor nodes.
+23: D −
+𝑖 = {𝑑 −
+𝑖1, . . . , 𝑑−
+𝑖𝑘 } as the distances between the target node
+h𝑖 and each of the 𝐾 negative anchor nodes.
+24: Calculate the predicted scores (𝑠+
+𝑖 , 𝑠−
+𝑖 ) of anchor node via
+Eq. (10)
+25: Calculate the anomaly score 𝑠𝑖 via Eq. (11)
+26: end for
+4.4 Complexity Analysis
+The time complexity of FreeGAD primarily consists of three main
+components: ❶ Affinity-gated residual encoder.The overall time
+complexity for this component is O (𝑒𝑚𝐿 + 𝑛𝐿 + 3𝑛𝑚𝐿), where 𝑒, 𝑛,
+and 𝑚 represent the number of edges, nodes and the dimension of
+the feature, respectively, and 𝐿 is the number of propagation layers.
+The term 𝑒𝑚𝐿 accounts for the feature propagation process, while
+the term 𝑛𝑚𝐿 is the complexity associated with feature similarity
+calculation, weighted summation, and the average of different prop-
+agation layers. ❷ Anchor node selection. The time complexity
+for the selection of anchor nodes is O (𝑛𝑚 + 2𝑛𝐾 ), where 𝐾 denotes
+the number of selected anchor nodes (positive and negative). The
+first term 𝑛𝑚, corresponds to the calculation of the similarity be-
+tween the node representation and its raw feature, while the second
+part, 2𝑛𝐾, represents the process of selecting the anchor nodes. ❸
+Anchor-guided anomaly scoring. Finally, the time complexity
+to calculate the anomaly score using the anchor-guided approach
+Table 1: Statistics of the datasets.
+Name #Nodes #Edges #Dim. %Ano.
+Dataset with real anomalies
+Amazon 10,244 175,608 25 6.76
+Reddit 10,984 168,016 64 3.33
+Tolokers 11,758 519,000 10 21.8
+YelpChi 23,831 49,315 32 5.10
+T-Finance 39,357 21,222,543 10 4.60
+Questions 48,921 153,540 301 2.98
+Elliptic 203,769 234,355 166 2.23
+Datasets with injected anomalies
+Cora 2,708 5,429 1,433 5.53
+BlogCatalog 5,196 171,743 8,189 5.77
+Flickr 7,575 239,738 12,047 5.94
+is O (𝑛𝑚𝐾). Therefore, the overall time complexity of FreeGAD is
+O (𝑚(𝑒𝐿 + 3𝑛𝐿 + 𝑛 + 𝑛𝐾 ) + 𝑛𝐿 + 2𝑛𝐾 ).
+5 Experiments
+5.1 Experimental Setup
+Datasets. To validate the performance of our proposed method, we
+carried out comparative experiments on 10 benchmark datasets [25,
+43] across multiple domains, including 2 co-review networks (Ama-
+zon and YelpChi [ 28, 38]), 4 social networks (Reddit, Questions,
+BlogCatalog, and Flickr [7, 16, 34, 45]), a work collaboration net-
+work (Tolokers [34]), a transaction network (T-Finance [44]), a pay-
+ment flow network (Elliptic [47]), and a citation network (Cora [39]).
+Seven of them are datasets containing real-world anomalies, while
+the remaining three have artificially injected anomalies [ 7]. The
+specific details of these datasets are outlined in Table 1.
+Baselines. We compare FreeGAD with both shallow methods
+and state-of-the-art (SOTA) deep methods for unsupervised graph
+anomaly detection (GAD). Specifically, we include 2 shallow GAD
+methods, i.e., Radar [17] and ANOMALOUS [32], as well as 8 deep
+GAD methods, i.e., DOMINANT [7], AnomalyDAE [8], CoLA [25],
+CONAD [50], PREM [31], TAM [36], GADAM [4], and FIAD [2].
+Among them, the 2 shallow GAD methods are based on the PyGOD
+implementation [21, 22], where all baselines hyperparameters are
+set based on the paper, and datasets not contained in the paper
+perform grid-specific random searches.
+Metrics. Following the existing benchmark [43], we consider two
+metrics for evaluation: Area Under the Receiver Operating Charac-
+teristic Curve (AUROC) and Area Under the Prevision Recall Curve
+(AUPRC). We report the average AUROC/AUPRC across 5 trials.
+Implementation Details. For hyper-parameter settings, we per-
+form a specific set of random searches to select the key hyper-
+parameters in FreeGAD: 𝛼, 𝛽: floats between 0 and 1, 𝐿: integers
+between 1 and 20, and 𝐾: integers between 10 and 100. The experi-
+ments were conducted using Python 3.8.19, CUDA 12.1, PyTorch
+2.1.2, and DGL 1.1.3 on a Linux server with an Intel i5-13600K CPU
+and an NVIDIA RTX 3090 GPU (24GB). Our code is available at
+https://github.com/yunf-zhao/FreeGAD.
+
+FreeGAD: A Training-Free yet Effective Approach for Graph Anomaly Detection CIKM ’25, November 10–14, 2025, Seoul, Republic of Korea
+Table 2: Anomaly detection performance in terms of AUROC and AUPRC (in percent, mean±std). The best results are highlighted
+in bold and underlined. OOM: out-of-memory (24GB GPU). OOT: out-of-time (12 hours). We do not report the standard deviation
+of FreeGAD since it is a training-free method, and its results are deterministic, without any randomness introduced by training
+processes or initialization.
+Metric Method Amazon Reddit Tolokers YelpChi T-Finance Questions Elliptic Cora BlogCatalog Flickr
+AUROC
+Radar 55.43±0.00 51.22±0.00 51.71±0.00 50.61±0.00 OOM OOM OOM 69.32 ±0.00 61.16±0.00 59.52±0.00
+ANOMALOUS 55.46±0.00 55.95±4.78 46.48±0.28 48.77±1.04 OOM OOM OOM 69.38 ±0.00 70.86±0.01 59.52±0.00
+DOMINANT 49.56±0.65 55.70±0.77 54.43±0.11 41.87±1.87 OOM OOM OOM 88.92 ±0.14 76.34±0.29 77.19±1.59
+AnomalyDAE 51.60±3.31 55.18±0.43 52.20±2.94 59.45±2.32 OOT OOT OOT 80.66 ±0.25 75.61±0.02 74.87±0.09
+CoLA 55.23±0.94 58.24±0.44 61.17±0.37 36.46±0.58 23.45±0.19 46.37±0.37 OOM 89.59 ±0.31 78.30±0.21 70.37±0.39
+CONAD 51.02±0.23 54.11±0.59 49.47±2.36 56.65±1.07 OOM OOM OOM 71.82 ±0.02 72.54±0.02 72.82±0.02
+TAM 68.87±0.72 57.17±0.13 50.88±0.00 OOM OOM OOM OOM 92.35 ±0.23 75.58±0.20 73.26±0.45
+PREM 62.61±11.85 51.87±6.15 53.48±4.04 73.93±1.51 75.30±12.31 57.16±1.29 71.23±11.08 95.11±0.23 75.06±0.74 86.53±0.37
+GADAM 67.09±3.12 58.18±0.38 55.42±0.56 65.53±1.66 80.20±7.85 43.70±0.37 56.42±0.35 93.93±0.25 81.58±0.18 72.26±0.21
+FIAD 52.36±8.07 55.72±1.03 49.73±1.98 43.27±3.19 OOM OOM OOM 87.43 ±1.31 75.47±2.02 77.01±2.01
+FreeGAD 88.57 57.21 67.35 78.55 92.13 64.27 77.25 84.85 74.84 74.73
+AUPRC
+Radar 7.30±0.00 3.53±0.00 23.24±0.00 5.88±0.00 OOM OOM OOM 11.86 ±0.00 14.80±0.00 19.88±0.00
+ANOMALOUS 7.30±0.00 3.86±0.56 20.14±0.00 5.51±0.15 OOM OOM OOM 25.23 ±0.00 30.62±0.00 19.88±0.00
+DOMINANT 6.08±0.08 3.71±0.06 27.95±0.03 4.24±0.34 OOM OOM OOM 37.81 ±0.44 34.55±0.05 37.10±0.05
+AnomalyDAE 7.30±1.18 3.71±0.02 26.82±1.12 7.53±0.59 OOT OOT OOT 26.71 ±0.61 23.01±0.09 16.78±0.24
+CoLA 8.28±0.43 4.01±0.05 27.25±0.31 3.75±0.06 2.79±0.05 2.55±0.02 OOM 45.79 ±2.66 27.09±0.98 21.36±0.31
+TAM 29.73±1.28 4.32±0.03 22.98±0.00 OOM OOM OOM OOM 48.24 ±1.54 33.88±0.77 24.70±1.87
+PREM 8.96±2.38 3.95±0.73 23.25±1.67 10.67±1.34 33.05±24.39 3.49±0.24 7.33±3.38 65.99±0.23 37.31±0.74 46.37±0.37
+GADAM 15.87±7.48 5.01±0.23 23.65±0.35 10.14±0.32 15.72±6.12 2.52±0.10 3.03±0.05 71.83±1.91 37.36±0.36 23.19±0.43
+CONAD 6.23±0.03 4.31±0.10 21.13±0.11 7.19±0.44 OOM OOM OOM 24.86 ±0.05 33.01±0.00 37.57±0.01
+FIAD 6.71±1.23 3.74±0.04 29.31±0.82 4.32±0.35 OOM OOM OOM 29.31 ±3.69 25.44±6.53 19.55±3.56
+FreeGAD 75.06 3.85 32.17 15.80 73.71 7.01 6.51 49.75 34.03 38.68
+Table 3: Training and testing time of baselines and FreeGAD in seconds. The shortest overall times are highlighted in bold and
+underlined.
+Method Amazon Reddit Tolokers YelpChi Cora BlogCatalog Flickr
+train test train test train test train test train test train test train test
+Radar 2.0061 0.0204 1.8485 0.0213 1.9994 0.0229 5.8551 0.0865 0.4789 0.008 1.4281 0.1333 1.8316 0.4085
+ANOMALOUS 2.1543 0.0135 2.3067 0.0101 2.2285 0.0092 7.0728 0.027 1.252 0.0102 23 0.1734 70 0.5362
+DOMINANT 2.3293 0.1633 2.6146 0.1886 2.8165 0.2138 11 0.8201 0.5937 0.0409 4.5385 0.4315 12 1.2824
+AnomalyDAE 113 1.1018 118 1.2149 134 1.4219 345 3.4737 32 0.3022 101 0.923 139 1.3636
+CoLA 247 20 196 18 172 15 1642 167 111 10 161 15 236 22
+CONAD 12 1.3023 13 1.3489 13 1.561 39 4.4816 1.85 0.586 14 1.0551 20 1.7071
+TAM 46 1.2557 27 1.4499 73 1.5347 44 5.4196 3.0339 0.2301 42 0.4958 59 0.8114
+PREM 0.4613 0.0066 0.3637 0.0075 0.3471 0.0065 0.508 0.0108 0.3056 0.0042 0.9174 0.0054 1.8403 0.0075
+GADAM 1.0099 0.0102 0.8122 0.0098 0.8889 0.0124 0.738 0.0213 0.7409 0.0054 1.6262 0.007 2.199 0.0085
+FIAD 227 2.0116 233 2.1419 242 2.1964 442 3.4145 67 0.497 215 1.9857 257 2.0871
+FreeGAD 0.0317 0.0338 0.0141 0.0357 0.0601 0.1641 0.3142
+5.2 Performance Comparison
+The comparison results on seven real-world graph datasets and
+three injected anomaly datasets (Cora, BlogCatalog, Flickr) are re-
+ported in Table 2. From these results, we have the following obser-
+vations. ❶ FreeGAD demonstrates superior performance compared
+to SOTA approaches across seven real-world datasets, achieving
+better results on both evaluation metrics in most cases, with the sole
+exceptions being AUPRC on Elliptic and both AUROC and AUPRC
+on Reddit. These results demonstrate the strong effectiveness of
+our training-free method across various benchmarks.❷ While Free-
+GAD does not achieve SOTA performance on the three injected
+anomaly datasets, it consistently outperforms traditional non-deep-
+learning models (e.g., Radar and ANOMALOUS) and maintains
+competitive performance with leading deep-learning approaches
+such as Dominant. Additionally, it’s important to note that the
+community has recently deemed injection-based datasets as unrea-
+sonable [12]. Existing methods might achieve better performance
+with specific designs, suggesting that future evaluations will likely
+
+CIKM ’25, November 10–14, 2025, Seoul, Republic of Korea Yunfeng Zhao et al.
+Table 4: Maximum GPU memory usage (in MB) during training and testing for baselines and FreeGAD
+Method Amazon Reddit Tolokers YelpChi Cora BlogCatalog Flickr
+train test train test train test train test train test train test train test
+Radar 2814 2416 3257 2796 3715 3187 15202 13036 316 288 2248 1770 4797 3766
+ANOMALOUS 1223 1223 1426 1426 1605 1605 6548 6548 263 263 2426 2111 5185 4502
+DOMINANT 2850 2035 3290 2351 3759 2682 15284 10910 272 228 1448 1225 3046 2567
+AnomalyDAE 3364 3335 3865 3844 4441 4403 17978 17945 343 338 1879 1847 3949 3903
+CoLA 423 404 487 467 552 532 2193 2173 79 63 432 376 922 729
+CONAD 2452 1639 2815 1876 3246 2173 13076 8706 253 167 1677 1185 3538 2488
+TAM 3968 3842 4536 4351 5150 4899 19742 17590 440 551 1535 1620 3036 3056
+PREM 91 34 109 43 114 49 219 84 111 59 1191 555 2510 1149
+GADAM 96 35 98 33 109 40 153 38 108 51 746 371 1515 756
+FIAD 4085 3281 4710 3784 5413 4351 21817 17471 450 364 2605 2073 5498 4361
+FreeGAD 32 30 74 30 112 1144 2445
+focus on real anomalous datasets. ❸ Due to its training-free na-
+ture, FreeGAD is not affected by random initialization or stochastic
+training processes, leading to its consistent and stable performance
+on all datasets. In contrast, training-based methods often suffer
+from performance fluctuations caused by randomness in training
+processes, such as weight initialization. ❹ FreeGAD demonstrates
+strong scalability, achieving state-of-the-art results on large-scale
+datasets like T-Finance and Elliptic, where many baseline methods
+encounter out-of-memory (OOM) issues. This confirms FreeGAD’s
+suitability for handling graphs with extensive data.
+5.3 Efficiency Analysis
+To investigate the running efficiency of FreeGAD, we compare the
+whole runtime of FreeGAD with the training and testing time of
+baseline methods, and the results are illustrated in Table 3. It is
+observed that FreeGAD eliminates the need for a training phase,
+which drastically reduces its overall computation cost. In contrast,
+training-based methods require significant time for model opti-
+mization, with some methods (e.g., CoLA and AnomalyDAE) taking
+hundreds of seconds on certain datasets, limiting their applicability.
+Moreover, FreeGAD achieves testing times comparable to, or even
+better than, many baseline methods. For instance, on BlogCata-
+log and Flickr datasets, its testing time is substantially lower than
+methods such as TAM and FIAD, highlighting its efficiency.
+In addition, we compare the peak memory usage during training
+and testing between FreeGAD and various baselines, as shown in
+Table 4. Notably, FreeGAD demonstrates significantly lower mem-
+ory consumption on 4 out of 7 benchmark datasets. While CoLA,
+PREM, and GADAM come closest to FreeGAD, they still consume
+several times more memory on average, and other baselines often
+use tens to hundreds of times more. On the remaining three datasets
+(Cora, BlogCatalog, and Flickr), FreeGAD does not achieve the low-
+est memory usage, perhaps due to their high feature dimensionality
+(over 1,000 dimensions per node as shown in Table 1). Unlike meth-
+ods that apply feature transformation or dimensionality reduction,
+FreeGAD operates directly on the raw high-dimensional data, re-
+sulting in higher memory consumption. Nonetheless, even on these
+Table 5: Performance of FreeGAD and its variants in terms
+of AUROC (in percent). The best results are highlighted in
+bold and underlined.
+Variant Cora Reddit YelpChi Elliptic
+FreeGAD 84.85 57.21 78.55 77.25
+w/o Multi-hop 66.80 48.62 54.85 56.21
+w/o Anchor 28.62 52.70 75.16 52.13
+w/o Negative 30.83 54.05 78.55 52.84
+w/o Positive 84.83 48.24 25.58 65.61
+w/ Max Score 70.21 54.03 73.85 76.48
+w/ Min Score 77.34 56.78 75.34 76.34
+w/ Avg Score 84.68 55.99 77.25 41.37
+challenging datasets, FreeGAD still outperforms most baselines,
+including DOMINANT and TAM.
+To sum up, FreeGAD achieves significant computational ad-
+vantages without compromising on performance, highlighting its
+applications in scenarios where rapid deployment and adaptation
+are critical.
+5.4 Ablation Study
+To verify the effectiveness of each key component and design in
+FreeGAD, we conduct an ablation study by introducing several
+variants of FreeGAD for comparison.
+We compare FreeGAD with four variants that each exclude a key
+component: ❶ w/o Multi-hop, where the representations at the
+last layer serve as the final representations; ❷ w/o Anchor, where
+anchor nodes are randomly selected rather than using affinity-
+based selection; ❸ w/o Negative and w/o Positive, where only
+positive or negative score contributes to the final anomaly score.
+In the upper part of Table 5, we can observe that all key com-
+ponents of FreeGAD contribute significantly to its performance.
+Removing the multi-hop mechanism (w/o Multi-hop) results in
+a substantial performance drop across all datasets, confirming the
+
+FreeGAD: A Training-Free yet Effective Approach for Graph Anomaly Detection CIKM ’25, November 10–14, 2025, Seoul, Republic of Korea
+0.0
+0.3
+0.6
+0.9
+0.0
+0.3
+0.6
+0.9
+AUC
+0.4
+0.5
+0.6
+0.7
+(a) Cora
+0.0
+0.3
+0.6
+0.9
+0.0
+0.3
+0.6
+0.9
+0.32
+0.40
+0.48
+0.56 (b) Questions
+0.0
+0.3
+0.6
+0.9
+0.0
+0.3
+0.6
+0.9
+0.30
+0.45
+0.60
+0.75
+(c) YelpChi
+0.0
+0.3
+0.6
+0.9
+0.0
+0.3
+0.6
+0.9
+0.50
+0.52
+0.54
+0.56 (d) Reddit
+Figure 3: The sensitivity of FreeGAD in terms of 𝛼 and 𝛽.
+effectiveness of our affinity-gated residual encoder designed under
+TAM’s “one-class homophily” principle [36]. Specifically, the en-
+coder leverages this principle to amplify the differences between
+normal and anomalous nodes, facilitating anomaly pattern detec-
+tion. The performance degradation in the w/o Anchor variant
+demonstrates that affinity-based anchor selection is crucial for ef-
+fectively distinguishing anomalies. Furthermore, excluding either
+positive or negative scoring (w/o Positive or w/o Negative) leads
+to noticeable declines, indicating the complementary role of both
+scores in achieving robust anomaly detection.
+Furthermore, we make separated evaluation using only the max-
+imum score (w/ Max Score ), only the minimum score ( w/ Min
+Score), and only the average score (w/ Avg Score) to demonstrate
+the benefit of their combination (lower part of Table 5). On the
+citation network (Cora), the Avg outperforms both Max and Min,
+more effectively capturing anomalous behaviors. In social networks
+(Reddit), Min excels at detecting extreme social anomalies. On the
+co-review network (YelpChi), Avg again leads by more accurately
+identifying anomalous reviews. For fraud detection (Elliptic), Max
+and Min both surpass Avg by pinpointing subtle deviations in fi-
+nancial behavior. Overall, combining all three metrics yields a more
+comprehensive anomaly score that consistently outperforms any
+single measure across diverse domains.
+5.5 Parameter Analysis
+We investigate the impact of key hyper-parameters, i.e., the scoring
+trade-off weight 𝛼 and 𝛽 (in Eq. (11)), the propagation layer 𝐿 and
+the anchor nodes number 𝐾 to the performance of FreeGAD.
+Trade-off Weight 𝛼 and 𝛽. The results of sensitivity study for
+𝛼 and 𝛽 are shown in Fig. 3. According to the results, we can see
+2 4 6 8 10 12 14
+Number of Propagation
+70
+80AUROC (%)
+20
+40
+AUPRC (%)
+(a) Cora
+2 4 6 8 10 12 14
+Number of Propagation
+50
+60AUROC (%)
+3
+4
+5
+AUPRC (%)
+ (b) Questions
+2 4 6 8 10 12 14
+Number of Propagation
+60
+70AUROC (%)
+10
+15
+AUPRC (%)
+(c) YelpChi
+2 4 6 8 10 12 14
+Number of Propagation
+50
+55AUROC (%)
+3.25
+3.50
+3.75
+AUPRC (%)
+ (d) Reddit
+Figure 4: The sensitivity of FreeGAD on layer number 𝐿.
+that for different datasets, the reliances on 𝛼 and 𝛽 are quite differ-
+ent. For example, Cora(citation) requires a higher 𝛽, indicating the
+contribution of negative scores; in contrast, Questions(social), Red-
+dit(social) and YelpChi(co-review) requires a higher𝛼, highlighting
+the importance of positive scores in anomaly detection. This dispar-
+ity suggests that the optimal balance between positive and negative
+contributions varies depending on the dataset’s domain-specific
+anomaly patterns.
+Propagation Layer 𝐿. Fig. 4 shows the effect by the propagation
+layer 𝐿, where a larger 𝐿 (usually 𝐿 ≥ 8) is preferred for all four
+datasets. This indicates that considering multi-hop neighbors is
+crucial for effective anomaly detection in FreeGAD. Meanwhile, it
+also indicates that the shallow GNNs in existing GAD methods may
+lead to suboptimal performance.
+6 Conclusion
+In this paper, we proposed FreeGAD, a novel training-free method
+for graph anomaly detection (GAD) that eliminates the need for
+resource-intensive training processes, addressing the scalability
+and deployment challenges of traditional approaches. FreeGAD
+uses an affinity-gated residual encoder to generate anomaly-aware
+representations and identifies anchor nodes as pseudo-normal and
+anomalous guides for effective anomaly scoring. Extensive experi-
+ments on benchmark datasets demonstrate that FreeGAD achieves
+superior performance, efficiency, and scalability compared to state-
+of-the-art methods, which highlights the potential of training-free
+approaches in advancing GAD research.
+Acknowledgments
+This work was partially supported by the Specific Research Project
+of Guangxi for Research Bases and Talents (GuiKe AD24010011), the
+Key Research & Development Program Project of Guangxi (GuiKe
+AB25069095).
+
+CIKM ’25, November 10–14, 2025, Seoul, Republic of Korea Yunfeng Zhao et al.
+GenAI Usage Disclosure
+Generative AI tools were utilized solely for the purpose of language
+polishing in this paper. All other components of the research, in-
+cluding but not limited to code, figures, and tables, were developed
+without the assistance of Generative AI tools.
+References
+[1] Leman Akoglu, Hanghang Tong, and Danai Koutra. 2015. Graph based anomaly
+detection and description: a survey. Data mining and knowledge discovery 29, 3
+(2015), 626–688.
+[2] Aoge Chen, Jianshe Wu, and Hongtao Zhang. 2025. FIAD: Graph anomaly
+detection framework based feature injection. Expert Systems with Applications
+259 (2025), 125216.
+[3] Deli Chen, Yankai Lin, Wei Li, Peng Li, Jie Zhou, and Xu Sun. 2020. Measuring
+and relieving the over-smoothing problem for graph neural networks from the
+topological view. In Proceedings of the AAAI conference on artificial intelligence ,
+Vol. 34. 3438–3445.
+[4] Jingyan Chen, Guanghui Zhu, Chunfeng Yuan, and Yihua Huang. 2024. Boost-
+ing Graph Anomaly Detection with Adaptive Message Passing. In The Twelfth
+International Conference on Learning Representations .
+[5] Qingfeng Chen, Shiyuan Li, Yixin Liu, Shirui Pan, Geoffrey I Webb, and Shichao
+Zhang. 2025. Uncertainty-Aware Graph Neural Networks: A Multihop Evidence
+Fusion Approach. IEEE Transactions on Neural Networks and Learning Systems
+(2025).
+[6] Wei-Lin Chiang, Xuanqing Liu, Si Si, Yang Li, Samy Bengio, and Cho-Jui Hsieh.
+2019. Cluster-gcn: An efficient algorithm for training deep and large graph
+convolutional networks. In Proceedings of the 25th ACM SIGKDD international
+conference on knowledge discovery & data mining . 257–266.
+[7] Kaize Ding, Jundong Li, Rohit Bhanushali, and Huan Liu. 2019. Deep anomaly
+detection on attributed networks. In Proceedings of the 2019 SIAM international
+conference on data mining . SIAM, 594–602.
+[8] Haoyi Fan, Fengbin Zhang, and Zuoyong Li. 2020. Anomalydae: Dual autoen-
+coder for anomaly detection on attributed networks. In ICASSP 2020-2020 IEEE
+International Conference on Acoustics, Speech and Signal Processing (ICASSP). IEEE,
+5685–5689.
+[9] Johannes Gasteiger, Aleksandar Bojchevski, and Stephan Günnemann. 2018.
+Predict then propagate: Graph neural networks meet personalized pagerank.
+arXiv preprint arXiv:1810.05997 (2018).
+[10] Will Hamilton, Zhitao Ying, and Jure Leskovec. 2017. Inductive representation
+learning on large graphs. Advances in neural information processing systems 30
+(2017).
+[11] Tianjin Huang, Yulong Pei, Vlado Menkovski, and Mykola Pechenizkiy. 2022.
+Hop-count based self-supervised anomaly detection on attributed networks.
+In Joint European conference on machine learning and knowledge discovery in
+databases. Springer, 225–241.
+[12] Yihong Huang, Liping Wang, Fan Zhang, and Xuemin Lin. 2023. Unsupervised
+graph outlier detection: Problem revisit, new insight, and superior method. In2023
+IEEE 39th International Conference on Data Engineering (ICDE) . IEEE, 2565–2578.
+[13] Riadul Islam, Rafi Ud Daula Refat, Sai Manikanta Yerram, and Hafiz Malik. 2020.
+Graph-based intrusion detection system for controller area networks. IEEE
+Transactions on Intelligent Transportation Systems 23, 3 (2020), 1727–1736.
+[14] Ming Jin, Yixin Liu, Yu Zheng, Lianhua Chi, Yuan-Fang Li, and Shirui Pan. 2021.
+Anemone: Graph anomaly detection with multi-scale contrastive learning. In
+Proceedings of the 30th ACM international conference on information & knowledge
+management. 3122–3126.
+[15] TN Kipf. 2016. Semi-Supervised Classification with Graph Convolutional Net-
+works. arXiv preprint arXiv:1609.02907 (2016).
+[16] Srijan Kumar, Xikun Zhang, and Jure Leskovec. 2019. Predicting dynamic em-
+bedding trajectory in temporal interaction networks. In Proceedings of the 25th
+ACM SIGKDD international conference on knowledge discovery & data mining .
+1269–1278.
+[17] Jundong Li, Harsh Dani, Xia Hu, and Huan Liu. 2017. Radar: Residual analysis
+for anomaly detection in attributed networks.. In IJCAI, Vol. 17. 2152–2158.
+[18] Shiyuan Li, Yixin Liu, Qingfeng Chen, Geoffrey I Webb, and Shirui Pan. 2024.
+Noise-Resilient Unsupervised Graph Representation Learning via Multi-Hop Fea-
+ture Quality Estimation. In Proceedings of the 33rd ACM International Conference
+on Information and Knowledge Management . 1255–1265.
+[19] Shiyuan Li, Yixin Liu, Qingsong Wen, Chengqi Zhang, and Shirui Pan. 2025.
+Assemble your crew: Automatic multi-agent communication topology design via
+autoregressive graph generation. arXiv preprint arXiv:2507.18224 (2025).
+[20] Yuening Li, Xiao Huang, Jundong Li, Mengnan Du, and Na Zou. 2019. Specae:
+Spectral autoencoder for anomaly detection in attributed networks. In Proceed-
+ings of the 28th ACM international conference on information and knowledge
+management. 2233–2236.
+[21] Kay Liu, Yingtong Dou, Xueying Ding, Xiyang Hu, Ruitong Zhang, Hao Peng,
+Lichao Sun, and Philip S Yu. 2024. Pygod: A python library for graph outlier
+detection. Journal of Machine Learning Research 25, 141 (2024), 1–9.
+[22] Kay Liu, Yingtong Dou, Yue Zhao, Xueying Ding, Xiyang Hu, Ruitong Zhang,
+Kaize Ding, Canyu Chen, Hao Peng, Kai Shu, et al. 2022. Bond: Benchmarking
+unsupervised outlier node detection on static attributed graphs. Advances in
+Neural Information Processing Systems 35 (2022), 27021–27035.
+[23] Yixin Liu, Thalaiyasingam Ajanthan, Hisham Husain, and Vu Nguyen. 2024.
+Self-supervision improves diffusion models for tabular data imputation. In Pro-
+ceedings of the 33rd ACM International Conference on Information and Knowledge
+Management. 1513–1522.
+[24] Yixin Liu, Shiyuan Li, Yu Zheng, Qingfeng Chen, Chengqi Zhang, and Shirui
+Pan. 2024. Arc: A generalist graph anomaly detector with in-context learning.
+Advances in Neural Information Processing Systems 37 (2024), 50772–50804.
+[25] Yixin Liu, Zhao Li, Shirui Pan, Chen Gong, Chuan Zhou, and George Karypis.
+2021. Anomaly detection on attributed networks via contrastive self-supervised
+learning. IEEE transactions on neural networks and learning systems 33, 6 (2021),
+2378–2392.
+[26] Yixin Liu, Guibin Zhang, Kun Wang, Shiyuan Li, and Shirui Pan. 2025. Graph-
+Augmented Large Language Model Agents: Current Progress and Future
+Prospects. arXiv preprint arXiv:2507.21407 (2025).
+[27] Xiaoxiao Ma, Jia Wu, Shan Xue, Jian Yang, Chuan Zhou, Quan Z Sheng, Hui Xiong,
+and Leman Akoglu. 2021. A comprehensive survey on graph anomaly detection
+with deep learning. IEEE Transactions on Knowledge and Data Engineering 35, 12
+(2021), 12012–12038.
+[28] Julian John McAuley and Jure Leskovec. 2013. From amateurs to connoisseurs:
+modeling the evolution of user expertise through online reviews. In Proceedings
+of the 22nd international conference on World Wide Web . 897–908.
+[29] Rui Miao, Yixin Liu, Yili Wang, Xu Shen, Yue Tan, Yiwei Dai, Shirui Pan, and Xin
+Wang. 2025. BlindGuard: Safeguarding LLM-based Multi-Agent Systems under
+Unknown Attacks. arXiv preprint arXiv:2508.08127 (2025).
+[30] Junjun Pan, Yixin Liu, Xin Zheng, Yizhen Zheng, Alan Wee-Chung Liew, Fuyi
+Li, and Shirui Pan. 2025. A label-free heterophily-guided approach for unsuper-
+vised graph fraud detection. In Proceedings of the AAAI Conference on Artificial
+Intelligence, Vol. 39. 12443–12451.
+[31] Junjun Pan, Yixin Liu, Yizhen Zheng, and Shirui Pan. 2023. PREM: A Simple
+Yet Effective Approach for Node-Level Graph Anomaly Detection. In 2023 IEEE
+International Conference on Data Mining (ICDM) . IEEE, 1253–1258.
+[32] Zhen Peng, Minnan Luo, Jundong Li, Huan Liu, Qinghua Zheng, et al . 2018.
+ANOMALOUS: A Joint Modeling Approach for Anomaly Detection on Attributed
+Networks.. In IJCAI, Vol. 18. 3513–3519.
+[33] Bryan Perozzi and Leman Akoglu. 2016. Scalable anomaly ranking of attributed
+neighborhoods. In Proceedings of the 2016 SIAM International Conference on Data
+Mining. SIAM, 207–215.
+[34] Oleg Platonov, Denis Kuznedelev, Michael Diskin, Artem Babenko, and Liudmila
+Prokhorenkova. 2023. A critical look at the evaluation of GNNs under heterophily:
+Are we really making progress? arXiv preprint arXiv:2302.11640 (2023).
+[35] Tahereh Pourhabibi, Kok-Leong Ong, Booi H Kam, and Yee Ling Boo. 2020. Fraud
+detection: A systematic literature review of graph-based anomaly detection
+approaches. Decision Support Systems 133 (2020), 113303.
+[36] Hezhe Qiao and Guansong Pang. 2023. Truncated affinity maximization: One-
+class homophily modeling for graph anomaly detection. Advances in Neural
+Information Processing Systems 36 (2023), 49490–49512.
+[37] Hezhe Qiao, Hanghang Tong, Bo An, Irwin King, Charu Aggarwal, and Guansong
+Pang. 2024. Deep graph anomaly detection: A survey and new perspectives.arXiv
+preprint arXiv:2409.09957 (2024).
+[38] Shebuti Rayana and Leman Akoglu. 2015. Collective opinion spam detection:
+Bridging review networks and metadata. In Proceedings of the 21th acm sigkdd
+international conference on knowledge discovery and data mining . 985–994.
+[39] Prithviraj Sen, Galileo Namata, Mustafa Bilgic, Lise Getoor, Brian Galligher, and
+Tina Eliassi-Rad. 2008. Collective classification in network data. AI magazine 29,
+3 (2008), 93–93.
+[40] Xu Shen, Yixin Liu, Yiwei Dai, Yili Wang, Rui Miao, Yue Tan, Shirui Pan, and
+Xin Wang. 2025. Understanding the Information Propagation Effects of Com-
+munication Topologies in LLM-based Multi-Agent Systems. arXiv preprint
+arXiv:2505.23352 (2025).
+[41] Indro Spinelli, Simone Scardapane, and Aurelio Uncini. 2020. Adaptive propa-
+gation graph convolutional network. IEEE Transactions on Neural Networks and
+Learning Systems 32, 10 (2020), 4755–4760.
+[42] Ke Sun, Zhouchen Lin, and Zhanxing Zhu. 2020. Multi-stage self-supervised
+learning for graph convolutional networks on graphs with few labeled nodes. In
+Proceedings of the AAAI conference on artificial intelligence , Vol. 34. 5892–5899.
+[43] Jianheng Tang, Fengrui Hua, Ziqi Gao, Peilin Zhao, and Jia Li. 2023. Gadbench:
+Revisiting and benchmarking supervised graph anomaly detection. Advances in
+Neural Information Processing Systems 36 (2023), 29628–29653.
+[44] Jianheng Tang, Jiajin Li, Ziqi Gao, and Jia Li. 2022. Rethinking graph neural
+networks for anomaly detection. In International Conference on Machine Learning.
+PMLR, 21076–21089.
+
+FreeGAD: A Training-Free yet Effective Approach for Graph Anomaly Detection CIKM ’25, November 10–14, 2025, Seoul, Republic of Korea
+[45] Lei Tang and Huan Liu. 2009. Relational learning via latent social dimensions.
+In Proceedings of the 15th ACM SIGKDD international conference on Knowledge
+discovery and data mining . 817–826.
+[46] Petar Veličković, Guillem Cucurull, Arantxa Casanova, Adriana Romero, Pietro
+Lio, and Yoshua Bengio. 2017. Graph attention networks. arXiv preprint
+arXiv:1710.10903 (2017).
+[47] Mark Weber, Giacomo Domeniconi, Jie Chen, Daniel Karl I Weidele, Claudio
+Bellei, Tom Robinson, and Charles E Leiserson. 2019. Anti-money laundering in
+bitcoin: Experimenting with graph convolutional networks for financial forensics.
+arXiv preprint arXiv:1908.02591 (2019).
+[48] Felix Wu, Amauri Souza, Tianyi Zhang, Christopher Fifty, Tao Yu, and Kilian
+Weinberger. 2019. Simplifying graph convolutional networks. In International
+conference on machine learning . PMLR, 6861–6871.
+[49] Zonghan Wu, Shirui Pan, Fengwen Chen, Guodong Long, Chengqi Zhang, and
+S Yu Philip. 2020. A comprehensive survey on graph neural networks. IEEE
+transactions on neural networks and learning systems 32, 1 (2020), 4–24.
+[50] Zhiming Xu, Xiao Huang, Yue Zhao, Yushun Dong, and Jundong Li. 2022. Con-
+trastive attributed network anomaly detection with data augmentation. InPacific-
+Asia conference on knowledge discovery and data mining . Springer, 444–457.
+[51] Xiaoyu Yang, Yuefei Lyu, Tian Tian, Yifei Liu, Yudong Liu, and Xi Zhang. 2021.
+Rumor detection on social media with graph structured adversarial learning.
+In Proceedings of the twenty-ninth international conference on international joint
+conferences on artificial intelligence. 1417–1423.
+[52] Wentao Zhang, Zeang Sheng, Ziqi Yin, Yuezihan Jiang, Yikuan Xia, Jun Gao, Zhi
+Yang, and Bin Cui. 2022. Model degradation hinders deep graph neural networks.
+In Proceedings of the 28th ACM SIGKDD conference on knowledge discovery and
+data mining. 2493–2503.
+[53] Yu Zheng, Ming Jin, Yixin Liu, Lianhua Chi, Khoa T Phan, and Yi-Ping Phoebe
+Chen. 2021. Generative and contrastive self-supervised learning for graph anom-
+aly detection. IEEE Transactions on Knowledge and Data Engineering 35, 12 (2021),
+12220–12233.

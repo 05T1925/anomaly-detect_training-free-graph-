@@ -1,0 +1,24 @@
+[
+  {
+    "dataset": "Cora",
+    "file": "/mnt/c/Users/28641/Desktop/\u8bba\u6587\u79d1\u7814-\u6c5f\u6743\u5b66\u957f/Graph-Anomaly-Reproduction/data/Cora/inj_cora-tfgad.bin",
+    "nodes": 2708,
+    "features": 1433,
+    "valid": 2240,
+    "anomalies": 150,
+    "adjacency_nnz": 11604,
+    "AUROC": 0.677683085744071,
+    "AP": 0.09197355215776569
+  },
+  {
+    "dataset": "Reddit",
+    "file": "/mnt/c/Users/28641/Desktop/\u8bba\u6587\u79d1\u7814-\u6c5f\u6743\u5b66\u957f/Graph-Anomaly-Reproduction/data/Reddit/inj_reddit-tfgad.bin",
+    "nodes": 10984,
+    "features": 64,
+    "valid": 8332,
+    "anomalies": 366,
+    "adjacency_nnz": 157032,
+    "AUROC": 0.5014015019345436,
+    "AP": 0.03560281845262397
+  }
+]

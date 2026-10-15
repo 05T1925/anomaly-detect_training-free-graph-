@@ -1,0 +1,49 @@
+/home/lwt2024212936/.venvs/tfgad/lib/python3.8/site-packages/scipy/sparse/_index.py:146: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/T-Finance/tfinance-source.zip
+nodes: 39357; adjacency entries: 42445086; valid nodes: 39275
+rank=8; pair_mode=full; edge_policy=preserve
+AUROC=0.9202275122999848; AP=0.5319827701130431; scoring_seconds=4.687
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/tfinance-ablations/statistic/T-Finance/variance-median/seed-0
+/home/lwt2024212936/.venvs/tfgad/lib/python3.8/site-packages/scipy/sparse/_index.py:146: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/T-Finance/tfinance-source.zip
+nodes: 39357; adjacency entries: 42445086; valid nodes: 39275
+rank=8; pair_mode=full; edge_policy=preserve
+AUROC=0.9095950893468938; AP=0.5208223981862441; scoring_seconds=5.198
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/tfinance-ablations/statistic/T-Finance/variance-mean/seed-0
+/home/lwt2024212936/.venvs/tfgad/lib/python3.8/site-packages/scipy/sparse/_index.py:146: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/T-Finance/tfinance-source.zip
+nodes: 39357; adjacency entries: 42445086; valid nodes: 39275
+rank=8; pair_mode=full; edge_policy=preserve
+AUROC=0.9094178527754683; AP=0.3773304605222119; scoring_seconds=6.194
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/tfinance-ablations/statistic/T-Finance/std-median/seed-0
+/home/lwt2024212936/.venvs/tfgad/lib/python3.8/site-packages/scipy/sparse/_index.py:146: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/T-Finance/tfinance-source.zip
+nodes: 39357; adjacency entries: 42445086; valid nodes: 39275
+rank=8; pair_mode=full; edge_policy=preserve
+AUROC=0.8270491674058535; AP=0.23054199978450068; scoring_seconds=4.953
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/tfinance-ablations/statistic/T-Finance/mean-median/seed-0
+/home/lwt2024212936/.venvs/tfgad/lib/python3.8/site-packages/scipy/sparse/_index.py:146: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/T-Finance/tfinance-source.zip
+nodes: 39357; adjacency entries: 42445086; valid nodes: 39275
+rank=8; pair_mode=full; edge_policy=preserve
+AUROC=0.9202275122999848; AP=0.5319827701130431; scoring_seconds=5.428
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/tfinance-ablations/low-degree/T-Finance/zero/seed-0
+/home/lwt2024212936/.venvs/tfgad/lib/python3.8/site-packages/scipy/sparse/_index.py:146: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/T-Finance/tfinance-source.zip
+nodes: 39357; adjacency entries: 42445086; valid nodes: 39275
+rank=8; pair_mode=full; edge_policy=preserve
+AUROC=0.9197201584067172; AP=0.5318622482798251; scoring_seconds=5.236
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/tfinance-ablations/low-degree/T-Finance/median/seed-0
+/home/lwt2024212936/.venvs/tfgad/lib/python3.8/site-packages/scipy/sparse/_index.py:146: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/T-Finance/tfinance-source.zip
+nodes: 39357; adjacency entries: 42445086; valid nodes: 39275
+rank=8; pair_mode=full; edge_policy=preserve
+AUROC=0.9210048978352996; AP=0.5333475150451146; scoring_seconds=5.517
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/tfinance-ablations/low-degree/T-Finance/valid-only/seed-0

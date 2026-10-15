@@ -1,0 +1,44 @@
+[
+  {
+    "sign": 1,
+    "method": "NRS",
+    "score_difference": 0.0,
+    "AUROC": 0.5141242937853107,
+    "AP": 0.0625827602022159
+  },
+  {
+    "sign": 1,
+    "method": "PCD",
+    "score_difference": 0.0,
+    "AUROC": 0.5621468926553672,
+    "AP": 0.06784715052318983
+  },
+  {
+    "sign": 1,
+    "method": "AMEN-Ego",
+    "score_difference": 0.0,
+    "AUROC": 0.5233050847457628,
+    "AP": 0.07879477548595196
+  },
+  {
+    "sign": -1,
+    "method": "NRS",
+    "score_difference": 0.0,
+    "AUROC": 0.5141242937853107,
+    "AP": 0.0625827602022159
+  },
+  {
+    "sign": -1,
+    "method": "PCD",
+    "score_difference": 0.0,
+    "AUROC": 0.5621468926553672,
+    "AP": 0.06784715052318983
+  },
+  {
+    "sign": -1,
+    "method": "AMEN-Ego",
+    "score_difference": 1.935270730924193,
+    "AUROC": 0.5911016949152542,
+    "AP": 0.09447560995548002
+  }
+]

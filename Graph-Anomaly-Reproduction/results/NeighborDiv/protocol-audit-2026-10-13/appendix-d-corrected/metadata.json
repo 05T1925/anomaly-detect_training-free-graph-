@@ -1,0 +1,40 @@
+{
+  "paper_section": "Appendix D, Table 12 heuristic baseline comparison",
+  "datasets_requested": [
+    "Cora",
+    "YelpChi",
+    "Reddit",
+    "T-Finance",
+    "Tolokers",
+    "Disney",
+    "Questions"
+  ],
+  "methods_requested": [
+    "AMEN-Ego",
+    "LCC",
+    "NRS",
+    "PCD"
+  ],
+  "rank": 8,
+  "svd_random_state": 0,
+  "svd_algorithm": "sklearn TruncatedSVD randomized; n_iter=5",
+  "feature_preprocessing": "U Sigma, row-wise L1 normalization; AMEN-Ego then min-max rescales each dimension to [0,1]",
+  "edge_policy": "undirected union for all baselines, as required by LCC and symmetric-normalized propagation",
+  "calibration": "valid-set median, absolute deviation and population z-score; invalid nodes receive zero",
+  "valid_node_sets": {
+    "LCC": "degree>=2",
+    "NRS": "degree>=1",
+    "PCD": "degree>=1",
+    "AMEN-Ego": "degree>=1"
+  },
+  "local_implementation_choices": [
+    "The paper does not fully specify input edge symmetrization for every dataset; baselines use an undirected union consistently.",
+    "AMEN-Ego applies the size-invariant AMEN internal/external rescaling and reports negative optimized normality as anomaly score.",
+    "For graphs with an estimated AMEN ego-edge workload of at least 1e9, an OpenMP bitset kernel computes the same score; smaller graphs use the direct Python reference path."
+  ],
+  "source_sha256": {
+    "src/heuristic_baselines.py": "336a60e69949ac616e0db3cef8e355e6469c46c68de414468f52e12ae790f495",
+    "src/amen_ego_native.cpp": "e425eda5a147fd227502abd8b70bdaacc859f90ed29b330769ff6ee1f8ae87a9",
+    "scripts/run_appendix_d_heuristics.py": "6f03cc70c3b9daf6d977a652e45fc20f82c727d5372f2fccd34780c750dec9b3"
+  }
+}

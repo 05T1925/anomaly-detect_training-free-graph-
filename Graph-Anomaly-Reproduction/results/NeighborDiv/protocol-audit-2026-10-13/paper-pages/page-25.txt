@@ -1,0 +1,47 @@
+Table 16: Low-degree node statistics on the seven test datasets. Vvalid denotes nodes with di ≥ 2, for
+which NeighborDiv is directly defined. Invalid nodes are those with di < 2, which receive a neutral
+fallback score.
+Dataset N |Vvalid| Valid ratio Isol. d = 1 Invalid (d < 2)
+Cora 2,708 2,233 82.5% 0 475 475
+YelpChi 23,831 15,679 65.8% 0 8,152 8,152
+Reddit 10,984 8,332 75.9% 0 2,652 2,652
+T-Finance 39,357 39,275 99.8% 0 82 82
+Tolokers 11,758 9,853 83.8% 930 975 1,905
+Disney 124 113 91.1% 0 11 11
+Questions 48,921 13,567 27.7% 17,603 17,751 35,354
+E.5 Low-degree Node Handling
+NeighborDiv is a second-order neighborhood statistic and therefore requires at least two neighbors
+to form a valid neighbor pair. For nodes with di < 2, the diversity statistic Diis undefined. Our
+main implementation assigns such nodes a neutral standardized score si = 0. This choice does
+not indicate that low-degree nodes are necessarily normal; rather, it reflects that their second-order
+neighbor-to-neighbor organization cannot be measured by the proposed statistic.
+To quantify the scope of this issue, Table 16 reports the number of valid nodes with di ≥ 2, the
+valid-node ratio, and degree statistics for all test datasets. The prevalence of low-degree nodes
+is dataset-dependent. It is negligible on dense graphs such as T-Finance (99.8% valid nodes), but
+substantial on sparse graphs such as Questions, where only 27.7% of nodes have at least two neighbors.
+This motivates an explicit sensitivity analysis of the sparse-node fallback assignment.
+We compare three evaluation settings in Table 17:
+• Zero fallback: the default setting used in the main experiments, where nodes with di < 2
+receive si = 0.
+• Median fallback: nodes with di < 2 receive the median standardized score of valid nodes.
+This is another neutral assignment that is less tied to the mean of the standardized score
+distribution.
+• Valid-only: evaluation is restricted to nodes with di ≥ 2, i.e., the subset on which NeighborDiv is directly defined.
+The default zero fallback achieves the best average AUC (0.6465) and AP (0.1762). Replacing it with
+the median fallback yields comparable average AP (0.1740) and a moderate decrease in average AUC
+(0.6343). The valid-only evaluation obtains a similar average AUC (0.6425) and AP (0.1756) to the
+full-node default evaluation. These results indicate that the main conclusions are not driven by the
+arbitrary treatment of low-degree nodes. Instead, the NeighborDiv signal remains effective on the
+valid-node subset, and using a neutral fallback mainly serves to produce a complete ranking over all
+nodes.
+We emphasize that this analysis does not claim that low-degree anomalies are fully solved by the
+current method. Nodes with di < 2 are outside the direct scope of a second-order neighbor-pair
+statistic. Designing a principled degree-aware fallback for isolated or degree-one nodes is a natural
+future direction, for example by combining NeighborDiv with first-order node-to-neighbor residual
+scores or global feature outlier scores.
+F Controlled Homophily Sweep
+To systematically evaluate the sensitivity of our method to varying levels of graph homophily and
+to provide controlled evidence for the two-sided detection claim, we construct synthetic attributed
+graphs using the stochastic block model (SBM) [12].
+Graph generation. Each graph contains n=2000 nodes partitioned into k=5 equal-sized communities. The intra- and inter-community edge probabilities are calibrated to achieve a target edge
+25

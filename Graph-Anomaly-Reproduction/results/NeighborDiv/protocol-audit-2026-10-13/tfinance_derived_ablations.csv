@@ -1,0 +1,5 @@
+variant,AUROC,AP,evaluated_nodes,provenance
+variance-mean,0.9095950893468938,0.5208221246470454,39357,derived from saved Full population variances; no pair sampling
+std-median,0.9094178527754683,0.3773285762388018,39357,derived from saved Full population variances; no pair sampling
+median-fallback,0.9197201584067172,0.5318619959851557,39357,derived from saved Full population variances; no pair sampling
+valid-only,0.9210048978352997,0.5333472619085275,39275,derived from saved Full population variances; no pair sampling

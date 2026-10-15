@@ -1,0 +1,52 @@
+Deviation. We then measure how far the neighborhood diversity of each node deviates from this
+reference:
+∆i = |Di − Dmed|. (12)
+This absolute deviation is sensitive to both types of atypical neighborhoods: overly homogeneous
+neighborhoods with unusually small diversity and overly heterogeneous neighborhoods with unusually
+large diversity.
+To make the deviations comparable across nodes, we standardize them on the valid-node set:
+si =
+∆i − µ∆
+σ∆
+. (13)
+where µ∆ and σ∆ are the mean and standard deviation of ∆i over Vvalid, respectively. The resulting
+siis used as the anomaly score of node vi.
+Sparse-node handling. For nodes with di < 2, neighbor diversity is undefined because no valid
+neighbor pair can be formed. We assign such nodes a neutral score si = 0, which by construction
+of Eq. (13) coincides with the mean of the standardized score distribution over valid nodes. This
+keeps all anomaly scores on a unified scale and avoids introducing scale-induced bias from a separate
+scoring function.We further evaluate the sensitivity of this design choice in Appendix E.5.
+Notably, the anomaly score does not attempt to estimate whether a node is "normal-like" in an absolute
+sense. Instead, it measures whether the internal structure induced by that node’s neighborhood deviates
+significantly from the graph’s typical neighborhood organization.
+3.4 Binary Decision Rule
+When binary anomaly predictions are required, we apply a simple global threshold on the continuous
+anomaly scores. Let µs and σs denote the mean and standard deviation of {si}
+n
+i=1, respectively. We
+define the threshold as
+τ = µs + λσs, (14)
+where λ is a hyperparameter.
+The final binary prediction is given by
+yˆi =
+
+1, if si > τ,
+0, otherwise.
+(15)
+where yˆi = 1 indicates that node viis predicted as anomalous.
+It is worth noting that this thresholding step is only used to estimate the anomalous node set or
+anomaly count. Ranking-based evaluation metrics such as AUC and AP are determined solely by the
+continuous anomaly scores si.
+4 Experiments
+4.1 Experimental Setup
+Datasets. We use four source training datasets: Facebook [35], Amazon [5], PubMed [28], and
+Elliptic [33]. For testing, we employ seven target datasets where Cora [19], YelpChi [5], Reddit
+[15], and T-Finance [29] are intra-domain samples consistent with training domains, and Tolokers
+[23], Disney [27], and Questions [23] are cross-domain samples from unseen domains. Such a
+domain-aware train-test partition ensures comprehensive and reliable evaluation. Our method is
+training-free and requires no training data. Detailed dataset statistics are provided in Appendix B.1.
+Baselines. We compare with three mainstream paradigms: unsupervised GAD (AnomalyDAE [7],
+TAM [24], GADAM [3]), supervised GAD (GCN [14], GAT [31], BWGNN [29], GHRN [8]), and
+state-of-the-art zero-shot GGAD methods (AnomalyGFM [25], IA-GGAD [36], UNPrompt [20]).
+Detailed implementations are provided in Appendix B.3.
+6

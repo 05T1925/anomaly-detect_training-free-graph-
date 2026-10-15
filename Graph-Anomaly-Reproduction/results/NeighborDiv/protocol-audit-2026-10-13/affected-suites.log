@@ -1,0 +1,582 @@
+RUN ['/home/lwt2024212936/.venvs/cola/bin/python', '-u', '/mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/Repositories/NeighborDiv/scripts/run_paper_experiments.py', '--suite', 'sampling', '--datasets', 'Cora', 'Tolokers', 'Disney', 'Questions', '--full-backend', 'moments', '--output-root', '/mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments', '--execute']
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Cora/cora-freegad.mat
+nodes: 2708; adjacency entries: 11604; valid nodes: 2233
+rank=8; pair_mode=full; edge_policy=preserve
+AUROC=0.6846077664842325; AP=0.09779039581106895; scoring_seconds=0.089
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Cora/full/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Cora/cora-freegad.mat
+nodes: 2708; adjacency entries: 11604; valid nodes: 2233
+rank=8; pair_mode=sampled; edge_policy=preserve
+AUROC=0.6806984623403701; AP=0.09525368592380798; scoring_seconds=0.102
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Cora/sample-100/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Cora/cora-freegad.mat
+nodes: 2708; adjacency entries: 11604; valid nodes: 2233
+rank=8; pair_mode=sampled; edge_policy=preserve
+AUROC=0.6851967683085743; AP=0.09698327386656215; scoring_seconds=0.114
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Cora/sample-100/seed-1
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Cora/cora-freegad.mat
+nodes: 2708; adjacency entries: 11604; valid nodes: 2233
+rank=8; pair_mode=sampled; edge_policy=preserve
+AUROC=0.67504039614282; AP=0.09471714360284146; scoring_seconds=0.097
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Cora/sample-100/seed-2
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Cora/cora-freegad.mat
+nodes: 2708; adjacency entries: 11604; valid nodes: 2233
+rank=8; pair_mode=sampled; edge_policy=preserve
+AUROC=0.6883242116236643; AP=0.09882571304193163; scoring_seconds=0.102
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Cora/sample-100/seed-3
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Cora/cora-freegad.mat
+nodes: 2708; adjacency entries: 11604; valid nodes: 2233
+rank=8; pair_mode=sampled; edge_policy=preserve
+AUROC=0.6821996351316132; AP=0.09621049096479632; scoring_seconds=0.115
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Cora/sample-100/seed-4
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Cora/cora-freegad.mat
+nodes: 2708; adjacency entries: 11604; valid nodes: 2233
+rank=8; pair_mode=sampled; edge_policy=preserve
+AUROC=0.640612457649205; AP=0.08453345040156193; scoring_seconds=0.083
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Cora/sample-50/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Cora/cora-freegad.mat
+nodes: 2708; adjacency entries: 11604; valid nodes: 2233
+rank=8; pair_mode=sampled; edge_policy=preserve
+AUROC=0.648355486056815; AP=0.08947939711908767; scoring_seconds=0.077
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Cora/sample-50/seed-1
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Cora/cora-freegad.mat
+nodes: 2708; adjacency entries: 11604; valid nodes: 2233
+rank=8; pair_mode=sampled; edge_policy=preserve
+AUROC=0.6533932759968727; AP=0.09111463349494821; scoring_seconds=0.093
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Cora/sample-50/seed-2
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Cora/cora-freegad.mat
+nodes: 2708; adjacency entries: 11604; valid nodes: 2233
+rank=8; pair_mode=sampled; edge_policy=preserve
+AUROC=0.6496194943966641; AP=0.08760942735172765; scoring_seconds=0.078
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Cora/sample-50/seed-3
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Cora/cora-freegad.mat
+nodes: 2708; adjacency entries: 11604; valid nodes: 2233
+rank=8; pair_mode=sampled; edge_policy=preserve
+AUROC=0.6573468855876987; AP=0.09130459041304133; scoring_seconds=0.083
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Cora/sample-50/seed-4
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Tolokers/tolokers.npz
+nodes: 11758; adjacency entries: 519000; valid nodes: 9853
+rank=8; pair_mode=full; edge_policy=incoming
+AUROC=0.5186809101343335; AP=0.21169120875144412; scoring_seconds=0.310
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Tolokers/full/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Tolokers/tolokers.npz
+nodes: 11758; adjacency entries: 519000; valid nodes: 9853
+rank=8; pair_mode=sampled; edge_policy=incoming
+AUROC=0.5170899692843484; AP=0.21243390904300435; scoring_seconds=1.301
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Tolokers/sample-100/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Tolokers/tolokers.npz
+nodes: 11758; adjacency entries: 519000; valid nodes: 9853
+rank=8; pair_mode=sampled; edge_policy=incoming
+AUROC=0.5165573379745985; AP=0.2123652341525909; scoring_seconds=1.290
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Tolokers/sample-100/seed-1
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Tolokers/tolokers.npz
+nodes: 11758; adjacency entries: 519000; valid nodes: 9853
+rank=8; pair_mode=sampled; edge_policy=incoming
+AUROC=0.5170557974435732; AP=0.2125163436386433; scoring_seconds=1.250
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Tolokers/sample-100/seed-2
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Tolokers/tolokers.npz
+nodes: 11758; adjacency entries: 519000; valid nodes: 9853
+rank=8; pair_mode=sampled; edge_policy=incoming
+AUROC=0.5192886686175989; AP=0.21325894193225794; scoring_seconds=1.407
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Tolokers/sample-100/seed-3
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Tolokers/tolokers.npz
+nodes: 11758; adjacency entries: 519000; valid nodes: 9853
+rank=8; pair_mode=sampled; edge_policy=incoming
+AUROC=0.5191483775243917; AP=0.21333708194712114; scoring_seconds=1.471
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Tolokers/sample-100/seed-4
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Tolokers/tolokers.npz
+nodes: 11758; adjacency entries: 519000; valid nodes: 9853
+rank=8; pair_mode=sampled; edge_policy=incoming
+AUROC=0.5140874261532106; AP=0.21255307204636825; scoring_seconds=0.995
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Tolokers/sample-50/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Tolokers/tolokers.npz
+nodes: 11758; adjacency entries: 519000; valid nodes: 9853
+rank=8; pair_mode=sampled; edge_policy=incoming
+AUROC=0.511908865311732; AP=0.21098051023576306; scoring_seconds=1.003
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Tolokers/sample-50/seed-1
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Tolokers/tolokers.npz
+nodes: 11758; adjacency entries: 519000; valid nodes: 9853
+rank=8; pair_mode=sampled; edge_policy=incoming
+AUROC=0.5172279285521926; AP=0.2138785177884901; scoring_seconds=1.047
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Tolokers/sample-50/seed-2
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Tolokers/tolokers.npz
+nodes: 11758; adjacency entries: 519000; valid nodes: 9853
+rank=8; pair_mode=sampled; edge_policy=incoming
+AUROC=0.5147516572070872; AP=0.2125949943815923; scoring_seconds=1.004
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Tolokers/sample-50/seed-3
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Tolokers/tolokers.npz
+nodes: 11758; adjacency entries: 519000; valid nodes: 9853
+rank=8; pair_mode=sampled; edge_policy=incoming
+AUROC=0.5166169479102436; AP=0.21290618447399606; scoring_seconds=1.038
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Tolokers/sample-50/seed-4
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Disney/disney-dominant.mat
+nodes: 124; adjacency entries: 670; valid nodes: 113
+rank=8; pair_mode=full; edge_policy=undirected
+AUROC=0.7245762711864407; AP=0.16170315655404693; scoring_seconds=0.004
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Disney/full/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Disney/disney-dominant.mat
+nodes: 124; adjacency entries: 670; valid nodes: 113
+rank=8; pair_mode=sampled; edge_policy=undirected
+AUROC=0.7245762711864407; AP=0.16170315655404693; scoring_seconds=0.006
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Disney/sample-100/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Disney/disney-dominant.mat
+nodes: 124; adjacency entries: 670; valid nodes: 113
+rank=8; pair_mode=sampled; edge_policy=undirected
+AUROC=0.7245762711864407; AP=0.16170315655404693; scoring_seconds=0.005
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Disney/sample-100/seed-1
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Disney/disney-dominant.mat
+nodes: 124; adjacency entries: 670; valid nodes: 113
+rank=8; pair_mode=sampled; edge_policy=undirected
+AUROC=0.7062146892655367; AP=0.15936905471789192; scoring_seconds=0.008
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Disney/sample-100/seed-2
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Disney/disney-dominant.mat
+nodes: 124; adjacency entries: 670; valid nodes: 113
+rank=8; pair_mode=sampled; edge_policy=undirected
+AUROC=0.7245762711864407; AP=0.16170315655404693; scoring_seconds=0.007
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Disney/sample-100/seed-3
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Disney/disney-dominant.mat
+nodes: 124; adjacency entries: 670; valid nodes: 113
+rank=8; pair_mode=sampled; edge_policy=undirected
+AUROC=0.7245762711864407; AP=0.16170315655404693; scoring_seconds=0.006
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Disney/sample-100/seed-4
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Disney/disney-dominant.mat
+nodes: 124; adjacency entries: 670; valid nodes: 113
+rank=8; pair_mode=sampled; edge_policy=undirected
+AUROC=0.7076271186440678; AP=0.15956937523071243; scoring_seconds=0.012
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Disney/sample-50/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Disney/disney-dominant.mat
+nodes: 124; adjacency entries: 670; valid nodes: 113
+rank=8; pair_mode=sampled; edge_policy=undirected
+AUROC=0.7217514124293786; AP=0.1613095238095238; scoring_seconds=0.008
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Disney/sample-50/seed-1
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Disney/disney-dominant.mat
+nodes: 124; adjacency entries: 670; valid nodes: 113
+rank=8; pair_mode=sampled; edge_policy=undirected
+AUROC=0.7090395480225988; AP=0.15970617413632118; scoring_seconds=0.016
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Disney/sample-50/seed-2
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Disney/disney-dominant.mat
+nodes: 124; adjacency entries: 670; valid nodes: 113
+rank=8; pair_mode=sampled; edge_policy=undirected
+AUROC=0.6864406779661016; AP=0.1556010414706067; scoring_seconds=0.012
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Disney/sample-50/seed-3
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Disney/disney-dominant.mat
+nodes: 124; adjacency entries: 670; valid nodes: 113
+rank=8; pair_mode=sampled; edge_policy=undirected
+AUROC=0.7175141242937854; AP=0.16077695905764677; scoring_seconds=0.007
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Disney/sample-50/seed-4
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Questions/questions.npz
+nodes: 48921; adjacency entries: 153540; valid nodes: 13567
+rank=8; pair_mode=full; edge_policy=incoming
+AUROC=0.49097128918826793; AP=0.03317710044932848; scoring_seconds=1.686
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Questions/full/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Questions/questions.npz
+nodes: 48921; adjacency entries: 153540; valid nodes: 13567
+rank=8; pair_mode=sampled; edge_policy=incoming
+AUROC=0.4900278180816377; AP=0.03320902589783593; scoring_seconds=1.829
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Questions/sample-100/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Questions/questions.npz
+nodes: 48921; adjacency entries: 153540; valid nodes: 13567
+rank=8; pair_mode=sampled; edge_policy=incoming
+AUROC=0.49307014295515317; AP=0.0333732677768558; scoring_seconds=1.694
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Questions/sample-100/seed-1
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Questions/questions.npz
+nodes: 48921; adjacency entries: 153540; valid nodes: 13567
+rank=8; pair_mode=sampled; edge_policy=incoming
+AUROC=0.49030139526238264; AP=0.03305059529123704; scoring_seconds=1.603
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Questions/sample-100/seed-2
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Questions/questions.npz
+nodes: 48921; adjacency entries: 153540; valid nodes: 13567
+rank=8; pair_mode=sampled; edge_policy=incoming
+AUROC=0.490524346882646; AP=0.03312816744870297; scoring_seconds=1.618
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Questions/sample-100/seed-3
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Questions/questions.npz
+nodes: 48921; adjacency entries: 153540; valid nodes: 13567
+rank=8; pair_mode=sampled; edge_policy=incoming
+AUROC=0.4883685610074082; AP=0.033017894803493986; scoring_seconds=1.626
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Questions/sample-100/seed-4
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Questions/questions.npz
+nodes: 48921; adjacency entries: 153540; valid nodes: 13567
+rank=8; pair_mode=sampled; edge_policy=incoming
+AUROC=0.489349409594554; AP=0.0328869730997844; scoring_seconds=1.562
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Questions/sample-50/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Questions/questions.npz
+nodes: 48921; adjacency entries: 153540; valid nodes: 13567
+rank=8; pair_mode=sampled; edge_policy=incoming
+AUROC=0.48920508056650996; AP=0.0329436693387288; scoring_seconds=1.504
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Questions/sample-50/seed-1
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Questions/questions.npz
+nodes: 48921; adjacency entries: 153540; valid nodes: 13567
+rank=8; pair_mode=sampled; edge_policy=incoming
+AUROC=0.4891771268291515; AP=0.03305903042887421; scoring_seconds=1.716
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Questions/sample-50/seed-2
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Questions/questions.npz
+nodes: 48921; adjacency entries: 153540; valid nodes: 13567
+rank=8; pair_mode=sampled; edge_policy=incoming
+AUROC=0.48963241051845596; AP=0.033137365268308364; scoring_seconds=1.853
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Questions/sample-50/seed-3
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Questions/questions.npz
+nodes: 48921; adjacency entries: 153540; valid nodes: 13567
+rank=8; pair_mode=sampled; edge_policy=incoming
+AUROC=0.4943933923541549; AP=0.03383573620211637; scoring_seconds=1.933
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/sampling/Questions/sample-50/seed-4
+RUN ['/home/lwt2024212936/.venvs/cola/bin/python', '-u', '/mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/Repositories/NeighborDiv/scripts/run_paper_experiments.py', '--suite', 'rank', '--datasets', 'Cora', 'Questions', '--full-backend', 'moments', '--output-root', '/mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments', '--execute']
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Cora/cora-freegad.mat
+nodes: 2708; adjacency entries: 11604; valid nodes: 2233
+rank=8; pair_mode=full; edge_policy=preserve
+AUROC=0.6846077664842325; AP=0.09779039581106895; scoring_seconds=0.082
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/rank/Cora/rank-8/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Cora/cora-freegad.mat
+nodes: 2708; adjacency entries: 11604; valid nodes: 2233
+rank=16; pair_mode=full; edge_policy=preserve
+AUROC=0.6101563721657546; AP=0.07196641622874225; scoring_seconds=0.069
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/rank/Cora/rank-16/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Cora/cora-freegad.mat
+nodes: 2708; adjacency entries: 11604; valid nodes: 2233
+rank=32; pair_mode=full; edge_policy=preserve
+AUROC=0.48249674224654676; AP=0.05051651018557003; scoring_seconds=0.114
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/rank/Cora/rank-32/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Cora/cora-freegad.mat
+nodes: 2708; adjacency entries: 11604; valid nodes: 2233
+rank=64; pair_mode=full; edge_policy=preserve
+AUROC=0.3757310398749023; AP=0.041999327991794524; scoring_seconds=0.131
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/rank/Cora/rank-64/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Questions/questions.npz
+nodes: 48921; adjacency entries: 153540; valid nodes: 13567
+rank=8; pair_mode=full; edge_policy=incoming
+AUROC=0.49097128918826793; AP=0.03317710044932848; scoring_seconds=2.116
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/rank/Questions/rank-8/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Questions/questions.npz
+nodes: 48921; adjacency entries: 153540; valid nodes: 13567
+rank=16; pair_mode=full; edge_policy=incoming
+AUROC=0.49371618167822295; AP=0.033310864383966375; scoring_seconds=3.196
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/rank/Questions/rank-16/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Questions/questions.npz
+nodes: 48921; adjacency entries: 153540; valid nodes: 13567
+rank=32; pair_mode=full; edge_policy=incoming
+AUROC=0.4926486433129089; AP=0.03297635432846549; scoring_seconds=2.969
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/rank/Questions/rank-32/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Questions/questions.npz
+nodes: 48921; adjacency entries: 153540; valid nodes: 13567
+rank=64; pair_mode=full; edge_policy=incoming
+AUROC=0.4905186320246211; AP=0.0326776556099965; scoring_seconds=6.493
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/rank/Questions/rank-64/seed-0
+RUN ['/home/lwt2024212936/.venvs/cola/bin/python', '-u', '/mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/Repositories/NeighborDiv/scripts/run_paper_experiments.py', '--suite', 'statistic', '--datasets', 'Cora', 'Tolokers', 'Disney', 'Questions', '--full-backend', 'moments', '--output-root', '/mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments', '--execute']
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Cora/cora-freegad.mat
+nodes: 2708; adjacency entries: 11604; valid nodes: 2233
+rank=8; pair_mode=full; edge_policy=preserve
+AUROC=0.6846077664842325; AP=0.09779039581106895; scoring_seconds=0.060
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/statistic/Cora/variance-median/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Cora/cora-freegad.mat
+nodes: 2708; adjacency entries: 11604; valid nodes: 2233
+rank=8; pair_mode=full; edge_policy=preserve
+AUROC=0.6085405264529581; AP=0.0769438055162523; scoring_seconds=0.058
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/statistic/Cora/variance-mean/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Cora/cora-freegad.mat
+nodes: 2708; adjacency entries: 11604; valid nodes: 2233
+rank=8; pair_mode=full; edge_policy=preserve
+AUROC=0.5413526192337764; AP=0.05535385243530669; scoring_seconds=0.059
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/statistic/Cora/std-median/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Cora/cora-freegad.mat
+nodes: 2708; adjacency entries: 11604; valid nodes: 2233
+rank=8; pair_mode=full; edge_policy=preserve
+AUROC=0.5878941881678394; AP=0.06411914489826287; scoring_seconds=0.057
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/statistic/Cora/mean-median/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Tolokers/tolokers.npz
+nodes: 11758; adjacency entries: 519000; valid nodes: 9853
+rank=8; pair_mode=full; edge_policy=incoming
+AUROC=0.5186809101343335; AP=0.21169120875144412; scoring_seconds=0.309
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/statistic/Tolokers/variance-median/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Tolokers/tolokers.npz
+nodes: 11758; adjacency entries: 519000; valid nodes: 9853
+rank=8; pair_mode=full; edge_policy=incoming
+AUROC=0.5124359426374352; AP=0.20977033022599811; scoring_seconds=0.362
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/statistic/Tolokers/variance-mean/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Tolokers/tolokers.npz
+nodes: 11758; adjacency entries: 519000; valid nodes: 9853
+rank=8; pair_mode=full; edge_policy=incoming
+AUROC=0.5135037490664218; AP=0.2106905215335637; scoring_seconds=0.513
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/statistic/Tolokers/std-median/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Tolokers/tolokers.npz
+nodes: 11758; adjacency entries: 519000; valid nodes: 9853
+rank=8; pair_mode=full; edge_policy=incoming
+AUROC=0.47826842633839994; AP=0.20285538040494305; scoring_seconds=0.312
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/statistic/Tolokers/mean-median/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Disney/disney-dominant.mat
+nodes: 124; adjacency entries: 670; valid nodes: 113
+rank=8; pair_mode=full; edge_policy=undirected
+AUROC=0.7245762711864407; AP=0.16170315655404693; scoring_seconds=0.005
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/statistic/Disney/variance-median/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Disney/disney-dominant.mat
+nodes: 124; adjacency entries: 670; valid nodes: 113
+rank=8; pair_mode=full; edge_policy=undirected
+AUROC=0.7033898305084746; AP=0.15619741842870086; scoring_seconds=0.005
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/statistic/Disney/variance-mean/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Disney/disney-dominant.mat
+nodes: 124; adjacency entries: 670; valid nodes: 113
+rank=8; pair_mode=full; edge_policy=undirected
+AUROC=0.711864406779661; AP=0.15867046677428032; scoring_seconds=0.005
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/statistic/Disney/std-median/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Disney/disney-dominant.mat
+nodes: 124; adjacency entries: 670; valid nodes: 113
+rank=8; pair_mode=full; edge_policy=undirected
+AUROC=0.6574858757062146; AP=0.07821763941308534; scoring_seconds=0.005
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/statistic/Disney/mean-median/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Questions/questions.npz
+nodes: 48921; adjacency entries: 153540; valid nodes: 13567
+rank=8; pair_mode=full; edge_policy=incoming
+AUROC=0.49097128918826793; AP=0.03317710044932848; scoring_seconds=1.421
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/statistic/Questions/variance-median/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Questions/questions.npz
+nodes: 48921; adjacency entries: 153540; valid nodes: 13567
+rank=8; pair_mode=full; edge_policy=incoming
+AUROC=0.48549840344761797; AP=0.03231239486580628; scoring_seconds=1.318
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/statistic/Questions/variance-mean/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Questions/questions.npz
+nodes: 48921; adjacency entries: 153540; valid nodes: 13567
+rank=8; pair_mode=full; edge_policy=incoming
+AUROC=0.4645871462452372; AP=0.029038126334237586; scoring_seconds=1.346
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/statistic/Questions/std-median/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Questions/questions.npz
+nodes: 48921; adjacency entries: 153540; valid nodes: 13567
+rank=8; pair_mode=full; edge_policy=incoming
+AUROC=0.43302418019928685; AP=0.026755975456182104; scoring_seconds=1.371
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/statistic/Questions/mean-median/seed-0
+RUN ['/home/lwt2024212936/.venvs/cola/bin/python', '-u', '/mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/Repositories/NeighborDiv/scripts/run_paper_experiments.py', '--suite', 'low-degree', '--datasets', 'Cora', 'Tolokers', 'Disney', 'Questions', '--full-backend', 'moments', '--output-root', '/mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments', '--execute']
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Cora/cora-freegad.mat
+nodes: 2708; adjacency entries: 11604; valid nodes: 2233
+rank=8; pair_mode=full; edge_policy=preserve
+AUROC=0.6846077664842325; AP=0.09779039581106895; scoring_seconds=0.071
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/low-degree/Cora/zero/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Cora/cora-freegad.mat
+nodes: 2708; adjacency entries: 11604; valid nodes: 2233
+rank=8; pair_mode=full; edge_policy=preserve
+AUROC=0.6857375553818085; AP=0.09587643892016542; scoring_seconds=0.063
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/low-degree/Cora/median/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Cora/cora-freegad.mat
+nodes: 2708; adjacency entries: 11604; valid nodes: 2233
+rank=8; pair_mode=full; edge_policy=preserve
+AUROC=0.6947331030255753; AP=0.10371944597573471; scoring_seconds=0.067
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/low-degree/Cora/valid-only/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Tolokers/tolokers.npz
+nodes: 11758; adjacency entries: 519000; valid nodes: 9853
+rank=8; pair_mode=full; edge_policy=incoming
+AUROC=0.5186809101343335; AP=0.21169120875144412; scoring_seconds=0.296
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/low-degree/Tolokers/zero/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Tolokers/tolokers.npz
+nodes: 11758; adjacency entries: 519000; valid nodes: 9853
+rank=8; pair_mode=full; edge_policy=incoming
+AUROC=0.5366088950573442; AP=0.21884032477899001; scoring_seconds=0.315
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/low-degree/Tolokers/median/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Tolokers/tolokers.npz
+nodes: 11758; adjacency entries: 519000; valid nodes: 9853
+rank=8; pair_mode=full; edge_policy=incoming
+AUROC=0.535244161802622; AP=0.21986692620750609; scoring_seconds=0.362
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/low-degree/Tolokers/valid-only/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Disney/disney-dominant.mat
+nodes: 124; adjacency entries: 670; valid nodes: 113
+rank=8; pair_mode=full; edge_policy=undirected
+AUROC=0.7245762711864407; AP=0.16170315655404693; scoring_seconds=0.005
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/low-degree/Disney/zero/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Disney/disney-dominant.mat
+nodes: 124; adjacency entries: 670; valid nodes: 113
+rank=8; pair_mode=full; edge_policy=undirected
+AUROC=0.6666666666666667; AP=0.15040408706135178; scoring_seconds=0.005
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/low-degree/Disney/median/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Disney/disney-dominant.mat
+nodes: 124; adjacency entries: 670; valid nodes: 113
+rank=8; pair_mode=full; edge_policy=undirected
+AUROC=0.7477064220183487; AP=0.18509278711484595; scoring_seconds=0.006
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/low-degree/Disney/valid-only/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Questions/questions.npz
+nodes: 48921; adjacency entries: 153540; valid nodes: 13567
+rank=8; pair_mode=full; edge_policy=incoming
+AUROC=0.49097128918826793; AP=0.03317710044932848; scoring_seconds=1.688
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/low-degree/Questions/zero/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Questions/questions.npz
+nodes: 48921; adjacency entries: 153540; valid nodes: 13567
+rank=8; pair_mode=full; edge_policy=incoming
+AUROC=0.5201092793419716; AP=0.03544050072322469; scoring_seconds=1.288
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/low-degree/Questions/median/seed-0
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Questions/questions.npz
+nodes: 48921; adjacency entries: 153540; valid nodes: 13567
+rank=8; pair_mode=full; edge_policy=incoming
+AUROC=0.5392022965195982; AP=0.05693894467266381; scoring_seconds=1.405
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/moments/low-degree/Questions/valid-only/seed-0
+RUN ['/home/lwt2024212936/.venvs/cola/bin/python', '-u', '/mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/Repositories/NeighborDiv/scripts/run_entropy_bin_sensitivity.py', '--datasets', 'Cora', 'Tolokers', 'Disney', 'Questions', '--output-dir', '/mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/protocol-audit-2026-10-13/entropy-corrected']
+loading Cora from /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Cora/cora-freegad.mat
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+Cora Full seed=0: 4 bins, 1.038s
+loading Tolokers from /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Tolokers/tolokers.npz
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+Tolokers Full seed=0: 4 bins, 11.848s
+loading Disney from /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Disney/disney-dominant.mat
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+Disney Full seed=0: 4 bins, 0.039s
+loading Questions from /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/Questions/questions.npz
+/home/lwt2024212936/.venvs/cola/lib/python3.7/site-packages/scipy/sparse/_index.py:125: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+Questions Full seed=0: 4 bins, 4.233s
+completed 16 entropy configurations

@@ -1,0 +1,167 @@
+[
+  {
+    "anomaly_type": "Type-H",
+    "h": 0.1,
+    "realized_edge_homophily": 0.145206405092815,
+    "mean_normal_degree": 15.024957264957266,
+    "mean_anomaly_degree": 14.76,
+    "mean_normal_own_community_fraction": 0.12428009909865834,
+    "mean_anomaly_own_community_fraction": 1.0,
+    "median_normal_pair_variance": 0.16448711642241196,
+    "median_anomaly_pair_variance": 6.898705791173558e-05
+  },
+  {
+    "anomaly_type": "Type-D",
+    "h": 0.1,
+    "realized_edge_homophily": 0.10618299672584085,
+    "mean_normal_degree": 15.006324786324788,
+    "mean_anomaly_degree": 15.46,
+    "mean_normal_own_community_fraction": 0.10402589812770607,
+    "mean_anomaly_own_community_fraction": 0.19843646583869357,
+    "median_normal_pair_variance": 0.1665232919937675,
+    "median_anomaly_pair_variance": 0.15924711495930025
+  },
+  {
+    "anomaly_type": "Mixed",
+    "h": 0.1,
+    "realized_edge_homophily": 0.14980964777939945,
+    "mean_normal_degree": 15.043333333333331,
+    "mean_anomaly_degree": 15.11,
+    "mean_normal_own_community_fraction": 0.12701763254627585,
+    "mean_anomaly_own_community_fraction": 0.5969872016855001,
+    "median_normal_pair_variance": 0.1643219548622922,
+    "median_anomaly_pair_variance": 0.044068155032026
+  },
+  {
+    "anomaly_type": "Type-H",
+    "h": 0.3,
+    "realized_edge_homophily": 0.3352879669829849,
+    "mean_normal_degree": 14.961196581196582,
+    "mean_anomaly_degree": 14.913333333333332,
+    "mean_normal_own_community_fraction": 0.31766060489791265,
+    "mean_anomaly_own_community_fraction": 1.0,
+    "median_normal_pair_variance": 0.16125532100143955,
+    "median_anomaly_pair_variance": 6.922616151608075e-05
+  },
+  {
+    "anomaly_type": "Type-D",
+    "h": 0.3,
+    "realized_edge_homophily": 0.2952968046318601,
+    "mean_normal_degree": 14.948034188034187,
+    "mean_anomaly_degree": 15.546666666666667,
+    "mean_normal_own_community_fraction": 0.2971656384387275,
+    "mean_anomaly_own_community_fraction": 0.21018190199726972,
+    "median_normal_pair_variance": 0.1595499206797752,
+    "median_anomaly_pair_variance": 0.1524853840621285
+  },
+  {
+    "anomaly_type": "Mixed",
+    "h": 0.3,
+    "realized_edge_homophily": 0.32982166857758893,
+    "mean_normal_degree": 14.975964912280702,
+    "mean_anomaly_degree": 15.229999999999999,
+    "mean_normal_own_community_fraction": 0.31503295111163965,
+    "mean_anomaly_own_community_fraction": 0.6002672389004119,
+    "median_normal_pair_variance": 0.16135387034325324,
+    "median_anomaly_pair_variance": 0.06303252465893129
+  },
+  {
+    "anomaly_type": "Type-H",
+    "h": 0.5,
+    "realized_edge_homophily": 0.5240334570470003,
+    "mean_normal_degree": 15.060170940170941,
+    "mean_anomaly_degree": 15.0,
+    "mean_normal_own_community_fraction": 0.5119943936102085,
+    "mean_anomaly_own_community_fraction": 1.0,
+    "median_normal_pair_variance": 0.20772583561562463,
+    "median_anomaly_pair_variance": 7.018956701298747e-05
+  },
+  {
+    "anomaly_type": "Type-D",
+    "h": 0.5,
+    "realized_edge_homophily": 0.4841590409494357,
+    "mean_normal_degree": 15.057948717948719,
+    "mean_anomaly_degree": 15.166666666666666,
+    "mean_normal_own_community_fraction": 0.4916191328786312,
+    "mean_anomaly_own_community_fraction": 0.1990480469106415,
+    "median_normal_pair_variance": 0.2029817498060645,
+    "median_anomaly_pair_variance": 0.1648486963143816
+  },
+  {
+    "anomaly_type": "Mixed",
+    "h": 0.5,
+    "realized_edge_homophily": 0.5094584708858362,
+    "mean_normal_degree": 15.093508771929825,
+    "mean_anomaly_degree": 15.083333333333334,
+    "mean_normal_own_community_fraction": 0.5045736719381626,
+    "mean_anomaly_own_community_fraction": 0.6056415172030928,
+    "median_normal_pair_variance": 0.20639880468848193,
+    "median_anomaly_pair_variance": 0.060475478250614105
+  },
+  {
+    "anomaly_type": "Type-H",
+    "h": 0.7,
+    "realized_edge_homophily": 0.7140128068818953,
+    "mean_normal_degree": 14.99965811965812,
+    "mean_anomaly_degree": 15.0,
+    "mean_normal_own_community_fraction": 0.7075305613933714,
+    "mean_anomaly_own_community_fraction": 1.0,
+    "median_normal_pair_variance": 0.2231877239651515,
+    "median_anomaly_pair_variance": 7.905952474173654e-05
+  },
+  {
+    "anomaly_type": "Type-D",
+    "h": 0.7,
+    "realized_edge_homophily": 0.672356050773037,
+    "mean_normal_degree": 14.98957264957265,
+    "mean_anomaly_degree": 15.446666666666667,
+    "mean_normal_own_community_fraction": 0.6858473072651669,
+    "mean_anomaly_own_community_fraction": 0.18614874665906656,
+    "median_normal_pair_variance": 0.22317442829695722,
+    "median_anomaly_pair_variance": 0.16683965045116314
+  },
+  {
+    "anomaly_type": "Mixed",
+    "h": 0.7,
+    "realized_edge_homophily": 0.6879920101134306,
+    "mean_normal_degree": 15.020526315789475,
+    "mean_anomaly_degree": 15.223333333333334,
+    "mean_normal_own_community_fraction": 0.693490679534334,
+    "mean_anomaly_own_community_fraction": 0.5994103139712789,
+    "median_normal_pair_variance": 0.22341127961934218,
+    "median_anomaly_pair_variance": 0.06076179011896941
+  },
+  {
+    "anomaly_type": "Type-H",
+    "h": 0.9,
+    "realized_edge_homophily": 0.9050803899423411,
+    "mean_normal_degree": 15.016239316239316,
+    "mean_anomaly_degree": 15.246666666666668,
+    "mean_normal_own_community_fraction": 0.9026469788812345,
+    "mean_anomaly_own_community_fraction": 1.0,
+    "median_normal_pair_variance": 0.13563014218847227,
+    "median_anomaly_pair_variance": 7.993306559142336e-05
+  },
+  {
+    "anomaly_type": "Type-D",
+    "h": 0.9,
+    "realized_edge_homophily": 0.8672148973205833,
+    "mean_normal_degree": 15.038119658119657,
+    "mean_anomaly_degree": 14.339999999999998,
+    "mean_normal_own_community_fraction": 0.8835325956602599,
+    "mean_anomaly_own_community_fraction": 0.19452320531770437,
+    "median_normal_pair_variance": 0.15627399572924192,
+    "median_anomaly_pair_variance": 0.16574419092036566
+  },
+  {
+    "anomaly_type": "Mixed",
+    "h": 0.9,
+    "realized_edge_homophily": 0.8718592673621047,
+    "mean_normal_degree": 15.063508771929826,
+    "mean_anomaly_degree": 14.793333333333335,
+    "mean_normal_own_community_fraction": 0.8853366054014903,
+    "mean_anomaly_own_community_fraction": 0.6020368901496128,
+    "median_normal_pair_variance": 0.15401926921510622,
+    "median_anomaly_pair_variance": 0.05946422435537086
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "original": {
+    "AUROC": 0.9202275122999848,
+    "AP": 0.5319825178183739
+  },
+  "positive_count": 1804,
+  "AP_range_after_any_one_positive_removed": [
+    0.5306448935877313,
+    0.5322521228603565
+  ],
+  "AUROC_range_after_any_one_positive_removed": [
+    0.920158868437806,
+    0.9207394042539918
+  ]
+}

@@ -1,0 +1,7 @@
+/home/lwt2024212936/.venvs/tfgad/lib/python3.8/site-packages/scipy/sparse/_index.py:146: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+data: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/data/T-Finance/tfinance-source.zip
+nodes: 39357; adjacency entries: 42445086; valid nodes: 39275
+rank=8; pair_mode=full; edge_policy=preserve
+AUROC=0.9202275122999848; AP=0.5319825178183739; scoring_seconds=11095.823
+outputs: /mnt/c/Users/28641/Desktop/论文科研-江权学长/Graph-Anomaly-Reproduction/results/NeighborDiv/paper-audit-tfinance-full-retry/main/T-Finance/full/seed-0

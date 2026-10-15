@@ -1,0 +1,5 @@
+source-domain standard deviations of the generalist baselines under SDIT, although this comparison
+is only a proxy for baseline variability. The strong performance on T-Finance is therefore attributable
+to the suitability of neighbor diversity as an anomaly signal for this particular financial-fraud domain,
+rather than to a metric artifact or baseline randomness.
+29

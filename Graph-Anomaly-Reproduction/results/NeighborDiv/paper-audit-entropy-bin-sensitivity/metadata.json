@@ -1,0 +1,44 @@
+{
+  "paper_section": "Appendix E.1 entropy statistic sensitivity",
+  "status": "local sensitivity only; exact Table 11 entropy result is under-specified",
+  "entropy_bins": [
+    5,
+    10,
+    20,
+    50
+  ],
+  "bin_edges": "equal-width over cosine similarity [-1, 1]",
+  "entropy_definition": "natural-log Shannon entropy over observed pair similarities",
+  "reference": "absolute deviation from the median across degree>=2 nodes; population z-score",
+  "rank": 8,
+  "svd_random_state": 0,
+  "svd_algorithm": "sklearn randomized, n_iter=5",
+  "non_tfinance_pair_mode": "Full",
+  "tfinance_pair_mode": "k=100 and k=50, each with pair seeds 0..4; no Full entropy pass",
+  "n_runs": 64,
+  "metrics_csv": "metrics.csv",
+  "aggregate_csv": "aggregate.csv",
+  "notes": [
+    "The paper does not publish entropy bin count, range, or bin-edge convention.",
+    "T-Finance entropy values use sampling and are not directly comparable to the paper's unspecified Full Table 11 setting."
+  ],
+  "data_sha256": {
+    "Cora": "dfc945bfe11d742c2a6b5faf1d92bab3d20408e15984172c12d02b79e35836f8",
+    "YelpChi": "61eae7fd894b54840eb7038d52bbf9e3802704ccd16a74526dd2fff3cbff72ca",
+    "Reddit": "533a739caa38939dff51f1902e6705fbb4e727badf1d408fc0d1b45467cf4fd3",
+    "T-Finance": "0a0091978425a0e9f1cd0e001240517ecd786344bd580c2bd00ef32ad1c80475",
+    "Tolokers": "dacf3ac94cec53d03cd2adb5255c08b33dee1656c33ca8164a464bd9450a1667",
+    "Disney": "2bb0133d43c5338249bf9f23f532927a9b5fa9a3ba480f4d0ecc3563f44076fd",
+    "Questions": "757ebd772bab1475c4dd951ca9e364400c6db161656cff9d21780ee874cf3074"
+  },
+  "source_sha256": {
+    "src/neighbordiv.py": "f0f920fa6415b89e1d153bf9a71dc97508f64a7789334abf3d6d979f42ab8062",
+    "scripts/run_entropy_bin_sensitivity.py": "97efa4b84f459490f243babf908268c7783392eeefd6a472912229fad2e8dfae"
+  },
+  "environment": {
+    "python": "3.8.10",
+    "numpy": "1.24.4",
+    "scipy": "1.10.1",
+    "scikit_learn": "1.3.2"
+  }
+}

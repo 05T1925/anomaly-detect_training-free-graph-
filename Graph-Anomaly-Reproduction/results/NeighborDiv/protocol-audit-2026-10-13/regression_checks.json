@@ -1,0 +1,115 @@
+{
+  "status": "passed",
+  "checks": [
+    {
+      "check": "moment-vs-direct",
+      "degree": 2,
+      "case": "random",
+      "error": 0.0
+    },
+    {
+      "check": "moment-vs-direct",
+      "degree": 2,
+      "case": "constant",
+      "error": 0.0
+    },
+    {
+      "check": "moment-vs-direct",
+      "degree": 2,
+      "case": "zero-row",
+      "error": 0.0
+    },
+    {
+      "check": "moment-vs-direct",
+      "degree": 3,
+      "case": "random",
+      "error": 2.498001805406602e-16
+    },
+    {
+      "check": "moment-vs-direct",
+      "degree": 3,
+      "case": "constant",
+      "error": 0.0
+    },
+    {
+      "check": "moment-vs-direct",
+      "degree": 3,
+      "case": "zero-row",
+      "error": 7.806255641895632e-18
+    },
+    {
+      "check": "moment-vs-direct",
+      "degree": 8,
+      "case": "random",
+      "error": 1.3877787807814457e-17
+    },
+    {
+      "check": "moment-vs-direct",
+      "degree": 8,
+      "case": "constant",
+      "error": 0.0
+    },
+    {
+      "check": "moment-vs-direct",
+      "degree": 8,
+      "case": "zero-row",
+      "error": 2.7755575615628914e-17
+    },
+    {
+      "check": "moment-vs-direct",
+      "degree": 67,
+      "case": "random",
+      "error": 1.3877787807814457e-17
+    },
+    {
+      "check": "moment-vs-direct",
+      "degree": 67,
+      "case": "constant",
+      "error": 0.0
+    },
+    {
+      "check": "moment-vs-direct",
+      "degree": 67,
+      "case": "zero-row",
+      "error": 0.0
+    },
+    {
+      "check": "moment-vs-direct",
+      "degree": 251,
+      "case": "random",
+      "error": 0.0
+    },
+    {
+      "check": "moment-vs-direct",
+      "degree": 251,
+      "case": "constant",
+      "error": 0.0
+    },
+    {
+      "check": "moment-vs-direct",
+      "degree": 251,
+      "case": "zero-row",
+      "error": 1.3877787807814457e-17
+    },
+    {
+      "check": "edge-policy",
+      "passed": true
+    },
+    {
+      "check": "AMEN-equations-python-native-and-partial-mask",
+      "python_error": 1.6653345369377348e-16,
+      "native_error": 3.0531133177191805e-16,
+      "partial_valid_count": 3
+    },
+    {
+      "check": "production-stream-vs-moments",
+      "max_pairs": null,
+      "score_error": 1.3322676295501878e-15
+    },
+    {
+      "check": "production-stream-vs-moments",
+      "max_pairs": 7,
+      "score_error": 1.1102230246251565e-15
+    }
+  ]
+}
